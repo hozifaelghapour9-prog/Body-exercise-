@@ -1,0 +1,412 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>COACH STUDIO | Online Coaching</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">C</div>
+
+            <div>
+                <h2>COACH STUDIO</h2>
+                <span>ONLINE COACHING</span>
+            </div>
+        </div>
+
+        <div class="coach-profile">
+
+            <div class="profile-image">
+                CO
+            </div>
+
+            <div>
+                <h3>Coach Name</h3>
+                <p>Personal Trainer</p>
+            </div>
+
+        </div>
+
+        <nav class="navigation">
+
+            <button class="nav-link active" data-page="dashboard">
+                <span>▦</span>
+                الرئيسية
+            </button>
+
+            <button class="nav-link" data-page="exercises">
+                <span>🏋️</span>
+                مكتبة التمارين
+            </button>
+
+            <button class="nav-link" data-page="programs">
+                <span>📋</span>
+                البرامج التدريبية
+            </button>
+
+            <button class="nav-link" data-page="clients">
+                <span>👥</span>
+                العملاء
+            </button>
+
+            <button class="nav-link" data-page="settings">
+                <span>⚙</span>
+                الإعدادات
+            </button>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>COACH STUDIO</p>
+            <span>Version 1.0</span>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div>
+                <p class="header-subtitle">WELCOME BACK</p>
+                <h1>لوحة التحكم</h1>
+            </div>
+
+            <div class="header-left">
+
+                <div class="notification">
+                    🔔
+                </div>
+
+                <div class="header-profile">
+                    <div class="profile-image small">CO</div>
+                    <span>Coach Name</span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD -->
+
+        <section class="page active" id="dashboard">
+
+            <div class="welcome-banner">
+
+                <div class="welcome-content">
+
+                    <span>YOUR ONLINE FITNESS PLATFORM</span>
+
+                    <h2>
+                        Build Your Body.<br>
+                        Build Your Future.
+                    </h2>
+
+                    <p>
+                        تحكم في تمارينك وبرامجك التدريبية
+                        وتابع تقدم عملائك من مكان واحد.
+                    </p>
+
+                    <button class="primary-button" data-go="exercises">
+                        استكشف التمارين
+                    </button>
+
+                </div>
+
+                <div class="banner-icon">
+                    💪
+                </div>
+
+            </div>
+
+
+            <!-- STATISTICS -->
+
+            <div class="section-heading">
+                <h2>إحصائيات المنصة</h2>
+                <span>OVERVIEW</span>
+            </div>
+
+            <div class="stats-container">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon purple">🏋️</div>
+
+                    <p>إجمالي التمارين</p>
+
+                    <h2 id="totalExercises">0</h2>
+
+                    <span>Exercise Library</span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon orange">📋</div>
+
+                    <p>البرامج التدريبية</p>
+
+                    <h2 id="totalPrograms">0</h2>
+
+                    <span>Training Programs</span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">👥</div>
+
+                    <p>إجمالي العملاء</p>
+
+                    <h2 id="totalClients">0</h2>
+
+                    <span>Active Clients</span>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- QUICK ACTIONS -->
+
+            <div class="section-heading">
+                <h2>الوصول السريع</h2>
+                <span>QUICK ACTIONS</span>
+            </div>
+
+            <div class="actions-container">
+
+                <button class="action-card" data-go="exercises">
+
+                    <div>＋</div>
+
+                    <h3>إضافة تمرين</h3>
+
+                    <p>أضف فيديو جديد إلى مكتبة التمارين.</p>
+
+                </button>
+
+
+                <button class="action-card" data-go="programs">
+
+                    <div>＋</div>
+
+                    <h3>إنشاء برنامج</h3>
+
+                    <p>جهز برنامج تدريبي جديد لعملائك.</p>
+
+                </button>
+
+
+                <button class="action-card" data-go="clients">
+
+                    <div>＋</div>
+
+                    <h3>إضافة عميل</h3>
+
+                    <p>أنشئ حسابًا جديدًا لأحد عملائك.</p>
+
+                </button>
+
+            </div>
+
+
+            <!-- RECENT EXERCISES -->
+
+            <div class="section-heading">
+                <h2>أحدث التمارين</h2>
+
+                <button class="text-button" data-go="exercises">
+                    عرض الكل ←
+                </button>
+            </div>
+
+            <div class="recent-exercises" id="recentExercises">
+
+                <div class="empty-message">
+                    لم تتم إضافة تمارين حتى الآن.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- EXERCISES PAGE -->
+
+        <section class="page" id="exercises">
+
+            <div class="page-heading">
+
+                <div>
+                    <span>EXERCISE DATABASE</span>
+                    <h2>مكتبة التمارين</h2>
+                    <p>جميع التمارين والفيديوهات الخاصة بك.</p>
+                </div>
+
+                <button class="primary-button" id="addExercise">
+                    ＋ إضافة تمرين
+                </button>
+
+            </div>
+
+            <div class="exercise-tools">
+
+                <input
+                    type="search"
+                    id="exerciseSearch"
+                    placeholder="ابحث عن تمرين..."
+                >
+
+                <select id="muscleFilter">
+
+                    <option value="">كل العضلات</option>
+                    <option value="صدر">الصدر</option>
+                    <option value="ظهر">الظهر</option>
+                    <option value="كتف">الأكتاف</option>
+                    <option value="بايسبس">البايسبس</option>
+                    <option value="ترايسبس">الترايسبس</option>
+                    <option value="أرجل">الأرجل</option>
+                    <option value="بطن">البطن</option>
+                    <option value="كارديو">الكارديو</option>
+
+                </select>
+
+            </div>
+
+            <div class="exercise-grid" id="exerciseGrid"></div>
+
+        </section>
+
+
+        <!-- PROGRAMS PAGE -->
+
+        <section class="page" id="programs">
+
+            <div class="page-heading">
+
+                <div>
+                    <span>TRAINING PLANS</span>
+                    <h2>البرامج التدريبية</h2>
+                    <p>أنشئ برامج تدريبية مخصصة لكل عميل.</p>
+                </div>
+
+                <button class="primary-button" id="addProgram">
+                    ＋ إنشاء برنامج
+                </button>
+
+            </div>
+
+            <div id="programList" class="program-list">
+
+                <div class="empty-message">
+                    لا توجد برامج تدريبية حتى الآن.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CLIENTS PAGE -->
+
+        <section class="page" id="clients">
+
+            <div class="page-heading">
+
+                <div>
+                    <span>CLIENT MANAGEMENT</span>
+                    <h2>إدارة العملاء</h2>
+                    <p>تابع عملاءك وبرامجهم التدريبية.</p>
+                </div>
+
+                <button class="primary-button" id="addClient">
+                    ＋ إضافة عميل
+                </button>
+
+            </div>
+
+            <div id="clientList" class="client-list">
+
+                <div class="empty-message">
+                    لا يوجد عملاء حتى الآن.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SETTINGS PAGE -->
+
+        <section class="page" id="settings">
+
+            <div class="page-heading">
+
+                <div>
+                    <span>SETTINGS</span>
+                    <h2>الإعدادات</h2>
+                    <p>إعدادات هوية المدرب والمنصة.</p>
+                </div>
+
+            </div>
+
+            <div class="settings-card">
+
+                <h3>Coach Profile</h3>
+
+                <p>سيتم تطوير إعدادات الاسم والصورة والهوية التجارية في المرحلة القادمة.</p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- MODAL -->
+
+    <div class="modal-overlay hidden" id="modal">
+
+        <div class="modal-content">
+
+            <button class="close-modal" id="closeModal">×</button>
+
+            <div id="modalContent"></div>
+
+        </div>
+
+    </div>
+
+
+    <script src="app.js"></script>
+
+</body>
+  </html>
+  
