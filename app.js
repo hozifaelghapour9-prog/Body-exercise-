@@ -1,6 +1,7 @@
 /* BODY RESET
    استخدم Project URL وPublishable key فقط.
    ممنوع وضع Secret أو service_role key هنا.
+*/
 const SUPABASE_URL = "https://xgxmtizyzjfxxwsmcspe.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
 
