@@ -1,557 +1,754 @@
+/* BODY RESET
+   استخدم Project URL وPublishable key فقط.
+   ممنوع وضع Secret أو service_role key هنا.
+*/
 
-/* =================================
-   BODY RESET EXERCISE
-   Main JavaScript
-================================= */
+const SUPABASE_URL = "PASTE_YOUR_SUPABASE_PROJECT_URL_HERE";
+const SUPABASE_PUBLISHABLE_KEY = "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
 
-// Storage
-const STORAGE = {
-  exercises: "bodyReset_exercises",
-  programs: "bodyReset_programs",
-  clients: "bodyReset_clients"
+const configured =
+  SUPABASE_URL.startsWith("https://") &&
+  !SUPABASE_URL.includes("PASTE_") &&
+  SUPABASE_PUBLISHABLE_KEY &&
+  !SUPABASE_PUBLISHABLE_KEY.includes("PASTE_");
+
+const db = configured
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+  : null;
+
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+const state = {
+  exercises: [],
+  programs: [],
+  clients: [],
+  session: null
 };
 
-let exercises = JSON.parse(localStorage.getItem(STORAGE.exercises)) || [];
-let programs = JSON.parse(localStorage.getItem(STORAGE.programs)) || [];
-let clients = JSON.parse(localStorage.getItem(STORAGE.clients)) || [];
-
-// Helpers
-function saveData() {
-  localStorage.setItem(STORAGE.exercises, JSON.stringify(exercises));
-  localStorage.setItem(STORAGE.programs, JSON.stringify(programs));
-  localStorage.setItem(STORAGE.clients, JSON.stringify(clients));
-  updateDashboard();
-}
-
-function createId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-}
-
-function escapeHTML(value = "") {
-  return String(value).replace(/[&<>"']/g, char => ({
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
     '"': "&quot;",
     "'": "&#39;"
-  })[char]);
+  }[char]));
 }
 
-function showMessage(message) {
-  alert(message);
-}
-
-// Navigation
-function showSection(sectionId) {
-  document.querySelectorAll(".page-section").forEach(section => {
-    section.classList.remove("active");
-  });
-
-  document.querySelectorAll(".nav-item").forEach(item => {
-    item.classList.remove("active");
-  });
-
-  const target = document.getElementById(sectionId);
-
-  if (target) {
-    target.classList.add("active");
+function safeURL(value) {
+  try {
+    const url = new URL(value);
+    return ["https:", "http:"].includes(url.protocol) ? url.href : "";
+  } catch {
+    return "";
   }
+}
 
-  const navItem = document.querySelector(
-    `.nav-item[data-section="${sectionId}"]`
+function message(id, text, error = false) {
+  const element = document.getElementById(id);
+  if (!element) return;
+
+  element.textContent = text;
+  element.style.color = error ? "var(--danger)" : "var(--lime)";
+}
+
+function requireDatabase() {
+  if (!db) {
+    throw new Error(
+      "أدخل رابط Supabase وPublishable key في أعلى ملف app.js."
+    );
+  }
+}
+
+async function getRows(table, query = q => q) {
+  const { data, error } = await query(
+    db.from(table).select("*").order("created_at", { ascending: false })
   );
 
-  if (navItem) {
-    navItem.classList.add("active");
-  }
-
-  const titles = {
-    dashboard: "لوحة التحكم",
-    exercises: "مكتبة التمارين",
-    programs: "البرامج التدريبية",
-    clients: "العملاء",
-    settings: "الإعدادات"
-  };
-
-  const heading = document.querySelector(".welcome h1");
-
-  if (heading) {
-    heading.textContent = titles[sectionId] || "Body Reset Exercise";
-  }
+  if (error) throw error;
+  return data || [];
 }
 
-document.querySelectorAll(".nav-item").forEach(item => {
-  item.addEventListener("click", () => {
-    showSection(item.dataset.section);
-  });
-});
+/* =========================
+   واجهة العميل
+========================= */
 
-// Dashboard
-function updateDashboard() {
-  const stats = document.querySelectorAll(".stat-card h3");
+function setupPublic() {
+  $$("[data-public-tab]").forEach(button => {
+    button.addEventListener("click", () => {
+      const tab = button.dataset.publicTab;
 
-  if (stats.length >= 3) {
-    stats[0].textContent = exercises.length;
-    stats[1].textContent = programs.length;
-    stats[2].textContent = clients.length;
-  }
+      $$("[data-public-tab]").forEach(item => {
+        item.classList.toggle("active", item === button);
+      });
 
-  renderExercises();
-  renderPrograms();
-  renderClients();
-}
-
-// Exercise Management
-function addExercise(data) {
-  exercises.push({
-    id: createId(),
-    name: data.name,
-    muscle: data.muscle,
-    equipment: data.equipment,
-    level: data.level,
-    description: data.description,
-    image: data.image,
-    video: data.video,
-    date: new Date().toISOString()
+      $("#publicExercises").classList.toggle("hidden", tab !== "exercises");
+      $("#publicPrograms").classList.toggle("hidden", tab !== "programs");
+    });
   });
 
-  saveData();
+  [
+    "#publicExerciseSearch",
+    "#publicMuscleFilter",
+    "#publicLevelFilter"
+  ].forEach(selector => {
+    $(selector)?.addEventListener("input", renderPublicExercises);
+    $(selector)?.addEventListener("change", renderPublicExercises);
+  });
+
+  loadPublicData();
 }
 
-function deleteExercise(id) {
-  if (!confirm("هل أنت متأكد من حذف التمرين؟")) return;
+async function loadPublicData() {
+  try {
+    requireDatabase();
 
-  exercises = exercises.filter(item => item.id !== id);
-  saveData();
-}
+    const [exercises, programs] = await Promise.all([
+      getRows("exercises", q => q.eq("is_published", true)),
+      getRows("programs", q => q.eq("is_published", true))
+    ]);
 
-function renderExercises() {
-  const grid = document.getElementById("exerciseGrid");
+    state.exercises = exercises;
+    state.programs = programs;
 
-  if (!grid) return;
+    fillPublicMuscles();
+    renderPublicExercises();
+    renderPublicPrograms();
 
-  if (!exercises.length) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">🏋️</div>
-        <h3>لسه مفيش تمارين</h3>
-        <p>ابدأ بإضافة أول تمرين لمكتبتك.</p>
-      </div>
-    `;
-    return;
+  } catch (error) {
+    message("publicMessage", error.message, true);
+
+    $("#publicExerciseGrid").innerHTML =
+      '<div class="empty-state">تعذر تحميل التمارين.</div>';
+
+    $("#publicProgramList").innerHTML =
+      '<div class="empty-state">تعذر تحميل البرامج.</div>';
   }
+}
 
-  grid.innerHTML = exercises.map(item => `
+function exerciseCard(item, admin = false) {
+  const image = safeURL(item.image);
+  const video = safeURL(item.video);
+
+  return `
     <article class="exercise-card">
+
       <div class="exercise-image">
-        ${item.image
-          ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}">`
-          : "🏋️"}
+        ${
+          image
+            ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(item.name)}" loading="lazy">`
+            : "🏋️"
+        }
       </div>
+
       <div class="exercise-info">
+
         <h3>${escapeHTML(item.name)}</h3>
-        <p>${escapeHTML(item.description || "لا يوجد وصف بعد")}</p>
-        <div class="exercise-tags">
-          <span class="tag">${escapeHTML(item.muscle)}</span>
-          <span class="tag">${escapeHTML(item.level)}</span>
+
+        <p>${escapeHTML(item.description || "لا يوجد وصف متاح.")}</p>
+
+        <div class="tags">
+          <span class="tag">${escapeHTML(item.muscle || "عام")}</span>
+          <span class="tag">${escapeHTML(item.level || "غير محدد")}</span>
+          ${item.equipment ? `<span class="tag">${escapeHTML(item.equipment)}</span>` : ""}
         </div>
-        ${item.video ? `
-          <p><a href="${escapeHTML(item.video)}" target="_blank" rel="noopener">مشاهدة الفيديو ↗</a></p>
-        ` : ""}
-        <button class="small-btn" onclick="deleteExercise('${item.id}')">
-          حذف
-        </button>
+
+        ${
+          video
+            ? `<a class="text-link" href="${escapeHTML(video)}" target="_blank" rel="noopener noreferrer">مشاهدة شرح التمرين</a>`
+            : ""
+        }
+
+        ${
+          admin
+            ? `
+              <div class="tags">
+                <span class="tag">${item.is_published ? "منشور" : "مسودة"}</span>
+              </div>
+
+              <div class="item-actions" style="margin-top:12px">
+                <button class="small-btn" data-edit="exercise" data-id="${escapeHTML(item.id)}">تعديل</button>
+                <button class="small-btn publish" data-publish="exercise" data-id="${escapeHTML(item.id)}">
+                  ${item.is_published ? "إلغاء النشر" : "نشر"}
+                </button>
+                <button class="small-btn danger" data-delete="exercise" data-id="${escapeHTML(item.id)}">حذف</button>
+              </div>
+            `
+            : ""
+        }
+
       </div>
     </article>
-  `).join("");
+  `;
 }
 
-// Search and Filter
-function filterExercises() {
-  const search = document.getElementById("exerciseSearch");
-  const filter = document.getElementById("exerciseFilter");
+function fillPublicMuscles() {
+  const select = $("#publicMuscleFilter");
+  if (!select) return;
 
-  const searchValue = search ? search.value.trim().toLowerCase() : "";
-  const filterValue = filter ? filter.value : "";
+  const previous = select.value;
 
-  const grid = document.getElementById("exerciseGrid");
+  const muscles = [
+    ...new Set(state.exercises.map(item => item.muscle).filter(Boolean))
+  ].sort();
 
+  select.innerHTML =
+    '<option value="">كل العضلات</option>' +
+    muscles.map(muscle =>
+      `<option value="${escapeHTML(muscle)}">${escapeHTML(muscle)}</option>`
+    ).join("");
+
+  select.value = muscles.includes(previous) ? previous : "";
+}
+
+function renderPublicExercises() {
+  const grid = $("#publicExerciseGrid");
   if (!grid) return;
 
-  const filtered = exercises.filter(item => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchValue) ||
-      item.muscle.toLowerCase().includes(searchValue);
+  const term = ($("#publicExerciseSearch")?.value || "").trim().toLowerCase();
+  const muscle = $("#publicMuscleFilter")?.value || "";
+  const level = $("#publicLevelFilter")?.value || "";
 
-    const matchesFilter =
-      !filterValue || item.muscle === filterValue;
+  const filtered = state.exercises.filter(item => {
+    const searchText = `${item.name} ${item.muscle || ""}`.toLowerCase();
 
-    return matchesSearch && matchesFilter;
+    return (
+      (!term || searchText.includes(term)) &&
+      (!muscle || item.muscle === muscle) &&
+      (!level || item.level === level)
+    );
   });
 
-  if (!filtered.length) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">🔎</div>
-        <h3>لا توجد نتائج</h3>
-        <p>جرّب تغيير كلمة البحث أو الفلتر.</p>
-      </div>
-    `;
+  grid.innerHTML = filtered.length
+    ? filtered.map(item => exerciseCard(item)).join("")
+    : '<div class="empty-state">لا توجد تمارين منشورة تطابق البحث.</div>';
+}
+
+function renderPublicPrograms() {
+  const list = $("#publicProgramList");
+  if (!list) return;
+
+  list.innerHTML = state.programs.length
+    ? state.programs.map(item => `
+        <article class="program-card">
+          <div class="program-card-body">
+            <h3>${escapeHTML(item.name)}</h3>
+            <p>${escapeHTML(item.description || "لا يوجد وصف متاح.")}</p>
+            <div class="tags">
+              <span class="tag">${escapeHTML(item.duration || "المدة غير محددة")}</span>
+              <span class="tag">${escapeHTML(item.level || "كل المستويات")}</span>
+            </div>
+          </div>
+        </article>
+      `).join("")
+    : '<div class="empty-state">لا توجد برامج منشورة حاليًا.</div>';
+}
+
+/* =========================
+   تسجيل دخول المدير
+========================= */
+
+async function checkAdmin() {
+  const { data, error } = await db.rpc("is_admin");
+
+  if (error) throw error;
+  return data === true;
+}
+
+async function setupAdmin() {
+  if (!db) {
+    message(
+      "loginMessage",
+      "أدخل رابط Supabase وPublishable key في أعلى app.js أولًا.",
+      true
+    );
     return;
   }
 
-  grid.innerHTML = filtered.map(item => `
-    <article class="exercise-card">
-      <div class="exercise-image">
-        ${item.image
-          ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}">`
-          : "🏋️"}
-      </div>
-      <div class="exercise-info">
-        <h3>${escapeHTML(item.name)}</h3>
-        <p>${escapeHTML(item.description || "")}</p>
-        <div class="exercise-tags">
-          <span class="tag">${escapeHTML(item.muscle)}</span>
-          <span class="tag">${escapeHTML(item.level)}</span>
+  $("#loginForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    message("loginMessage", "جاري تسجيل الدخول...");
+
+    const email = $("#loginEmail").value.trim();
+    const password = $("#loginPassword").value;
+
+    try {
+      const { data, error } = await db.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      await openAdmin(data.session);
+
+    } catch (error) {
+      message("loginMessage", error.message, true);
+    }
+  });
+
+  const { data, error } = await db.auth.getSession();
+
+  if (error) {
+    message("loginMessage", error.message, true);
+    return;
+  }
+
+  if (data.session) {
+    await openAdmin(data.session);
+  }
+}
+
+async function openAdmin(session) {
+  state.session = session;
+
+  try {
+    const allowed = await checkAdmin();
+
+    if (!allowed) {
+      await db.auth.signOut();
+      state.session = null;
+
+      message(
+        "loginMessage",
+        "هذا الحساب غير مصرح له بدخول لوحة المدير.",
+        true
+      );
+
+      return;
+    }
+
+    $("#loginScreen").classList.add("hidden");
+    $("#adminApp").classList.remove("hidden");
+
+    $("#adminEmail").textContent = session.user.email || "";
+
+    bindAdminEvents();
+    await refreshAdminData();
+
+  } catch (error) {
+    message("loginMessage", error.message, true);
+  }
+}
+
+/* =========================
+   بيانات لوحة المدير
+========================= */
+
+async function refreshAdminData() {
+  const [exercises, programs, clients] = await Promise.all([
+    getRows("exercises"),
+    getRows("programs"),
+    getRows("clients")
+  ]);
+
+  state.exercises = exercises;
+  state.programs = programs;
+  state.clients = clients;
+
+  $("#totalExercises").textContent = exercises.length;
+  $("#totalPrograms").textContent = programs.length;
+  $("#totalClients").textContent = clients.length;
+
+  renderAdminExercises();
+  renderAdminPrograms();
+  renderAdminClients();
+  renderRecentExercises();
+}
+
+function renderRecentExercises() {
+  const element = $("#recentExercises");
+  if (!element) return;
+
+  const recent = state.exercises.slice(0, 5);
+
+  element.innerHTML = recent.length
+    ? recent.map(item => `
+        <div class="list-card">
+          <div>
+            <h3>${escapeHTML(item.name)}</h3>
+            <p>${escapeHTML(item.muscle || "عام")}</p>
+          </div>
+          <span class="tag">${item.is_published ? "منشور" : "مسودة"}</span>
         </div>
-        <button class="small-btn" onclick="deleteExercise('${item.id}')">حذف</button>
-      </div>
-    </article>
-  `).join("");
+      `).join("")
+    : "لا توجد تمارين حتى الآن.";
 }
 
-document.getElementById("exerciseSearch")?.addEventListener("input", filterExercises);
-document.getElementById("exerciseFilter")?.addEventListener("change", filterExercises);
-
-// Program Management
-function addProgram(data) {
-  programs.push({
-    id: createId(),
-    name: data.name,
-    duration: data.duration,
-    level: data.level,
-    description: data.description
+function switchAdminTab(tab) {
+  $$(".admin-section").forEach(section => {
+    section.classList.toggle("hidden", section.id !== tab);
   });
 
-  saveData();
+  $$("[data-admin-tab]").forEach(button => {
+    button.classList.toggle("active", button.dataset.adminTab === tab);
+  });
 }
 
-function deleteProgram(id) {
-  if (!confirm("هل تريد حذف البرنامج؟")) return;
+function renderAdminExercises() {
+  const grid = $("#exerciseGrid");
+  if (!grid) return;
 
-  programs = programs.filter(item => item.id !== id);
-  saveData();
-}
+  const term = ($("#exerciseSearch")?.value || "").trim().toLowerCase();
+  const muscle = $("#muscleFilter")?.value || "";
 
-function renderPrograms() {
-  const list = document.getElementById("programList");
+  const filtered = state.exercises.filter(item => {
+    const text = `${item.name} ${item.muscle || ""}`.toLowerCase();
 
-  if (!list) return;
-
-  if (!programs.length) {
-    list.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">📋</div>
-        <h3>لا توجد برامج تدريبية</h3>
-        <p>أنشئ أول برنامج تدريبي.</p>
-      </div>
-    `;
-    return;
-  }
-
-  list.innerHTML = programs.map(item => `
-    <div class="list-item">
-      <div>
-        <h3>${escapeHTML(item.name)}</h3>
-        <p>
-          ${escapeHTML(item.duration)} |
-          ${escapeHTML(item.level)}
-        </p>
-        <p>${escapeHTML(item.description || "")}</p>
-      </div>
-      <div class="item-actions">
-        <button class="small-btn" onclick="deleteProgram('${item.id}')">
-          حذف
-        </button>
-      </div>
-    </div>
-  `).join("");
-}
-
-// Client Management
-function addClient(data) {
-  clients.push({
-    id: createId(),
-    name: data.name,
-    phone: data.phone,
-    weight: data.weight,
-    goal: data.goal,
-    notes: data.notes
+    return (
+      (!term || text.includes(term)) &&
+      (!muscle || item.muscle === muscle)
+    );
   });
 
-  saveData();
+  grid.innerHTML = filtered.length
+    ? filtered.map(item => exerciseCard(item, true)).join("")
+    : '<div class="empty-state">لا توجد تمارين.</div>';
 }
 
-function deleteClient(id) {
-  if (!confirm("هل تريد حذف العميل؟")) return;
-
-  clients = clients.filter(item => item.id !== id);
-  saveData();
-}
-
-function renderClients() {
-  const list = document.getElementById("clientList");
-
+function renderAdminPrograms() {
+  const list = $("#programList");
   if (!list) return;
 
-  if (!clients.length) {
-    list.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">👤</div>
-        <h3>لا يوجد عملاء حتى الآن</h3>
-        <p>أضف أول عميل لمتابعة تقدمه.</p>
-      </div>
-    `;
-    return;
-  }
+  list.innerHTML = state.programs.length
+    ? state.programs.map(item => `
+        <article class="program-card">
+          <div class="program-card-body">
+            <h3>${escapeHTML(item.name)}</h3>
+            <p>${escapeHTML(item.description || "")}</p>
 
-  list.innerHTML = clients.map(item => `
-    <div class="list-item">
-      <div>
-        <h3>${escapeHTML(item.name)}</h3>
-        <p>الهاتف: ${escapeHTML(item.phone || "غير مسجل")}</p>
-        <p>الوزن: ${escapeHTML(item.weight || "غير مسجل")} كجم</p>
-        <p>الهدف: ${escapeHTML(item.goal || "غير محدد")}</p>
-        <p>${escapeHTML(item.notes || "")}</p>
-      </div>
-      <button class="small-btn" onclick="deleteClient('${item.id}')">
-        حذف
-      </button>
-    </div>
-  `).join("");
+            <div class="tags">
+              <span class="tag">${escapeHTML(item.duration || "المدة غير محددة")}</span>
+              <span class="tag">${escapeHTML(item.level || "غير محدد")}</span>
+              <span class="tag">${item.is_published ? "منشور" : "مسودة"}</span>
+            </div>
+
+            <div class="item-actions" style="margin-top:14px">
+              <button class="small-btn" data-edit="program" data-id="${escapeHTML(item.id)}">تعديل</button>
+              <button class="small-btn publish" data-publish="program" data-id="${escapeHTML(item.id)}">
+                ${item.is_published ? "إلغاء النشر" : "نشر"}
+              </button>
+              <button class="small-btn danger" data-delete="program" data-id="${escapeHTML(item.id)}">حذف</button>
+            </div>
+          </div>
+        </article>
+      `).join("")
+    : '<div class="empty-state">لم تضف برامج بعد.</div>';
 }
 
-// Modal
-function openModal(title, content) {
-  const modal = document.getElementById("modal");
+function renderAdminClients() {
+  const list = $("#clientList");
+  if (!list) return;
 
-  if (!modal) return;
+  list.innerHTML = state.clients.length
+    ? state.clients.map(item => `
+        <article class="list-card">
+          <div>
+            <h3>${escapeHTML(item.name)}</h3>
+            <p>الهاتف: ${escapeHTML(item.phone || "غير مسجل")}</p>
+            <p>الوزن: ${escapeHTML(item.weight ?? "غير مسجل")} كجم</p>
+            <p>الهدف: ${escapeHTML(item.goal || "غير محدد")}</p>
+            <p>${escapeHTML(item.notes || "")}</p>
+          </div>
 
-  modal.innerHTML = `
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>${title}</h2>
-        <button class="modal-close" onclick="closeModal()">×</button>
-      </div>
-      ${content}
-    </div>
+          <div class="item-actions">
+            <button class="small-btn" data-edit="client" data-id="${escapeHTML(item.id)}">تعديل</button>
+            <button class="small-btn danger" data-delete="client" data-id="${escapeHTML(item.id)}">حذف</button>
+          </div>
+        </article>
+      `).join("")
+    : '<div class="empty-state">لا يوجد عملاء مسجلون.</div>';
+}
+
+/* =========================
+   نوافذ الإضافة والتعديل
+========================= */
+
+function showModal(title, html) {
+  $("#modalBody").innerHTML = `
+    <h2 style="margin-bottom:18px">${escapeHTML(title)}</h2>
+    ${html}
   `;
 
-  modal.classList.add("active");
+  $("#modal").classList.remove("hidden");
+  $("#modal").setAttribute("aria-hidden", "false");
 }
 
 function closeModal() {
-  const modal = document.getElementById("modal");
+  $("#modal").classList.add("hidden");
+  $("#modal").setAttribute("aria-hidden", "true");
+}
 
-  if (modal) {
-    modal.classList.remove("active");
+function field(label, name, value = "", type = "text", extra = "") {
+  return `
+    <div class="form-group">
+      <label>
+        ${label}
+        <input
+          class="field"
+          name="${name}"
+          type="${type}"
+          value="${escapeHTML(value)}"
+          ${extra}
+        >
+      </label>
+    </div>
+  `;
+}
+
+function textarea(label, name, value = "") {
+  return `
+    <div class="form-group full">
+      <label>
+        ${label}
+        <textarea class="field" name="${name}" rows="3">${escapeHTML(value)}</textarea>
+      </label>
+    </div>
+  `;
+}
+
+function select(label, name, options, value = "") {
+  return `
+    <div class="form-group">
+      <label>
+        ${label}
+        <select class="field" name="${name}">
+          ${options.map(option => `
+            <option value="${escapeHTML(option)}" ${option === value ? "selected" : ""}>
+              ${escapeHTML(option)}
+            </option>
+          `).join("")}
+        </select>
+      </label>
+    </div>
+  `;
+}
+
+function formActions() {
+  return `
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit">حفظ</button>
+      <button class="btn btn-quiet" type="button" data-close-modal>إلغاء</button>
+    </div>
+  `;
+}
+
+function openExerciseEditor(item = {}) {
+  showModal(item.id ? "تعديل تمرين" : "إضافة تمرين", `
+    <form id="recordForm">
+      <div class="form-grid">
+
+        ${field("اسم التمرين", "name", item.name || "", "text", "required")}
+
+        ${select("العضلة المستهدفة", "muscle", [
+          "الصدر", "الظهر", "الأكتاف", "البايسبس",
+          "الترايسبس", "الأرجل", "البطن", "الكارديو"
+        ], item.muscle || "الصدر")}
+
+        ${select("المستوى", "level", [
+          "مبتدئ", "متوسط", "متقدم"
+        ], item.level || "مبتدئ")}
+
+        ${field("الأدوات المستخدمة", "equipment", item.equipment || "")}
+
+        ${field("رابط الصورة", "image", item.image || "", "url")}
+
+        ${field("رابط الفيديو", "video", item.video || "", "url")}
+
+        ${textarea("وصف التمرين وطريقة الأداء", "description", item.description || "")}
+
+      </div>
+
+      <label class="check-row">
+        <input type="checkbox" name="is_published" ${item.is_published ? "checked" : ""}>
+        نشر التمرين ليظهر للعميل
+      </label>
+
+      ${formActions()}
+    </form>
+  `);
+
+  bindRecordForm("exercises", item);
+}
+
+function openProgramEditor(item = {}) {
+  showModal(item.id ? "تعديل برنامج" : "إضافة برنامج", `
+    <form id="recordForm">
+      <div class="form-grid">
+
+        ${field("اسم البرنامج", "name", item.name || "", "text", "required")}
+
+        ${field("مدة البرنامج", "duration", item.duration || "")}
+
+        ${select("المستوى", "level", [
+          "مبتدئ", "متوسط", "متقدم", "كل المستويات"
+        ], item.level || "مبتدئ")}
+
+        ${textarea("وصف البرنامج", "description", item.description || "")}
+
+      </div>
+
+      <label class="check-row">
+        <input type="checkbox" name="is_published" ${item.is_published ? "checked" : ""}>
+        نشر البرنامج ليظهر للعميل
+      </label>
+
+      ${formActions()}
+    </form>
+  `);
+
+  bindRecordForm("programs", item);
+}
+
+function openClientEditor(item = {}) {
+  showModal(item.id ? "تعديل بيانات العميل" : "إضافة عميل", `
+    <form id="recordForm">
+      <div class="form-grid">
+
+        ${field("اسم العميل", "name", item.name || "", "text", "required")}
+
+        ${field("رقم الهاتف", "phone", item.phone || "", "tel")}
+
+        ${field("الوزن بالكيلو", "weight", item.weight ?? "", "number", 'min="0" step="0.1"')}
+
+        ${select("الهدف", "goal", [
+          "خسارة الدهون",
+          "بناء العضلات",
+          "زيادة الوزن",
+          "تحسين اللياقة",
+          "الحفاظ على الوزن"
+        ], item.goal || "تحسين اللياقة")}
+
+        ${textarea("ملاحظات", "notes", item.notes || "")}
+
+      </div>
+
+      ${formActions()}
+    </form>
+  `);
+
+  bindRecordForm("clients", item);
+}
+
+/* =========================
+   حفظ البيانات
+========================= */
+
+function bindRecordForm(table, item) {
+  $("#recordForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const form = new FormData(event.currentTarget);
+    const payload = Object.fromEntries(form.entries());
+
+    if (table !== "clients") {
+      payload.is_published = form.get("is_published") === "on";
+    }
+
+    if (table === "exercises") {
+      for (const key of ["image", "video"]) {
+        if (payload[key] && !safeURL(payload[key])) {
+          alert("رابط الصورة أو الفيديو غير صالح.");
+          return;
+        }
+      }
+    }
+
+    if (table === "clients") {
+      payload.weight = payload.weight === ""
+        ? null
+        : Number(payload.weight);
+    }
+
+    try {
+      const query = item.id
+        ? db.from(table).update(payload).eq("id", item.id)
+        : db.from(table).insert({
+            ...payload,
+            user_id: state.session.user.id
+          });
+
+      const { error } = await query;
+      if (error) throw error;
+
+      closeModal();
+      await refreshAdminData();
+      message("adminMessage", "تم حفظ البيانات بنجاح.");
+
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+}
+
+/* =========================
+   النشر والحذف
+========================= */
+
+async function togglePublish(table, item) {
+  try {
+    const { error } = await db
+      .from(table)
+      .update({ is_published: !item.is_published })
+      .eq("id", item.id);
+
+    if (error) throw error;
+
+    await refreshAdminData();
+
+    message(
+      "adminMessage",
+      item.is_published ? "تم إلغاء النشر." : "تم نشر العنصر."
+    );
+
+  } catch (error) {
+    message("adminMessage", error.message, true);
   }
 }
 
-// Add Exercise Form
-function openExerciseForm() {
-  openModal("إضافة تمرين جديد", `
-    <form id="exerciseForm">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>اسم التمرين</label>
-          <input class="form-input" name="name" required>
-        </div>
+async function deleteRecord(table, id) {
+  if (!confirm("هل أنت متأكد من حذف هذا العنصر؟")) return;
 
-        <div class="form-group">
-          <label>العضلة المستهدفة</label>
-          <select class="form-input" name="muscle" required>
-            <option value="">اختر العضلة</option>
-            <option>صدر</option>
-            <option>ظهر</option>
-            <option>أكتاف</option>
-            <option>بايسبس</option>
-            <option>ترايسبس</option>
-            <option>أرجل</option>
-            <option>بطن</option>
-            <option>سواعد</option>
-            <option>سمانة</option>
-          </select>
-        </div>
+  try {
+    const { error } = await db
+      .from(table)
+      .delete()
+      .eq("id", id);
 
-        <div class="form-group">
-          <label>المستوى</label>
-          <select class="form-input" name="level">
-            <option>مبتدئ</option>
-            <option>متوسط</option>
-            <option>متقدم</option>
-          </select>
-        </div>
+    if (error) throw error;
 
-        <div class="form-group">
-          <label>الأداة المستخدمة</label>
-          <input class="form-input" name="equipment" placeholder="دامبل، بار، جهاز...">
-        </div>
+    await refreshAdminData();
+    message("adminMessage", "تم الحذف بنجاح.");
 
-        <div class="form-group">
-          <label>رابط الصورة</label>
-          <input class="form-input" name="image" type="url" placeholder="https://...">
-        </div>
-
-        <div class="form-group">
-          <label>رابط الفيديو</label>
-          <input class="form-input" name="video" type="url" placeholder="https://...">
-        </div>
-
-        <div class="form-group" style="grid-column:1/-1">
-          <label>شرح التمرين</label>
-          <textarea class="form-input" name="description"></textarea>
-        </div>
-      </div>
-
-      <button class="btn btn-primary" type="submit" style="margin-top:18px">
-        حفظ التمرين
-      </button>
-    </form>
-  `);
-
-  document.getElementById("exerciseForm").addEventListener("submit", event => {
-    event.preventDefault();
-
-    const data = Object.fromEntries(new FormData(event.target).entries());
-
-    addExercise(data);
-    closeModal();
-    showMessage("تمت إضافة التمرين بنجاح");
-  });
-}
-
-// Add Program Form
-function openProgramForm() {
-  openModal("إنشاء برنامج تدريبي", `
-    <form id="programForm">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>اسم البرنامج</label>
-          <input class="form-input" name="name" required>
-        </div>
-
-        <div class="form-group">
-          <label>مدة البرنامج</label>
-          <input class="form-input" name="duration" placeholder="8 أسابيع">
-        </div>
-
-        <div class="form-group">
-          <label>المستوى</label>
-          <select class="form-input" name="level">
-            <option>مبتدئ</option>
-            <option>متوسط</option>
-            <option>متقدم</option>
-          </select>
-        </div>
-
-        <div class="form-group" style="grid-column:1/-1">
-          <label>وصف البرنامج</label>
-          <textarea class="form-input" name="description"></textarea>
-        </div>
-      </div>
-
-      <button class="btn btn-primary" style="margin-top:18px">
-        حفظ البرنامج
-      </button>
-    </form>
-  `);
-
-  document.getElementById("programForm").addEventListener("submit", event => {
-    event.preventDefault();
-
-    addProgram(Object.fromEntries(new FormData(event.target).entries()));
-    closeModal();
-    showMessage("تم إنشاء البرنامج بنجاح");
-  });
-}
-
-// Add Client Form
-function openClientForm() {
-  openModal("إضافة عميل جديد", `
-    <form id="clientForm">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>اسم العميل</label>
-          <input class="form-input" name="name" required>
-        </div>
-
-        <div class="form-group">
-          <label>رقم الهاتف</label>
-          <input class="form-input" name="phone">
-        </div>
-
-        <div class="form-group">
-          <label>الوزن بالكيلو</label>
-          <input class="form-input" name="weight" type="number" min="0" step="0.1">
-        </div>
-
-        <div class="form-group">
-          <label>الهدف</label>
-          <select class="form-input" name="goal">
-            <option>خسارة الدهون</option>
-            <option>بناء العضلات</option>
-            <option>زيادة الوزن</option>
-            <option>تحسين اللياقة</option>
-            <option>الحفاظ على الوزن</option>
-          </select>
-        </div>
-
-        <div class="form-group" style="grid-column:1/-1">
-          <label>ملاحظات</label>
-          <textarea class="form-input" name="notes"></textarea>
-        </div>
-      </div>
-
-      <button class="btn btn-primary" style="margin-top:18px">
-        حفظ العميل
-      </button>
-    </form>
-  `);
-
-  document.getElementById("clientForm").addEventListener("submit", event => {
-    event.preventDefault();
-
-    addClient(Object.fromEntries(new FormData(event.target).entries()));
-    closeModal();
-    showMessage("تمت إضافة العميل بنجاح");
-  });
-}
-
-// Close modal when clicking outside
-document.getElementById("modal")?.addEventListener("click", event => {
-  if (event.target.id === "modal") {
-    closeModal();
+  } catch (error) {
+    message("adminMessage", error.message, true);
   }
-});
+}
 
-// Connect buttons
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll("[data-add-exercise]").forEach(button => {
-    button.addEventListener("click", openExerciseForm);
+/* =========================
+   أحداث لوحة المدير
+========================= */
+
+function bindAdminEvents() {
+  $$("[data-admin-tab]").forEach(button => {
+    button.addEventListener("click", () => {
+      switchAdminTab(button.dataset.adminTab);
+    });
   });
 
-  document.querySelectorAll("[data-add-program]").forEach(button => {
-    button.addEventListener("click", openProgramForm);
+  $("#addExercise").addEventListener("click", () => openExerciseEditor());
+  $("#addProgram").addEventListener("click", () => openProgramEditor());
+  $("#addClient").addEventListener("click", () => openClientEditor());
+
+  $("#exerciseSearch").addEventListener("input", renderAdminExercises);
+  $("#muscleFilter").addEventListener("change", renderAdminExercises);
+
+  $("#modal").addEventListener("click", event => {
+    if (event.target.closest("[data-close-modal]")) {
+      closeModal();
+    }
   });
 
-  document.querySelectorAll("[data-add-client]").forEach(button => {
-    button.addEventListener("click", openClientForm);
-  });
-
-  updateDashboard();
-});
-
-// Initial render
-updateDashboard();
-    
+  $("#adminApp").addEventListener("
