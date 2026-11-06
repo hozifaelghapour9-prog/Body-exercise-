@@ -3,8 +3,8 @@
    ممنوع وضع Secret أو service_role key هنا.
 */
 
-const SUPABASE_URL = "PASTE_YOUR_SUPABASE_PROJECT_URL_HERE";
-const SUPABASE_PUBLISHABLE_KEY = "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+const SUPABASE_URL = "https://xgxmtizyzjfxxwsmcspe.supabase.co/rest/v1/";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
 
 const configured =
   SUPABASE_URL.startsWith("https://") &&
