@@ -751,4 +751,74 @@ function bindAdminEvents() {
     }
   });
 
-  $("#adminApp").addEventListener("
+  $("#adminApp").addEventListener("click", event => {
+    const edit = event.target.closest("[data-edit]");
+    const publish = event.target.closest("[data-publish]");
+    const remove = event.target.closest("[data-delete]");
+
+    if (edit) {
+      const type = edit.dataset.edit;
+      const table = {
+        exercise: "exercises",
+        program: "programs",
+        client: "clients"
+      }[type];
+
+      const item = state[table].find(
+        row => String(row.id) === edit.dataset.id
+      );
+
+      if (!item) return;
+
+      if (type === "exercise") openExerciseEditor(item);
+      if (type === "program") openProgramEditor(item);
+      if (type === "client") openClientEditor(item);
+    }
+
+    if (publish) {
+      const type = publish.dataset.publish;
+      const table = type === "exercise" ? "exercises" : "programs";
+
+      const item = state[table].find(
+        row => String(row.id) === publish.dataset.id
+      );
+
+      if (item) togglePublish(table, item);
+    }
+
+    if (remove) {
+      const table = {
+        exercise: "exercises",
+        program: "programs",
+        client: "clients"
+      }[remove.dataset.delete];
+
+      deleteRecord(table, remove.dataset.id);
+    }
+  });
+
+  $("#logoutBtn").addEventListener("click", async () => {
+    const { error } = await db.auth.signOut();
+
+    if (error) {
+      message("adminMessage", error.message, true);
+      return;
+    }
+
+    location.reload();
+  });
+}
+
+/* =========================
+   تشغيل التطبيق
+========================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (document.body.dataset.page === "public") {
+    setupPublic();
+  }
+
+  if (document.body.dataset.page === "admin") {
+    setupAdmin();
+  }
+});
