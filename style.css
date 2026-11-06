@@ -689,3 +689,26 @@ textarea.form-input {
     flex-direction: column;
   }
   }
+/* إخفاء القائمة الجانبية مؤقتًا */
+.sidebar,
+.side-bar,
+.sidebar-menu,
+.side-menu,
+aside {
+    display: none !important;
+}
+
+/* جعل المحتوى يأخذ عرض الصفحة بالكامل */
+main,
+.main-content,
+.content,
+.page-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+}
+
+/* إزالة المساحات الجانبية */
+body {
+    overflow-x: hidden;
+}
