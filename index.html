@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>COACH STUDIO | Online Coaching</title>
+    <title>BODY RESET | Exercise Platform</title>
 
     <link rel="stylesheet" href="style.css">
 
@@ -13,72 +13,36 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Cairo', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* إلغاء القائمة الجانبية */
+        .sidebar {
+            display: none !important;
+        }
+
+        /* المحتوى الرئيسي بعرض الشاشة */
+        .main-content {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            margin-right: 0 !important;
+            box-sizing: border-box;
+        }
+
+        .header {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 
 <body>
-
-    <!-- SIDEBAR -->
-
-    <aside class="sidebar">
-
-        <div class="logo">
-            <div class="logo-icon">C</div>
-
-            <div>
-                <h2>COACH STUDIO</h2>
-                <span>ONLINE COACHING</span>
-            </div>
-        </div>
-
-        <div class="coach-profile">
-
-            <div class="profile-image">
-                CO
-            </div>
-
-            <div>
-                <h3>Coach Name</h3>
-                <p>Personal Trainer</p>
-            </div>
-
-        </div>
-
-        <nav class="navigation">
-
-            <button class="nav-link active" data-page="dashboard">
-                <span>▦</span>
-                الرئيسية
-            </button>
-
-            <button class="nav-link" data-page="exercises">
-                <span>🏋️</span>
-                مكتبة التمارين
-            </button>
-
-            <button class="nav-link" data-page="programs">
-                <span>📋</span>
-                البرامج التدريبية
-            </button>
-
-            <button class="nav-link" data-page="clients">
-                <span>👥</span>
-                العملاء
-            </button>
-
-            <button class="nav-link" data-page="settings">
-                <span>⚙</span>
-                الإعدادات
-            </button>
-
-        </nav>
-
-        <div class="sidebar-footer">
-            <p>COACH STUDIO</p>
-            <span>Version 1.0</span>
-        </div>
-
-    </aside>
-
 
     <!-- MAIN CONTENT -->
 
@@ -95,9 +59,7 @@
 
             <div class="header-left">
 
-                <div class="notification">
-                    🔔
-                </div>
+                <div class="notification">🔔</div>
 
                 <div class="header-profile">
                     <div class="profile-image small">CO</div>
@@ -135,9 +97,7 @@
 
                 </div>
 
-                <div class="banner-icon">
-                    💪
-                </div>
+                <div class="banner-icon">💪</div>
 
             </div>
 
@@ -152,43 +112,25 @@
             <div class="stats-container">
 
                 <div class="stat-card">
-
                     <div class="stat-icon purple">🏋️</div>
-
                     <p>إجمالي التمارين</p>
-
                     <h2 id="totalExercises">0</h2>
-
                     <span>Exercise Library</span>
-
                 </div>
 
-
                 <div class="stat-card">
-
                     <div class="stat-icon orange">📋</div>
-
                     <p>البرامج التدريبية</p>
-
                     <h2 id="totalPrograms">0</h2>
-
                     <span>Training Programs</span>
-
                 </div>
-
 
                 <div class="stat-card">
-
                     <div class="stat-icon green">👥</div>
-
                     <p>إجمالي العملاء</p>
-
                     <h2 id="totalClients">0</h2>
-
                     <span>Active Clients</span>
-
                 </div>
-
 
             </div>
 
@@ -203,35 +145,21 @@
             <div class="actions-container">
 
                 <button class="action-card" data-go="exercises">
-
                     <div>＋</div>
-
                     <h3>إضافة تمرين</h3>
-
                     <p>أضف فيديو جديد إلى مكتبة التمارين.</p>
-
                 </button>
-
 
                 <button class="action-card" data-go="programs">
-
                     <div>＋</div>
-
                     <h3>إنشاء برنامج</h3>
-
                     <p>جهز برنامج تدريبي جديد لعملائك.</p>
-
                 </button>
 
-
                 <button class="action-card" data-go="clients">
-
                     <div>＋</div>
-
                     <h3>إضافة عميل</h3>
-
                     <p>أنشئ حسابًا جديدًا لأحد عملائك.</p>
-
                 </button>
 
             </div>
@@ -285,7 +213,6 @@
                 >
 
                 <select id="muscleFilter">
-
                     <option value="">كل العضلات</option>
                     <option value="صدر">الصدر</option>
                     <option value="ظهر">الظهر</option>
@@ -295,7 +222,6 @@
                     <option value="أرجل">الأرجل</option>
                     <option value="بطن">البطن</option>
                     <option value="كارديو">الكارديو</option>
-
                 </select>
 
             </div>
@@ -381,7 +307,10 @@
 
                 <h3>Coach Profile</h3>
 
-                <p>سيتم تطوير إعدادات الاسم والصورة والهوية التجارية في المرحلة القادمة.</p>
+                <p>
+                    سيتم تطوير إعدادات الاسم والصورة
+                    والهوية التجارية في المرحلة القادمة.
+                </p>
 
             </div>
 
@@ -405,8 +334,10 @@
     </div>
 
 
+    <!-- JAVASCRIPT -->
+
     <script src="app.js"></script>
 
 </body>
-  </html>
-  
+    </html>
+    
