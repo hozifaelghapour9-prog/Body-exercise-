@@ -37,7 +37,7 @@ grant execute on function public.is_admin() to authenticated;
 insert into public.admin_users (user_id, email)
 select id, email
 from auth.users
-where lower(email) = lower('REPLACE_WITH_YOUR_ADMIN_EMAIL')
+where lower(email) = lower('hozifa elghapour@Gmail.com)
 on conflict (user_id)
 do update set email = excluded.email;
 
