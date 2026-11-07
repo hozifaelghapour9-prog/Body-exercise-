@@ -19,7 +19,6 @@
 
     <a class="brand" href="index.html">
       <span class="brand-mark">B</span>
-
       <span>
         <strong>BODY RESET</strong>
         <small>EXERCISE PLATFORM</small>
@@ -36,11 +35,113 @@
       </button>
     </nav>
 
-    <a class="btn btn-quiet" href="admin.html">
-      دخول المدير
-    </a>
+    <!-- زر القائمة -->
+    <button
+      class="menu-toggle"
+      id="menuToggle"
+      type="button"
+      aria-label="فتح القائمة"
+      aria-expanded="false"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
 
   </header>
+
+  <!-- خلفية القائمة -->
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <!-- القائمة الجانبية -->
+  <aside
+    class="side-menu"
+    id="sideMenu"
+    aria-hidden="true"
+  >
+
+    <div class="side-menu-header">
+      <div class="brand">
+        <span class="brand-mark">B</span>
+        <span>
+          <strong>BODY RESET</strong>
+          <small>EXERCISE PLATFORM</small>
+        </span>
+      </div>
+
+      <button
+        class="menu-close"
+        id="menuClose"
+        type="button"
+        aria-label="إغلاق القائمة"
+      >×</button>
+    </div>
+
+    <div class="side-menu-content">
+
+      <!-- يظهر للمدير فقط بعد التحقق من صلاحياته -->
+      <a
+        class="menu-item hidden"
+        id="adminMenuLink"
+        href="admin.html"
+      >
+        <span>🛡️</span>
+        دخول المدير
+      </a>
+
+      <!-- يظهر عند وجود مستخدم مسجل دخوله -->
+      <button
+        class="menu-item hidden"
+        id="logoutMenuBtn"
+        type="button"
+      >
+        <span>🚪</span>
+        تسجيل الخروج
+      </button>
+
+      <div class="menu-divider"></div>
+
+      <!-- اختيار اللغة -->
+      <div class="language-menu">
+
+        <div class="menu-section-title">
+          <span>🌐</span>
+          اللغة / Language / Sprache
+        </div>
+
+        <button class="menu-item language-option active" data-language="ar">
+          🇪🇬 العربية
+        </button>
+
+        <button class="menu-item language-option" data-language="en">
+          🇬🇧 English
+        </button>
+
+        <button class="menu-item language-option" data-language="de">
+          🇩🇪 Deutsch
+        </button>
+
+      </div>
+
+      <div class="menu-divider"></div>
+
+      <!-- التواصل -->
+      <button
+        class="menu-item"
+        id="contactMenuBtn"
+        type="button"
+      >
+        <span>📞</span>
+        اتصل بنا
+      </button>
+
+      <p class="contact-note">
+        رقم التواصل سيتم إضافته قريبًا.
+      </p>
+
+    </div>
+
+  </aside>
 
   <main class="public-main">
 
