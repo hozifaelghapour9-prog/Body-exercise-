@@ -1,3 +1,4 @@
+
 /* BODY RESET
    استخدم Project URL وPublishable key فقط.
    ممنوع وضع Secret أو service_role key هنا.
@@ -132,7 +133,6 @@ function exerciseCard(item, admin = false) {
 
   return `
     <article class="exercise-card">
-
       <div class="exercise-image">
         ${
           image
@@ -142,9 +142,7 @@ function exerciseCard(item, admin = false) {
       </div>
 
       <div class="exercise-info">
-
         <h3>${escapeHTML(item.name)}</h3>
-
         <p>${escapeHTML(item.description || "لا يوجد وصف متاح.")}</p>
 
         <div class="tags">
@@ -176,7 +174,6 @@ function exerciseCard(item, admin = false) {
             `
             : ""
         }
-
       </div>
     </article>
   `;
@@ -809,37 +806,28 @@ function bindAdminEvents() {
 }
 
 /* =========================
-   تشغيل التطبيق
+   القائمة الجانبية
 ========================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (document.body.dataset.page === "public") {
-    setupPublic();
-  }
-
-  if (document.body.dataset.page === "admin") {
-    setupAdmin();
-  }
-});
-// BODY RESET SIDE MENU
-document.addEventListener("DOMContentLoaded", () => {
-  const menuToggle = document.getElementById("menuToggle");
-  const menuClose = document.getElementById("menuClose");
-  const menuOverlay = document.getElementById("menuOverlay");
-  const adminMenuLink = document.getElementById("adminMenuLink");
-  const logoutMenuBtn = document.getElementById("logoutMenuBtn");
-  const contactMenuBtn = document.getElementById("contactMenuBtn");
+function setupSideMenu() {
+  const menuToggle = $("#menuToggle");
+  const menuClose = $("#menuClose");
+  const menuOverlay = $("#menuOverlay");
+  const sideMenu = $("#sideMenu");
+  const adminMenuLink = $("#adminMenuLink");
+  const logoutMenuBtn = $("#logoutMenuBtn");
+  const contactMenuBtn = $("#contactMenuBtn");
 
   function closeMenu() {
     document.body.classList.remove("menu-open");
     menuToggle?.setAttribute("aria-expanded", "false");
-    document.getElementById("sideMenu")?.setAttribute("aria-hidden", "true");
+    sideMenu?.setAttribute("aria-hidden", "true");
   }
 
   menuToggle?.addEventListener("click", () => {
     document.body.classList.add("menu-open");
     menuToggle.setAttribute("aria-expanded", "true");
-    document.getElementById("sideMenu")?.setAttribute("aria-hidden", "false");
+    sideMenu?.setAttribute("aria-hidden", "false");
   });
 
   menuClose?.addEventListener("click", closeMenu);
@@ -847,28 +835,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function updateMenuUser(session) {
     adminMenuLink?.classList.add("hidden");
-    logoutMenuBtn?.classList.toggle("hidden", !session);
+    logoutMenuBtn?.classList.add("hidden");
 
     if (!session || !db) return;
+
+    logoutMenuBtn?.classList.remove("hidden");
 
     try {
       const { data, error } = await db.rpc("is_admin");
 
-      if (!error && data === true) {
+      if (error) {
+        console.error("Admin verification error:", error);
+        return;
+      }
+
+      if (data === true) {
         adminMenuLink?.classList.remove("hidden");
       }
     } catch (error) {
-      console.error("Menu permission check:", error);
+      console.error("Admin verification error:", error);
     }
   }
 
   if (db) {
-    db.auth.getSession().then(({ data }) => {
+    db.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        console.error("Session error:", error);
+        return;
+      }
+
       updateMenuUser(data.session);
     });
 
     db.auth.onAuthStateChange((_event, session) => {
-      updateMenuUser(session);
+      setTimeout(() => updateMenuUser(session), 0);
     });
   }
 
@@ -889,4 +889,20 @@ document.addEventListener("DOMContentLoaded", () => {
   contactMenuBtn?.addEventListener("click", () => {
     alert("رقم التواصل سيتم إضافته قريبًا.");
   });
+}
+
+/* =========================
+   تشغيل التطبيق
+========================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+  setupSideMenu();
+
+  if (document.body.dataset.page === "public") {
+    setupPublic();
+  }
+
+  if (document.body.dataset.page === "admin") {
+    setupAdmin();
+  }
 });
