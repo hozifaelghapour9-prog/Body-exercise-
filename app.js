@@ -821,3 +821,72 @@ document.addEventListener("DOMContentLoaded", () => {
     setupAdmin();
   }
 });
+// BODY RESET SIDE MENU
+document.addEventListener("DOMContentLoaded", () => {
+  const menuToggle = document.getElementById("menuToggle");
+  const menuClose = document.getElementById("menuClose");
+  const menuOverlay = document.getElementById("menuOverlay");
+  const adminMenuLink = document.getElementById("adminMenuLink");
+  const logoutMenuBtn = document.getElementById("logoutMenuBtn");
+  const contactMenuBtn = document.getElementById("contactMenuBtn");
+
+  function closeMenu() {
+    document.body.classList.remove("menu-open");
+    menuToggle?.setAttribute("aria-expanded", "false");
+    document.getElementById("sideMenu")?.setAttribute("aria-hidden", "true");
+  }
+
+  menuToggle?.addEventListener("click", () => {
+    document.body.classList.add("menu-open");
+    menuToggle.setAttribute("aria-expanded", "true");
+    document.getElementById("sideMenu")?.setAttribute("aria-hidden", "false");
+  });
+
+  menuClose?.addEventListener("click", closeMenu);
+  menuOverlay?.addEventListener("click", closeMenu);
+
+  async function updateMenuUser(session) {
+    adminMenuLink?.classList.add("hidden");
+    logoutMenuBtn?.classList.toggle("hidden", !session);
+
+    if (!session || !db) return;
+
+    try {
+      const { data, error } = await db.rpc("is_admin");
+
+      if (!error && data === true) {
+        adminMenuLink?.classList.remove("hidden");
+      }
+    } catch (error) {
+      console.error("Menu permission check:", error);
+    }
+  }
+
+  if (db) {
+    db.auth.getSession().then(({ data }) => {
+      updateMenuUser(data.session);
+    });
+
+    db.auth.onAuthStateChange((_event, session) => {
+      updateMenuUser(session);
+    });
+  }
+
+  logoutMenuBtn?.addEventListener("click", async () => {
+    if (!db) return;
+
+    const { error } = await db.auth.signOut();
+
+    if (error) {
+      alert("تعذر تسجيل الخروج. حاول مرة أخرى.");
+      return;
+    }
+
+    closeMenu();
+    window.location.href = "index.html";
+  });
+
+  contactMenuBtn?.addEventListener("click", () => {
+    alert("رقم التواصل سيتم إضافته قريبًا.");
+  });
+});
