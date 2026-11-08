@@ -9,7 +9,6 @@
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- إخفاء الموقع حتى التأكد من تسجيل الدخول -->
   <style>
     html {
       visibility: hidden;
@@ -21,28 +20,37 @@
 
   <!-- التحقق من تسجيل الدخول -->
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      try {
-        const { data: { session }, error } = await db.auth.getSession();
+    (() => {
+      const AUTH_SUPABASE_URL =
+        "https://xgxmtizyzjfxxwsmcspe.supabase.co";
 
-        if (error || !session) {
+      const AUTH_SUPABASE_KEY =
+        "ضع هنا نفس Publishable Key الموجود في app.js";
+
+      const authClient = window.supabase.createClient(
+        AUTH_SUPABASE_URL,
+        AUTH_SUPABASE_KEY
+      );
+
+      authClient.auth.getSession()
+        .then(({ data, error }) => {
+          if (error || !data.session) {
+            window.location.replace("login.html");
+            return;
+          }
+
+          document.documentElement.style.visibility = "visible";
+        })
+        .catch(() => {
           window.location.replace("login.html");
-          return;
-        }
-
-        document.documentElement.style.visibility = "visible";
-
-      } catch (error) {
-        window.location.replace("login.html");
-      }
-    });
+        });
+    })();
   </script>
 </head>
 
 <body data-page="public">
 
   <header class="site-header">
-
     <a class="brand" href="index.html">
       <span class="brand-mark">B</span>
       <span>
@@ -61,7 +69,6 @@
       </button>
     </nav>
 
-    <!-- زر القائمة -->
     <button
       class="menu-toggle"
       id="menuToggle"
@@ -73,19 +80,15 @@
       <span></span>
       <span></span>
     </button>
-
   </header>
 
-  <!-- خلفية القائمة -->
   <div class="menu-overlay" id="menuOverlay"></div>
 
-  <!-- القائمة الجانبية -->
   <aside
     class="side-menu"
     id="sideMenu"
     aria-hidden="true"
   >
-
     <div class="side-menu-header">
       <div class="brand">
         <span class="brand-mark">B</span>
@@ -105,7 +108,6 @@
 
     <div class="side-menu-content">
 
-      <!-- دخول المدير -->
       <a
         class="menu-item hidden"
         id="adminMenuLink"
@@ -115,7 +117,6 @@
         دخول المدير
       </a>
 
-      <!-- تسجيل الخروج -->
       <button
         class="menu-item hidden"
         id="logoutMenuBtn"
@@ -127,31 +128,36 @@
 
       <div class="menu-divider"></div>
 
-      <!-- اختيار اللغة -->
       <div class="language-menu">
-
         <div class="menu-section-title">
           <span>🌐</span>
           اللغة / Language / Sprache
         </div>
 
-        <button class="menu-item language-option active" data-language="ar">
+        <button
+          class="menu-item language-option active"
+          data-language="ar"
+        >
           🇪🇬 العربية
         </button>
 
-        <button class="menu-item language-option" data-language="en">
+        <button
+          class="menu-item language-option"
+          data-language="en"
+        >
           🇬🇧 English
         </button>
 
-        <button class="menu-item language-option" data-language="de">
+        <button
+          class="menu-item language-option"
+          data-language="de"
+        >
           🇩🇪 Deutsch
         </button>
-
       </div>
 
       <div class="menu-divider"></div>
 
-      <!-- التواصل -->
       <button
         class="menu-item"
         id="contactMenuBtn"
@@ -166,13 +172,11 @@
       </p>
 
     </div>
-
   </aside>
 
   <main class="public-main">
 
     <section class="hero">
-
       <p class="eyebrow">
         MOVE BETTER · FEEL STRONGER
       </p>
@@ -185,10 +189,8 @@
       <p class="hero-copy">
         تصفّح مكتبة التمارين والبرامج التدريبية المنشورة من BODY RESET.
       </p>
-
     </section>
 
-    <!-- مكتبة التمارين -->
     <section id="publicExercises" class="public-section">
 
       <div class="section-heading">
@@ -199,7 +201,6 @@
       </div>
 
       <div class="filters">
-
         <input
           id="publicExerciseSearch"
           class="field"
@@ -217,7 +218,6 @@
           <option>متوسط</option>
           <option>متقدم</option>
         </select>
-
       </div>
 
       <div id="publicExerciseGrid" class="exercise-grid">
@@ -228,9 +228,10 @@
 
     </section>
 
-    <!-- البرامج التدريبية -->
-    <section id="publicPrograms" class="public-section hidden">
-
+    <section
+      id="publicPrograms"
+      class="public-section hidden"
+    >
       <div class="section-heading">
         <div>
           <h2>البرامج التدريبية</h2>
@@ -243,7 +244,6 @@
           جاري تحميل البرامج...
         </div>
       </div>
-
     </section>
 
     <p id="publicMessage" class="notice" role="status"></p>
