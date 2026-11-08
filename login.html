@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0e13">
+  <title>BODY RESET | تسجيل الدخول</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    .auth-wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+    .auth-card {
+      width: min(430px, 100%);
+      padding: 30px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+    }
+    .auth-card .brand { margin-bottom: 26px; }
+    .auth-card h1 { font-size: 23px; margin-bottom: 6px; }
+    .auth-sub { color: var(--muted); font-size: 12px; margin-bottom: 22px; }
+    .auth-form { display: grid; gap: 13px; }
+    .auth-form .btn { margin-top: 8px; }
+    .auth-switch { margin-top: 18px; color: var(--muted); font-size: 12px; text-align: center; }
+    .auth-switch button {
+      border: 0; background: none; color: var(--lime);
+      font: inherit; cursor: pointer;
+    }
+    #authMessage { min-height: 22px; margin-top: 14px; font-size: 12px; }
+  </style>
+</head>
+
+<body>
+  <main class="auth-wrap">
+    <section class="auth-card">
+
+      <a class="brand" href="login.html">
+        <span class="brand-mark">B</span>
+        <span>
+          <strong>BODY RESET</strong>
+          <small>EXERCISE PLATFORM</small>
+        </span>
+      </a>
+
+      <h1 id="authTitle">تسجيل الدخول</h1>
+      <p class="auth-sub" id="authSubtitle">
+        سجّل دخولك للوصول إلى التمارين والبرامج.
+      </p>
+
+      <form class="auth-form" id="authForm">
+
+        <label id="nameLabel" class="hidden">
+          الاسم الكامل
+          <input class="field" id="fullName" type="text" autocomplete="name">
+        </label>
+
+        <label>
+          البريد الإلكتروني
+          <input class="field" id="email" type="email" autocomplete="email" required>
+        </label>
+
+        <label>
+          كلمة المرور
+          <input class="field" id="password" type="password"
+            autocomplete="current-password" minlength="6" required>
+        </label>
+
+        <button class="btn btn-primary btn-full" id="submitBtn" type="submit">
+          دخول
+        </button>
+
+      </form>
+
+      <p id="authMessage" role="status"></p>
+
+      <p class="auth-switch">
+        <span id="switchText">ليس لديك حساب؟</span>
+        <button id="switchMode" type="button">إنشاء حساب</button>
+      </p>
+
+      <a class="back-link" href="index.html">العودة للموقع</a>
+
+    </section>
+  </main>
+
+<script>
+(() => {
+
+  const SUPABASE_URL = "https://xgxmtizyzjfxxwsmcspe.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  const $ = id => document.getElementById(id);
+
+  let signup = false;
+
+  function showMessage(text, error = false) {
+    $("authMessage").textContent = text;
+    $("authMessage").style.color =
+      error ? "var(--danger)" : "var(--lime)";
+  }
+
+  function updateMode() {
+    $("authTitle").textContent =
+      signup ? "إنشاء حساب جديد" : "تسجيل الدخول";
+
+    $("authSubtitle").textContent = signup
+      ? "أنشئ حسابك للوصول إلى BODY RESET."
+      : "سجّل دخولك للوصول إلى التمارين والبرامج.";
+
+    $("nameLabel").classList.toggle("hidden", !signup);
+    $("fullName").required = signup;
+
+    $("password").autocomplete =
+      signup ? "new-password" : "current-password";
+
+    $("submitBtn").textContent =
+      signup ? "إنشاء الحساب" : "دخول";
+
+    $("switchText").textContent =
+      signup ? "لديك حساب بالفعل؟" : "ليس لديك حساب؟";
+
+    $("switchMode").textContent =
+      signup ? "تسجيل الدخول" : "إنشاء حساب";
+
+    showMessage("");
+  }
+
+  $("switchMode").addEventListener("click", () => {
+    signup = !signup;
+    updateMode();
+  });
+
+  $("authForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const email = $("email").value.trim();
+    const password = $("password").value;
+    const button = $("submitBtn");
+
+    button.disabled = true;
+    showMessage("جارٍ تنفيذ الطلب...");
+
+    try {
+
+      if (signup) {
+
+        const { data, error } = await db.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: $("fullName").value.trim()
+            }
+          }
+        });
+
+        if (error) throw error;
+
+        if (data.session) {
+          location.replace("index.html");
+        } else {
+          showMessage(
+            "تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيد الحساب، ثم سجّل الدخول."
+          );
+        }
+
+      } else {
+
+        const { error } = await db.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        location.replace("index.html");
+      }
+
+    } catch (error) {
+
+      showMessage(error.message || "تعذر إكمال الطلب.", true);
+
+    } finally {
+
+      button.disabled = false;
+
+    }
+  });
+
+  db.auth.getSession().then(({ data, error }) => {
+    if (!error && data.session) {
+      location.replace("index.html");
+    }
+  });
+
+  updateMode();
+
+})();
+</script>
+
+</body>
+</html>
