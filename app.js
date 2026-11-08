@@ -71,33 +71,59 @@ async function getRows(table, query = q => q) {
 }
 
 /* =========================
-   واجهة العميل
+   واجهة العميل وحماية الدخول
 ========================= */
 
-function setupPublic() {
-  $$("[data-public-tab]").forEach(button => {
-    button.addEventListener("click", () => {
-      const tab = button.dataset.publicTab;
+async function setupPublic() {
+  try {
+    requireDatabase();
 
-      $$("[data-public-tab]").forEach(item => {
-        item.classList.toggle("active", item === button);
-      });
+    const { data, error } = await db.auth.getSession();
 
-      $("#publicExercises").classList.toggle("hidden", tab !== "exercises");
-      $("#publicPrograms").classList.toggle("hidden", tab !== "programs");
+    if (error) throw error;
+
+    if (!data.session) {
+      window.location.replace("login.html");
+      return;
+    }
+
+    state.session = data.session;
+
+    db.auth.onAuthStateChange((event, session) => {
+      state.session = session;
+
+      if (event === "SIGNED_OUT" || !session) {
+        window.location.replace("login.html");
+      }
     });
-  });
 
-  [
-    "#publicExerciseSearch",
-    "#publicMuscleFilter",
-    "#publicLevelFilter"
-  ].forEach(selector => {
-    $(selector)?.addEventListener("input", renderPublicExercises);
-    $(selector)?.addEventListener("change", renderPublicExercises);
-  });
+    $$("[data-public-tab]").forEach(button => {
+      button.addEventListener("click", () => {
+        const tab = button.dataset.publicTab;
 
-  loadPublicData();
+        $$("[data-public-tab]").forEach(item => {
+          item.classList.toggle("active", item === button);
+        });
+
+        $("#publicExercises").classList.toggle("hidden", tab !== "exercises");
+        $("#publicPrograms").classList.toggle("hidden", tab !== "programs");
+      });
+    });
+
+    [
+      "#publicExerciseSearch",
+      "#publicMuscleFilter",
+      "#publicLevelFilter"
+    ].forEach(selector => {
+      $(selector)?.addEventListener("input", renderPublicExercises);
+      $(selector)?.addEventListener("change", renderPublicExercises);
+    });
+
+    loadPublicData();
+
+  } catch (error) {
+    message("publicMessage", error.message, true);
+  }
 }
 
 async function loadPublicData() {
@@ -883,7 +909,7 @@ function setupSideMenu() {
     }
 
     closeMenu();
-    window.location.href = "index.html";
+    window.location.href = "login.html";
   });
 
   contactMenuBtn?.addEventListener("click", () => {
@@ -906,3 +932,4 @@ document.addEventListener("DOMContentLoaded", () => {
     setupAdmin();
   }
 });
+ 
