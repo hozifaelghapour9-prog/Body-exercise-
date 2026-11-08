@@ -6,8 +6,7 @@
   <meta name="theme-color" content="#0b0e13">
   <title>BODY RESET | تسجيل الدخول</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> 
   <style>
     .auth-wrap {
       min-height: 100vh;
