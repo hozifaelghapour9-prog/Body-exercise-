@@ -16,12 +16,13 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script defer src="app.js"></script>
 
   <!-- التحقق من تسجيل الدخول -->
   <script>
     (() => {
-      "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
+      const AUTH_SUPABASE_URL =
+        "https://xgxmtizyzjfxxwsmcspe.supabase.co";
+
       const AUTH_SUPABASE_KEY =
         "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
 
@@ -44,11 +45,14 @@
         });
     })();
   </script>
+
+  <script defer src="app.js"></script>
 </head>
 
 <body data-page="public">
 
   <header class="site-header">
+
     <a class="brand" href="index.html">
       <span class="brand-mark">B</span>
       <span>
@@ -78,6 +82,7 @@
       <span></span>
       <span></span>
     </button>
+
   </header>
 
   <div class="menu-overlay" id="menuOverlay"></div>
@@ -87,7 +92,9 @@
     id="sideMenu"
     aria-hidden="true"
   >
+
     <div class="side-menu-header">
+
       <div class="brand">
         <span class="brand-mark">B</span>
         <span>
@@ -102,6 +109,7 @@
         type="button"
         aria-label="إغلاق القائمة"
       >×</button>
+
     </div>
 
     <div class="side-menu-content">
@@ -127,6 +135,7 @@
       <div class="menu-divider"></div>
 
       <div class="language-menu">
+
         <div class="menu-section-title">
           <span>🌐</span>
           اللغة / Language / Sprache
@@ -135,6 +144,7 @@
         <button
           class="menu-item language-option active"
           data-language="ar"
+          type="button"
         >
           🇪🇬 العربية
         </button>
@@ -142,6 +152,7 @@
         <button
           class="menu-item language-option"
           data-language="en"
+          type="button"
         >
           🇬🇧 English
         </button>
@@ -149,9 +160,11 @@
         <button
           class="menu-item language-option"
           data-language="de"
+          type="button"
         >
           🇩🇪 Deutsch
         </button>
+
       </div>
 
       <div class="menu-divider"></div>
@@ -170,11 +183,13 @@
       </p>
 
     </div>
+
   </aside>
 
   <main class="public-main">
 
     <section class="hero">
+
       <p class="eyebrow">
         MOVE BETTER · FEEL STRONGER
       </p>
@@ -187,6 +202,7 @@
       <p class="hero-copy">
         تصفّح مكتبة التمارين والبرامج التدريبية المنشورة من BODY RESET.
       </p>
+
     </section>
 
     <section id="publicExercises" class="public-section">
@@ -199,6 +215,7 @@
       </div>
 
       <div class="filters">
+
         <input
           id="publicExerciseSearch"
           class="field"
@@ -216,6 +233,7 @@
           <option>متوسط</option>
           <option>متقدم</option>
         </select>
+
       </div>
 
       <div id="publicExerciseGrid" class="exercise-grid">
@@ -230,6 +248,7 @@
       id="publicPrograms"
       class="public-section hidden"
     >
+
       <div class="section-heading">
         <div>
           <h2>البرامج التدريبية</h2>
@@ -242,6 +261,7 @@
           جاري تحميل البرامج...
         </div>
       </div>
+
     </section>
 
     <p id="publicMessage" class="notice" role="status"></p>
