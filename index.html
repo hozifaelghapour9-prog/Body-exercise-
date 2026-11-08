@@ -11,6 +11,21 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="app.js"></script>
+
+  <!-- التحقق من تسجيل الدخول -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const { data: { session }, error } = await db.auth.getSession();
+
+        if (error || !session) {
+          window.location.replace("login.html");
+        }
+      } catch (error) {
+        window.location.replace("login.html");
+      }
+    });
+  </script>
 </head>
 
 <body data-page="public">
@@ -35,7 +50,6 @@
       </button>
     </nav>
 
-    <!-- زر القائمة -->
     <button
       class="menu-toggle"
       id="menuToggle"
@@ -50,10 +64,8 @@
 
   </header>
 
-  <!-- خلفية القائمة -->
   <div class="menu-overlay" id="menuOverlay"></div>
 
-  <!-- القائمة الجانبية -->
   <aside
     class="side-menu"
     id="sideMenu"
@@ -79,7 +91,6 @@
 
     <div class="side-menu-content">
 
-      <!-- يظهر للمدير فقط بعد التحقق من صلاحياته -->
       <a
         class="menu-item hidden"
         id="adminMenuLink"
@@ -89,7 +100,6 @@
         دخول المدير
       </a>
 
-      <!-- يظهر عند وجود مستخدم مسجل دخوله -->
       <button
         class="menu-item hidden"
         id="logoutMenuBtn"
@@ -101,7 +111,6 @@
 
       <div class="menu-divider"></div>
 
-      <!-- اختيار اللغة -->
       <div class="language-menu">
 
         <div class="menu-section-title">
@@ -125,7 +134,6 @@
 
       <div class="menu-divider"></div>
 
-      <!-- التواصل -->
       <button
         class="menu-item"
         id="contactMenuBtn"
@@ -161,8 +169,6 @@
       </p>
 
     </section>
-
-    <!-- مكتبة التمارين -->
 
     <section id="publicExercises" class="public-section">
 
@@ -202,8 +208,6 @@
       </div>
 
     </section>
-
-    <!-- البرامج التدريبية -->
 
     <section id="publicPrograms" class="public-section hidden">
 
