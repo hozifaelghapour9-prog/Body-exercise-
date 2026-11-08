@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BODY RESET - تسجيل الدخول</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #101820;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 30px 24px;
+      background: #1c2933;
+      border-radius: 18px;
+      text-align: center;
+    }
+    h1 { color: #36d6a0; margin-bottom: 8px; }
+    p { color: #bdc8ce; }
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 9px 0;
+      border: 1px solid #45545e;
+      border-radius: 9px;
+      background: #101820;
+      color: white;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 9px;
+      background: #36d6a0;
+      color: #10251f;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .switch {
+      background: transparent;
+      color: #36d6a0;
+      border: 1px solid #36d6a0;
+    }
+    #message { min-height: 24px; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>BODY RESET</h1>
+    <p id="subtitle">سجّل دخولك للمتابعة</p>
+
+    <form id="authForm">
+      <input id="name" type="text" placeholder="الاسم الكامل" hidden>
+      <input id="email" type="email" placeholder="البريد الإلكتروني" required>
+      <input id="password" type="password" placeholder="كلمة المرور" required minlength="6">
+      <button id="submitBtn" type="submit">تسجيل الدخول</button>
+    </form>
+
+    <button class="switch" id="switchBtn" type="button">
+      إنشاء حساب جديد
+    </button>
+
+    <div id="message" role="status"></div>
+  </main>
+
+  <script type="module">
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const db = createClient(
+      "https://xgxmtizyzjfxxwsmcspe.supabase.co",
+      "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg"
+    );
+
+    const form = document.getElementById("authForm");
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const submitBtn = document.getElementById("submitBtn");
+    const switchBtn = document.getElementById("switchBtn");
+    const subtitle = document.getElementById("subtitle");
+    const message = document.getElementById("message");
+
+    let isSignup = false;
+
+    function showMessage(text, error = false) {
+      message.textContent = text;
+      message.style.color = error ? "#ff7777" : "#36d6a0";
+    }
+
+    switchBtn.addEventListener("click", () => {
+      isSignup = !isSignup;
+      nameInput.hidden = !isSignup;
+      nameInput.required = isSignup;
+      subtitle.textContent = isSignup
+        ? "أنشئ حسابك الجديد"
+        : "سجّل دخولك للمتابعة";
+      submitBtn.textContent = isSignup
+        ? "إنشاء الحساب"
+        : "تسجيل الدخول";
+      switchBtn.textContent = isSignup
+        ? "لديك حساب؟ تسجيل الدخول"
+        : "إنشاء حساب جديد";
+      showMessage("");
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      submitBtn.disabled = true;
+      showMessage("جارٍ تنفيذ الطلب...");
+
+      try {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (isSignup) {
+          const { data, error } = await db.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                full_name: nameInput.value.trim()
+              }
+            }
+          });
+
+          if (error) throw error;
+
+          if (data.session) {
+            showMessage("تم إنشاء الحساب بنجاح");
+            window.location.href = "index.html";
+          } else {
+            showMessage("تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيده.");
+          }
+        } else {
+          const { error } = await db.auth.signInWithPassword({
+            email,
+            password
+          });
+
+          if (error) throw error;
+
+          showMessage("تم تسجيل الدخول بنجاح");
+          window.location.href = "index.html";
+        }
+      } catch (error) {
+        showMessage(error.message || "حدث خطأ، حاول مرة أخرى", true);
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    const { data } = await db.auth.getSession();
+
+    if (data.session) {
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
