@@ -9,6 +9,13 @@
 
   <link rel="stylesheet" href="style.css">
 
+  <!-- إخفاء الموقع حتى التأكد من تسجيل الدخول -->
+  <style>
+    html {
+      visibility: hidden;
+    }
+  </style>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="app.js"></script>
 
@@ -20,7 +27,11 @@
 
         if (error || !session) {
           window.location.replace("login.html");
+          return;
         }
+
+        document.documentElement.style.visibility = "visible";
+
       } catch (error) {
         window.location.replace("login.html");
       }
@@ -50,6 +61,7 @@
       </button>
     </nav>
 
+    <!-- زر القائمة -->
     <button
       class="menu-toggle"
       id="menuToggle"
@@ -64,8 +76,10 @@
 
   </header>
 
+  <!-- خلفية القائمة -->
   <div class="menu-overlay" id="menuOverlay"></div>
 
+  <!-- القائمة الجانبية -->
   <aside
     class="side-menu"
     id="sideMenu"
@@ -91,6 +105,7 @@
 
     <div class="side-menu-content">
 
+      <!-- دخول المدير -->
       <a
         class="menu-item hidden"
         id="adminMenuLink"
@@ -100,6 +115,7 @@
         دخول المدير
       </a>
 
+      <!-- تسجيل الخروج -->
       <button
         class="menu-item hidden"
         id="logoutMenuBtn"
@@ -111,6 +127,7 @@
 
       <div class="menu-divider"></div>
 
+      <!-- اختيار اللغة -->
       <div class="language-menu">
 
         <div class="menu-section-title">
@@ -134,6 +151,7 @@
 
       <div class="menu-divider"></div>
 
+      <!-- التواصل -->
       <button
         class="menu-item"
         id="contactMenuBtn"
@@ -170,6 +188,7 @@
 
     </section>
 
+    <!-- مكتبة التمارين -->
     <section id="publicExercises" class="public-section">
 
       <div class="section-heading">
@@ -209,6 +228,7 @@
 
     </section>
 
+    <!-- البرامج التدريبية -->
     <section id="publicPrograms" class="public-section hidden">
 
       <div class="section-heading">
