@@ -11,9 +11,7 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    html {
-      visibility: hidden;
-    }
+    html { visibility: hidden; }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -81,11 +79,7 @@
   <div class="menu-overlay" id="menuOverlay"></div>
 
   <!-- القائمة الجانبية -->
-  <aside
-    class="side-menu"
-    id="sideMenu"
-    aria-hidden="true"
-  >
+  <aside class="side-menu" id="sideMenu" aria-hidden="true">
 
     <div class="side-menu-header">
 
@@ -183,21 +177,129 @@
   <!-- محتوى الموقع -->
   <main class="public-main">
 
-    <!-- الكارت الرئيسي -->
-    <section class="hero">
+    <!-- الكروت المتحركة -->
+    <section
+      class="hero-slider"
+      id="heroSlider"
+      aria-label="مميزات BODY RESET"
+    >
 
-      <p class="eyebrow">
-        MOVE BETTER · FEEL STRONGER
-      </p>
+      <div class="hero-track" id="heroTrack">
 
-      <h1>
-        ابدأ رحلتك نحو<br>
-        <span>نسخة أقوى من نفسك.</span>
-      </h1>
+        <!-- الكارت الأول -->
+        <article class="hero-card hero-card-one">
 
-      <p class="hero-copy">
-        تصفّح مكتبة التمارين والبرامج التدريبية المنشورة من BODY RESET.
-      </p>
+          <span class="hero-number">01 / 04</span>
+          <span class="hero-icon">🧠</span>
+
+          <p class="eyebrow">TRAIN SMARTER</p>
+
+          <h1>
+            تمارين مدروسة<br>
+            <span>بالعلم</span>
+          </h1>
+
+          <p class="hero-copy">
+            تمارين مبنية على أسس علمية تساعدك على أداء الحركات بشكل صحيح وتحقيق أفضل استفادة من تدريبك.
+          </p>
+
+        </article>
+
+        <!-- الكارت الثاني -->
+        <article class="hero-card hero-card-two">
+
+          <span class="hero-number">02 / 04</span>
+          <span class="hero-icon">💪</span>
+
+          <p class="eyebrow">SMART TRAINING</p>
+
+          <h1>
+            أنظمة تمارين<br>
+            <span>بأفضل التقنيات</span>
+          </h1>
+
+          <p class="hero-copy">
+            أساليب وتقنيات تدريب منظمة ومدروسة تساعدك على تطوير أدائك والتقدم في مستواك.
+          </p>
+
+        </article>
+
+        <!-- الكارت الثالث -->
+        <article class="hero-card hero-card-three">
+
+          <span class="hero-number">03 / 04</span>
+          <span class="hero-icon">🚀</span>
+
+          <p class="eyebrow">START FROM ZERO</p>
+
+          <h1>
+            لسه مبتدئ؟<br>
+            <span>ابدأ من هنا</span>
+          </h1>
+
+          <p class="hero-copy">
+            هتعرف تتمرن حتى لو لسه في البداية، وتتعلم التمارين والتكنيك الصحيح خطوة بخطوة.
+          </p>
+
+        </article>
+
+        <!-- الكارت الرابع -->
+        <article class="hero-card hero-card-four">
+
+          <span class="hero-number">04 / 04</span>
+          <span class="hero-icon">📅</span>
+
+          <p class="eyebrow">YOUR TRAINING PLAN</p>
+
+          <h1>
+            خطة تمارين<br>
+            <span>تناسب وقتك</span>
+          </h1>
+
+          <p class="hero-copy">
+            خطة تدريب بوقت منتظم وجدول مناسب يساعدك على الالتزام والاستمرار وتحقيق أهدافك.
+          </p>
+
+        </article>
+
+      </div>
+
+      <!-- نقاط التنقل -->
+      <div class="hero-slider-footer">
+
+        <div class="hero-dots" id="heroDots">
+
+          <button
+            class="hero-dot active"
+            type="button"
+            aria-label="الكارت الأول"
+          ></button>
+
+          <button
+            class="hero-dot"
+            type="button"
+            aria-label="الكارت الثاني"
+          ></button>
+
+          <button
+            class="hero-dot"
+            type="button"
+            aria-label="الكارت الثالث"
+          ></button>
+
+          <button
+            class="hero-dot"
+            type="button"
+            aria-label="الكارت الرابع"
+          ></button>
+
+        </div>
+
+        <span class="hero-hint">
+          اسحب يمين أو شمال لاستكشاف المزيد
+        </span>
+
+      </div>
 
     </section>
 
@@ -255,9 +357,11 @@
       </div>
 
       <div id="publicExerciseGrid" class="exercise-grid">
+
         <div class="empty-state">
           جاري تحميل التمارين...
         </div>
+
       </div>
 
     </section>
@@ -276,9 +380,11 @@
       </div>
 
       <div id="publicProgramList" class="program-grid">
+
         <div class="empty-state">
           جاري تحميل البرامج...
         </div>
+
       </div>
 
     </section>
@@ -357,6 +463,129 @@
     </a>
 
   </nav>
+
+  <!-- تشغيل الكروت -->
+  <script>
+    (() => {
+      const slider = document.getElementById("heroSlider");
+      const track = document.getElementById("heroTrack");
+      const dots = [...document.querySelectorAll(".hero-dot")];
+
+      if (!slider || !track || !dots.length) return;
+
+      let currentIndex = 0;
+      let startX = 0;
+      let currentX = 0;
+      let isDragging = false;
+      let autoTimer = null;
+
+      const total = dots.length;
+      const interval = 4000;
+
+      function updateSlider(animate = true) {
+        const width = slider.clientWidth;
+
+        track.style.transition = animate
+          ? "transform .65s cubic-bezier(.22, .75, .25, 1)"
+          : "none";
+
+        track.style.transform =
+          `translate3d(${-currentIndex * width}px, 0, 0)`;
+
+        dots.forEach((dot, index) => {
+          dot.classList.toggle("active", index === currentIndex);
+        });
+      }
+
+      function nextSlide() {
+        currentIndex = (currentIndex + 1) % total;
+        updateSlider();
+      }
+
+      function startAuto() {
+        stopAuto();
+        autoTimer = setInterval(nextSlide, interval);
+      }
+
+      function stopAuto() {
+        if (autoTimer) {
+          clearInterval(autoTimer);
+          autoTimer = null;
+        }
+      }
+
+      function resumeAuto() {
+        startAuto();
+      }
+
+      dots.forEach((dot, index) => {
+        dot.addEventListener("click", () => {
+          currentIndex = index;
+          updateSlider();
+          resumeAuto();
+        });
+      });
+
+      slider.addEventListener("pointerdown", (event) => {
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+
+        isDragging = true;
+        startX = event.clientX;
+        currentX = startX;
+
+        stopAuto();
+        slider.setPointerCapture(event.pointerId);
+        track.style.transition = "none";
+      });
+
+      slider.addEventListener("pointermove", (event) => {
+        if (!isDragging) return;
+
+        currentX = event.clientX;
+
+        const distance = currentX - startX;
+        const width = slider.clientWidth;
+
+        track.style.transform =
+          `translate3d(${-currentIndex * width + distance}px, 0, 0)`;
+      });
+
+      function endDrag() {
+        if (!isDragging) return;
+
+        isDragging = false;
+
+        const distance = currentX - startX;
+
+        if (Math.abs(distance) > 50) {
+          if (distance < 0) {
+            currentIndex = (currentIndex + 1) % total;
+          } else {
+            currentIndex = (currentIndex - 1 + total) % total;
+          }
+        }
+
+        updateSlider();
+        resumeAuto();
+      }
+
+      slider.addEventListener("pointerup", endDrag);
+      slider.addEventListener("pointercancel", endDrag);
+
+      slider.addEventListener("mouseenter", stopAuto);
+
+      slider.addEventListener("mouseleave", () => {
+        if (!isDragging) resumeAuto();
+      });
+
+      window.addEventListener("resize", () => {
+        updateSlider(false);
+      });
+
+      updateSlider(false);
+      startAuto();
+    })();
+  </script>
 
 </body>
 </html>
