@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
 
 :root {
@@ -7,7 +8,7 @@
   --border: #27313e;
   --text: #f4f6f8;
   --muted: #8994a3;
-  --lime: #b8f36b;
+  --lime: #55c7c2;
   --danger: #ff6868;
 }
 
@@ -92,25 +93,34 @@ a {
 
 .public-nav {
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  margin-top: -18px;
+  margin-bottom: 30px;
+  width: 100%;
 }
 
 .nav-link,
 .admin-nav {
-  border: 0;
-  background: transparent;
+  border: 1px solid var(--border);
+  background: var(--panel);
   color: var(--muted);
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 13px 18px;
+  border-radius: 12px;
   font-size: 13px;
-  text-align: right;
+  text-align: center;
+  transition: .2s ease;
+}
+
+.public-nav .nav-link {
+  flex: 1;
 }
 
 .nav-link.active,
 .admin-nav.active,
 .nav-link:hover,
 .admin-nav:hover {
-  background: #b8f36b18;
+  background: #55c7c218;
+  border-color: #55c7c255;
   color: var(--lime);
 }
 
@@ -125,6 +135,7 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: .2s ease;
 }
 
 .btn-primary {
@@ -133,7 +144,7 @@ a {
 }
 
 .btn-primary:hover {
-  background: #91ce45;
+  background: #36a9a4;
 }
 
 .btn-quiet {
@@ -157,9 +168,14 @@ a {
 .hero {
   padding: 45px 42px;
   margin-bottom: 44px;
-  border: 1px solid #344a30;
+  border: 1px solid #294746;
   border-radius: 22px;
-  background: linear-gradient(120deg, #202c20, #17221b 55%, #151c25);
+  background: linear-gradient(
+    120deg,
+    #1b292d,
+    #17252b 55%,
+    #151c25
+  );
 }
 
 .eyebrow {
@@ -323,7 +339,7 @@ label .field {
 }
 
 .tag {
-  background: #b8f36b18;
+  background: #55c7c218;
   color: var(--lime);
   padding: 4px 9px;
   border-radius: 7px;
@@ -635,17 +651,23 @@ label .field {
 @media (max-width: 620px) {
   .site-header,
   .admin-header {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     padding: 13px 5%;
   }
 
+  /* التمارين والبرامج تحت الكارت */
   .public-nav {
-    order: 3;
+    display: flex;
     width: 100%;
+    gap: 9px;
+    margin-top: -18px;
+    margin-bottom: 28px;
   }
 
   .public-nav button {
     flex: 1;
+    padding: 12px 7px;
+    font-size: 12px;
   }
 
   .public-main {
@@ -654,7 +676,7 @@ label .field {
 
   .hero {
     padding: 28px 22px;
-    margin-bottom: 30px;
+    margin-bottom: 44px;
   }
 
   .filters,
@@ -729,15 +751,16 @@ label .field {
     flex-direction: column;
   }
 }
+
 /* =========================
    BODY RESET SIDE MENU
 ========================= */
 
 .menu-toggle {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border: 1px solid var(--border);
-  border-radius: 11px;
+  border-radius: 12px;
   background: var(--panel2);
   display: flex;
   flex-direction: column;
@@ -749,7 +772,7 @@ label .field {
 }
 
 .menu-toggle span {
-  width: 21px;
+  width: 23px;
   height: 2px;
   border-radius: 5px;
   background: var(--lime);
@@ -825,12 +848,13 @@ body.menu-open .menu-overlay {
   font-size: 13px;
   text-align: right;
   cursor: pointer;
+  transition: .2s ease;
 }
 
 .menu-item:hover,
 .menu-item.active {
-  border-color: #b8f36b55;
-  background: #b8f36b18;
+  border-color: #55c7c255;
+  background: #55c7c218;
   color: var(--lime);
 }
 
@@ -869,12 +893,10 @@ body.menu-open .menu-overlay {
     justify-content: space-between;
   }
 
+  /* في اتجاه RTL: الزر الثاني يظهر في أقصى الشمال */
   .menu-toggle {
-    order: -1;
-  }
-
-  .public-nav {
-    order: 3;
-    width: 100%;
+    order: 0;
+    margin-right: auto;
+    margin-left: 0;
   }
 }
