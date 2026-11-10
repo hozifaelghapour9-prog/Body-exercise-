@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -51,6 +52,7 @@
 
 <body data-page="public">
 
+  <!-- الشريط العلوي -->
   <header class="site-header">
 
     <a class="brand" href="index.html">
@@ -61,16 +63,7 @@
       </span>
     </a>
 
-    <nav class="public-nav">
-      <button class="nav-link active" data-public-tab="exercises">
-        التمارين
-      </button>
-
-      <button class="nav-link" data-public-tab="programs">
-        البرامج التدريبية
-      </button>
-    </nav>
-
+    <!-- زر القائمة في أقصى الشمال -->
     <button
       class="menu-toggle"
       id="menuToggle"
@@ -85,8 +78,10 @@
 
   </header>
 
+  <!-- خلفية القائمة -->
   <div class="menu-overlay" id="menuOverlay"></div>
 
+  <!-- القائمة الجانبية -->
   <aside
     class="side-menu"
     id="sideMenu"
@@ -186,8 +181,10 @@
 
   </aside>
 
+  <!-- محتوى الصفحة -->
   <main class="public-main">
 
+    <!-- الكارت الرئيسي -->
     <section class="hero">
 
       <p class="eyebrow">
@@ -205,6 +202,28 @@
 
     </section>
 
+    <!-- أزرار التمارين والبرامج تحت الكارت مباشرة -->
+    <nav class="public-nav">
+
+      <button
+        class="nav-link active"
+        data-public-tab="exercises"
+        type="button"
+      >
+        التمارين
+      </button>
+
+      <button
+        class="nav-link"
+        data-public-tab="programs"
+        type="button"
+      >
+        البرامج التدريبية
+      </button>
+
+    </nav>
+
+    <!-- مكتبة التمارين -->
     <section id="publicExercises" class="public-section">
 
       <div class="section-heading">
@@ -244,6 +263,7 @@
 
     </section>
 
+    <!-- البرامج التدريبية -->
     <section
       id="publicPrograms"
       class="public-section hidden"
@@ -273,81 +293,6 @@
     <span>·</span>
     التزم بالتدرّج، واهتم بالتكنيك الصحيح.
   </footer>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  // التبديل بين التمارين والبرامج
-  const tabs = document.querySelectorAll("[data-public-tab]");
-  const exercises = document.getElementById("publicExercises");
-  const programs = document.getElementById("publicPrograms");
 
-  tabs.forEach(button => {
-    button.addEventListener("click", () => {
-      const isExercises = button.dataset.publicTab === "exercises";
-
-      exercises.classList.toggle("hidden", !isExercises);
-      programs.classList.toggle("hidden", isExercises);
-
-      tabs.forEach(tab => {
-        tab.classList.toggle("active", tab === button);
-      });
-    });
-  });
-
-  // القائمة الجانبية
-  const menu = document.getElementById("sideMenu");
-  const overlay = document.getElementById("menuOverlay");
-  const toggle = document.getElementById("menuToggle");
-  const close = document.getElementById("menuClose");
-
-  function openMenu() {
-    document.body.classList.add("menu-open");
-    menu.setAttribute("aria-hidden", "false");
-    toggle.setAttribute("aria-expanded", "true");
-  }
-
-  function closeMenu() {
-    document.body.classList.remove("menu-open");
-    menu.setAttribute("aria-hidden", "true");
-    toggle.setAttribute("aria-expanded", "false");
-  }
-
-  toggle.addEventListener("click", openMenu);
-  close.addEventListener("click", closeMenu);
-  overlay.addEventListener("click", closeMenu);
-
-  // التحقق من المدير وتسجيل الخروج
-  const supabaseClient = window.supabase.createClient(
-    "https://xgxmtizyzjfxxwsmcspe.supabase.co",
-    "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg"
-  );
-
-  const { data } = await supabaseClient.auth.getSession();
-  const session = data.session;
-
-  const adminLink = document.getElementById("adminMenuLink");
-  const logout = document.getElementById("logoutMenuBtn");
-
-  if (session) {
-    logout.classList.remove("hidden");
-
-    const { data: isAdmin } =
-      await supabaseClient.rpc("is_admin");
-
-    if (isAdmin === true) {
-      adminLink.classList.remove("hidden");
-    }
-  }
-
-  logout.addEventListener("click", async () => {
-    await supabaseClient.auth.signOut();
-    window.location.replace("login.html");
-  });
-
-  document.getElementById("contactMenuBtn")
-    .addEventListener("click", () => {
-      alert("رقم التواصل سيتم إضافته قريبًا.");
-    });
-});
-</script>
 </body>
 </html>
