@@ -53,9 +53,9 @@
 <body data-page="public">
 
   <!-- الشريط العلوي -->
-  <header class="site-header">
+  <header class="site-header" id="top">
 
-    <a class="brand" href="index.html">
+    <a class="brand" href="#top">
       <span class="brand-mark">B</span>
       <span>
         <strong>BODY RESET</strong>
@@ -63,7 +63,6 @@
       </span>
     </a>
 
-    <!-- زر القائمة في أقصى الشمال -->
     <button
       class="menu-toggle"
       id="menuToggle"
@@ -181,7 +180,7 @@
 
   </aside>
 
-  <!-- محتوى الصفحة -->
+  <!-- محتوى الموقع -->
   <main class="public-main">
 
     <!-- الكارت الرئيسي -->
@@ -202,7 +201,7 @@
 
     </section>
 
-    <!-- أزرار التمارين والبرامج تحت الكارت مباشرة -->
+    <!-- أزرار التمارين والبرامج -->
     <nav class="public-nav">
 
       <button
@@ -293,6 +292,71 @@
     <span>·</span>
     التزم بالتدرّج، واهتم بالتكنيك الصحيح.
   </footer>
+
+  <!-- شريط التنقل الثابت أسفل الشاشة -->
+  <nav class="bottom-nav" aria-label="التنقل الرئيسي">
+
+    <!-- Profile -->
+    <button
+      class="bottom-nav-item"
+      type="button"
+      disabled
+      aria-label="Profile"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
+      </svg>
+      <span>Profile</span>
+    </button>
+
+    <!-- Progress -->
+    <button
+      class="bottom-nav-item"
+      type="button"
+      disabled
+      aria-label="Progress"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 21h18"></path>
+        <rect x="5" y="12" width="3" height="9" rx="1"></rect>
+        <rect x="11" y="7" width="3" height="14" rx="1"></rect>
+        <rect x="17" y="3" width="3" height="18" rx="1"></rect>
+      </svg>
+      <span>Progress</span>
+    </button>
+
+    <!-- Workouts -->
+    <a
+      class="bottom-nav-item"
+      href="#publicExercises"
+      aria-label="Workouts"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 9v6"></path>
+        <path d="M6 7v10"></path>
+        <path d="M18 7v10"></path>
+        <path d="M21 9v6"></path>
+        <path d="M6 12h12"></path>
+      </svg>
+      <span>Workouts</span>
+    </a>
+
+    <!-- Home -->
+    <a
+      class="bottom-nav-item active"
+      href="#top"
+      aria-label="Home"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m3 10 9-7 9 7"></path>
+        <path d="M5 9v12h14V9"></path>
+        <path d="M9 21v-7h6v7"></path>
+      </svg>
+      <span>Home</span>
+    </a>
+
+  </nav>
 
 </body>
 </html>
