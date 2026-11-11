@@ -21,6 +21,7 @@
       touch-action: pan-y;
       cursor: grab;
       width: 100%;
+      box-sizing: border-box;
     }
 
     .hero-slider:active {
@@ -34,29 +35,22 @@
       will-change: transform;
     }
 
-    /* الكارت أكبر من الداخل ويتحرك بالكامل */
+    /* الكارت بالكامل يتحرك كوحدة واحدة */
     .hero-track > .hero-card {
-      flex: 0 0 88%;
-      min-width: 88%;
-      margin-inline: 6%;
+      flex: 0 0 100%;
+      min-width: 100%;
+      width: 100%;
+      margin: 0;
       box-sizing: border-box;
       direction: rtl;
-
       min-height: 310px;
-      padding: 35px 24px;
-    }
-
-    /* إزالة الخطوط والزخارف الداخلية الجانبية */
-    .hero-track > .hero-card::before,
-    .hero-track > .hero-card::after {
-      display: none !important;
-      content: none !important;
+      padding: 35px 30px;
     }
 
     @media (max-width: 480px) {
       .hero-track > .hero-card {
-        padding: 35px 20px;
         min-height: 310px;
+        padding: 35px 20px;
       }
     }
   </style>
