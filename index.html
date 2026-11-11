@@ -15,19 +15,26 @@
       visibility: hidden;
     }
 
-    /* السلايدر */
+    /* منطقة السلايدر بدون برواز ثابت */
     .hero-slider {
+      position: relative;
       overflow: hidden;
       touch-action: pan-y;
       cursor: grab;
       width: 100%;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      direction: ltr;
       box-sizing: border-box;
+      user-select: none;
     }
 
     .hero-slider:active {
       cursor: grabbing;
     }
 
+    /* مسار حركة الكروت */
     .hero-track {
       display: flex;
       direction: ltr;
@@ -35,22 +42,30 @@
       will-change: transform;
     }
 
-    /* الكارت بالكامل يتحرك كوحدة واحدة */
+    /* البرواز والخلفية والمحتوى يتحركون مع الكارت */
     .hero-track > .hero-card {
+      position: relative;
       flex: 0 0 100%;
       min-width: 100%;
       width: 100%;
       margin: 0;
       box-sizing: border-box;
       direction: rtl;
+
       min-height: 310px;
       padding: 35px 30px;
+
+      border: 1px solid #294746;
+      border-radius: 22px;
+      background-color: #151c25;
+      overflow: hidden;
     }
 
     @media (max-width: 480px) {
       .hero-track > .hero-card {
         min-height: 310px;
         padding: 35px 20px;
+        border-radius: 18px;
       }
     }
   </style>
