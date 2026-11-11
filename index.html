@@ -12,6 +12,29 @@
 
   <style>
     html { visibility: hidden; }
+
+    /* إعدادات السلايدر */
+    .hero-slider {
+      touch-action: pan-y;
+      overflow: hidden;
+      cursor: grab;
+    }
+
+    .hero-slider:active {
+      cursor: grabbing;
+    }
+
+    .hero-track {
+      display: flex;
+      direction: ltr;
+      will-change: transform;
+    }
+
+    .hero-track > .hero-card {
+      flex: 0 0 100%;
+      min-width: 100%;
+      direction: rtl;
+    }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -464,7 +487,7 @@
 
   </nav>
 
-  <!-- تشغيل الكروت -->
+  <!-- Infinite Slider -->
   <script>
     (() => {
       const slider = document.getElementById("heroSlider");
@@ -473,83 +496,196 @@
 
       if (!slider || !track || !dots.length) return;
 
-      let currentIndex = 0;
+      // الكروت الأصلية
+      const originalCards = [...track.children];
+      const total = originalCards.length;
+
+      if (total !== dots.length || total < 2) return;
+
+      // إنشاء نسخة من أول وآخر كارت
+      const firstClone = originalCards[0].cloneNode(true);
+      const lastClone = originalCards[total - 1].cloneNode(true);
+
+      firstClone.setAttribute("aria-hidden", "true");
+      lastClone.setAttribute("aria-hidden", "true");
+
+      firstClone.classList.add("hero-clone");
+      lastClone.classList.add("hero-clone");
+
+      track.appendChild(firstClone);
+      track.insertBefore(lastClone, originalCards[0]);
+
+      let currentIndex = 1;
+      let isDragging = false;
+      let isAnimating = false;
+
       let startX = 0;
       let currentX = 0;
-      let isDragging = false;
+      let startTranslate = 0;
+
       let autoTimer = null;
+      let resumeTimer = null;
 
-      const total = dots.length;
       const interval = 4000;
+      const swipeThreshold = 50;
 
-      function updateSlider(animate = true) {
-        const width = slider.clientWidth;
+      // عرض الكارت
+      function getWidth() {
+        return slider.clientWidth;
+      }
+
+      // تحريك السلايدر
+      function setPosition(animate = true) {
+        const width = getWidth();
 
         track.style.transition = animate
-          ? "transform .65s cubic-bezier(.22, .75, .25, 1)"
+          ? "transform .65s cubic-bezier(.22,.75,.25,1)"
           : "none";
 
         track.style.transform =
-          `translate3d(${-currentIndex * width}px, 0, 0)`;
+          `translate3d(${-currentIndex * width}px,0,0)`;
+      }
 
-        dots.forEach((dot, index) => {
-          dot.classList.toggle("active", index === currentIndex);
+      // تحديث النقاط
+      function updateDots() {
+        let realIndex = currentIndex - 1;
+
+        if (realIndex < 0) {
+          realIndex = total - 1;
+        }
+
+        if (realIndex >= total) {
+          realIndex = 0;
+        }
+
+        dots.forEach((dot, i) => {
+          dot.classList.toggle("active", i === realIndex);
         });
       }
 
-      function nextSlide() {
-        currentIndex = (currentIndex + 1) % total;
-        updateSlider();
+      // الانتقال إلى كارت
+      function moveTo(nextIndex) {
+        if (isAnimating || isDragging) return;
+
+        currentIndex = nextIndex;
+        isAnimating = true;
+
+        setPosition(true);
+        updateDots();
       }
 
+      // معالجة الوصول إلى النسخ
+      track.addEventListener("transitionend", (event) => {
+        if (
+          event.target !== track ||
+          event.propertyName !== "transform"
+        ) return;
+
+        // لو وصلنا لنسخة أول كارت
+        if (currentIndex === total + 1) {
+          currentIndex = 1;
+          setPosition(false);
+        }
+
+        // لو وصلنا لنسخة آخر كارت
+        if (currentIndex === 0) {
+          currentIndex = total;
+          setPosition(false);
+        }
+
+        isAnimating = false;
+        updateDots();
+      });
+
+      // الكارت التالي
+      function nextSlide() {
+        if (isAnimating || isDragging) return;
+
+        moveTo(currentIndex + 1);
+      }
+
+      // الكارت السابق
+      function previousSlide() {
+        if (isAnimating || isDragging) return;
+
+        moveTo(currentIndex - 1);
+      }
+
+      // إيقاف التشغيل التلقائي
+      function stopAuto() {
+        clearInterval(autoTimer);
+        clearTimeout(resumeTimer);
+
+        autoTimer = null;
+        resumeTimer = null;
+      }
+
+      // بدء التشغيل التلقائي
       function startAuto() {
         stopAuto();
-        autoTimer = setInterval(nextSlide, interval);
+
+        autoTimer = setInterval(() => {
+          nextSlide();
+        }, interval);
       }
 
-      function stopAuto() {
-        if (autoTimer) {
-          clearInterval(autoTimer);
-          autoTimer = null;
-        }
-      }
-
+      // استئناف التشغيل
       function resumeAuto() {
-        startAuto();
+        stopAuto();
+
+        resumeTimer = setTimeout(() => {
+          startAuto();
+        }, 1000);
       }
 
+      // التنقل من خلال النقاط
       dots.forEach((dot, index) => {
         dot.addEventListener("click", () => {
-          currentIndex = index;
-          updateSlider();
+          if (isAnimating || isDragging) return;
+
+          moveTo(index + 1);
           resumeAuto();
         });
       });
 
+      // بداية السحب
       slider.addEventListener("pointerdown", (event) => {
-        if (event.pointerType === "mouse" && event.button !== 0) return;
+        // عدم بدء السحب عند الضغط على النقاط
+        if (event.target.closest(".hero-slider-footer")) return;
+
+        if (event.pointerType === "mouse" && event.button !== 0) {
+          return;
+        }
+
+        if (isAnimating || isDragging) return;
 
         isDragging = true;
+
         startX = event.clientX;
         currentX = startX;
 
+        startTranslate = -currentIndex * getWidth();
+
         stopAuto();
+
         slider.setPointerCapture(event.pointerId);
+
         track.style.transition = "none";
       });
 
+      // تحريك الكارت أثناء السحب
       slider.addEventListener("pointermove", (event) => {
         if (!isDragging) return;
 
         currentX = event.clientX;
 
         const distance = currentX - startX;
-        const width = slider.clientWidth;
 
         track.style.transform =
-          `translate3d(${-currentIndex * width + distance}px, 0, 0)`;
+          `translate3d(${startTranslate + distance}px,0,0)`;
       });
 
+      // إنهاء السحب
       function endDrag() {
         if (!isDragging) return;
 
@@ -557,33 +693,46 @@
 
         const distance = currentX - startX;
 
-        if (Math.abs(distance) > 50) {
+        if (Math.abs(distance) >= swipeThreshold) {
           if (distance < 0) {
-            currentIndex = (currentIndex + 1) % total;
+            currentIndex++;
           } else {
-            currentIndex = (currentIndex - 1 + total) % total;
+            currentIndex--;
           }
         }
 
-        updateSlider();
+        isAnimating = true;
+
+        setPosition(true);
+        updateDots();
+
         resumeAuto();
       }
 
       slider.addEventListener("pointerup", endDrag);
       slider.addEventListener("pointercancel", endDrag);
 
-      slider.addEventListener("mouseenter", stopAuto);
+      // إيقاف الحركة التلقائية عند الوقوف بالماوس
+      slider.addEventListener("mouseenter", () => {
+        stopAuto();
+      });
 
       slider.addEventListener("mouseleave", () => {
-        if (!isDragging) resumeAuto();
+        if (!isDragging) {
+          resumeAuto();
+        }
       });
 
+      // إعادة ضبط المكان عند تغيير حجم الشاشة
       window.addEventListener("resize", () => {
-        updateSlider(false);
+        setPosition(false);
       });
 
-      updateSlider(false);
+      // تشغيل السلايدر
+      setPosition(false);
+      updateDots();
       startAuto();
+
     })();
   </script>
 
