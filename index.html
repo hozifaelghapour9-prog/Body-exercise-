@@ -34,7 +34,7 @@
       will-change: transform;
     }
 
-    /* الكارت بالكامل يتحرك كوحدة واحدة */
+    /* الكارت أكبر من الداخل ويتحرك بالكامل */
     .hero-track > .hero-card {
       flex: 0 0 88%;
       min-width: 88%;
@@ -42,9 +42,22 @@
       box-sizing: border-box;
       direction: rtl;
 
-      min-height: 290px;
-      padding-top: 30px;
-      padding-bottom: 30px;
+      min-height: 310px;
+      padding: 35px 24px;
+    }
+
+    /* إزالة الخطوط والزخارف الداخلية الجانبية */
+    .hero-track > .hero-card::before,
+    .hero-track > .hero-card::after {
+      display: none !important;
+      content: none !important;
+    }
+
+    @media (max-width: 480px) {
+      .hero-track > .hero-card {
+        padding: 35px 20px;
+        min-height: 310px;
+      }
     }
   </style>
 
@@ -84,9 +97,7 @@
 
 <body data-page="public">
 
-  <!-- الشريط العلوي -->
   <header class="site-header" id="top">
-
     <a class="brand" href="#top">
       <span class="brand-mark">B</span>
       <span>
@@ -95,28 +106,18 @@
       </span>
     </a>
 
-    <button
-      class="menu-toggle"
-      id="menuToggle"
-      type="button"
-      aria-label="فتح القائمة"
-      aria-expanded="false"
-    >
+    <button class="menu-toggle" id="menuToggle" type="button"
+      aria-label="فتح القائمة" aria-expanded="false">
       <span></span>
       <span></span>
       <span></span>
     </button>
-
   </header>
 
-  <!-- خلفية القائمة -->
   <div class="menu-overlay" id="menuOverlay"></div>
 
-  <!-- القائمة الجانبية -->
   <aside class="side-menu" id="sideMenu" aria-hidden="true">
-
     <div class="side-menu-header">
-
       <div class="brand">
         <span class="brand-mark">B</span>
         <span>
@@ -125,31 +126,17 @@
         </span>
       </div>
 
-      <button
-        class="menu-close"
-        id="menuClose"
-        type="button"
-        aria-label="إغلاق القائمة"
-      >×</button>
-
+      <button class="menu-close" id="menuClose" type="button"
+        aria-label="إغلاق القائمة">×</button>
     </div>
 
     <div class="side-menu-content">
-
-      <a
-        class="menu-item hidden"
-        id="adminMenuLink"
-        href="admin.html"
-      >
+      <a class="menu-item hidden" id="adminMenuLink" href="admin.html">
         <span>🛡️</span>
         دخول المدير
       </a>
 
-      <button
-        class="menu-item hidden"
-        id="logoutMenuBtn"
-        type="button"
-      >
+      <button class="menu-item hidden" id="logoutMenuBtn" type="button">
         <span>🚪</span>
         تسجيل الخروج
       </button>
@@ -157,45 +144,24 @@
       <div class="menu-divider"></div>
 
       <div class="language-menu">
-
         <div class="menu-section-title">
           <span>🌐</span>
           اللغة / Language / Sprache
         </div>
 
-        <button
-          class="menu-item language-option active"
-          data-language="ar"
-          type="button"
-        >
-          🇪🇬 العربية
-        </button>
+        <button class="menu-item language-option active"
+          data-language="ar" type="button">🇪🇬 العربية</button>
 
-        <button
-          class="menu-item language-option"
-          data-language="en"
-          type="button"
-        >
-          🇬🇧 English
-        </button>
+        <button class="menu-item language-option"
+          data-language="en" type="button">🇬🇧 English</button>
 
-        <button
-          class="menu-item language-option"
-          data-language="de"
-          type="button"
-        >
-          🇩🇪 Deutsch
-        </button>
-
+        <button class="menu-item language-option"
+          data-language="de" type="button">🇩🇪 Deutsch</button>
       </div>
 
       <div class="menu-divider"></div>
 
-      <button
-        class="menu-item"
-        id="contactMenuBtn"
-        type="button"
-      >
+      <button class="menu-item" id="contactMenuBtn" type="button">
         <span>📞</span>
         اتصل بنا
       </button>
@@ -203,123 +169,77 @@
       <p class="contact-note">
         رقم التواصل سيتم إضافته قريبًا.
       </p>
-
     </div>
-
   </aside>
 
-  <!-- محتوى الموقع -->
   <main class="public-main">
 
     <!-- الكروت المتحركة -->
-    <section
-      class="hero-slider"
-      id="heroSlider"
-      aria-label="مميزات BODY RESET"
-    >
+    <section class="hero-slider" id="heroSlider"
+      aria-label="مميزات BODY RESET">
 
       <div class="hero-track" id="heroTrack">
 
-        <!-- الكارت الأول -->
         <article class="hero-card hero-card-one">
-
           <span class="hero-icon">🧠</span>
-
           <p class="eyebrow">TRAIN SMARTER</p>
-
           <h1>
             تمارين مدروسة<br>
             <span>بالعلم</span>
           </h1>
-
           <p class="hero-copy">
             تمارين مبنية على أسس علمية تساعدك على أداء الحركات بشكل صحيح وتحقيق أفضل استفادة من تدريبك.
           </p>
-
         </article>
 
-        <!-- الكارت الثاني -->
         <article class="hero-card hero-card-two">
-
           <span class="hero-icon">💪</span>
-
           <p class="eyebrow">SMART TRAINING</p>
-
           <h1>
             أنظمة تمارين<br>
             <span>بأفضل التقنيات</span>
           </h1>
-
           <p class="hero-copy">
             أساليب وتقنيات تدريب منظمة ومدروسة تساعدك على تطوير أدائك والتقدم في مستواك.
           </p>
-
         </article>
 
-        <!-- الكارت الثالث -->
         <article class="hero-card hero-card-three">
-
           <span class="hero-icon">🚀</span>
-
           <p class="eyebrow">START FROM ZERO</p>
-
           <h1>
             لسه مبتدئ؟<br>
             <span>ابدأ من هنا</span>
           </h1>
-
           <p class="hero-copy">
             هتعرف تتمرن حتى لو لسه في البداية، وتتعلم التمارين والتكنيك الصحيح خطوة بخطوة.
           </p>
-
         </article>
 
-        <!-- الكارت الرابع -->
         <article class="hero-card hero-card-four">
-
           <span class="hero-icon">📅</span>
-
           <p class="eyebrow">YOUR TRAINING PLAN</p>
-
           <h1>
             خطة تمارين<br>
             <span>تناسب وقتك</span>
           </h1>
-
           <p class="hero-copy">
             خطة تدريب بوقت منتظم وجدول مناسب يساعدك على الالتزام والاستمرار وتحقيق أهدافك.
           </p>
-
         </article>
 
       </div>
-
     </section>
 
-    <!-- أزرار التمارين والبرامج -->
     <nav class="public-nav">
+      <button class="nav-link active" data-public-tab="exercises"
+        type="button">التمارين</button>
 
-      <button
-        class="nav-link active"
-        data-public-tab="exercises"
-        type="button"
-      >
-        التمارين
-      </button>
-
-      <button
-        class="nav-link"
-        data-public-tab="programs"
-        type="button"
-      >
-        البرامج التدريبية
-      </button>
-
+      <button class="nav-link" data-public-tab="programs"
+        type="button">البرامج التدريبية</button>
     </nav>
 
-    <!-- مكتبة التمارين -->
     <section id="publicExercises" class="public-section">
-
       <div class="section-heading">
         <div>
           <h2>مكتبة التمارين</h2>
@@ -328,13 +248,8 @@
       </div>
 
       <div class="filters">
-
-        <input
-          id="publicExerciseSearch"
-          class="field"
-          type="search"
-          placeholder="ابحث باسم التمرين أو العضلة"
-        >
+        <input id="publicExerciseSearch" class="field" type="search"
+          placeholder="ابحث باسم التمرين أو العضلة">
 
         <select id="publicMuscleFilter" class="field">
           <option value="">كل العضلات</option>
@@ -346,25 +261,14 @@
           <option>متوسط</option>
           <option>متقدم</option>
         </select>
-
       </div>
 
       <div id="publicExerciseGrid" class="exercise-grid">
-
-        <div class="empty-state">
-          جاري تحميل التمارين...
-        </div>
-
+        <div class="empty-state">جاري تحميل التمارين...</div>
       </div>
-
     </section>
 
-    <!-- البرامج التدريبية -->
-    <section
-      id="publicPrograms"
-      class="public-section hidden"
-    >
-
+    <section id="publicPrograms" class="public-section hidden">
       <div class="section-heading">
         <div>
           <h2>البرامج التدريبية</h2>
@@ -373,13 +277,8 @@
       </div>
 
       <div id="publicProgramList" class="program-grid">
-
-        <div class="empty-state">
-          جاري تحميل البرامج...
-        </div>
-
+        <div class="empty-state">جاري تحميل البرامج...</div>
       </div>
-
     </section>
 
     <p id="publicMessage" class="notice" role="status"></p>
@@ -392,16 +291,10 @@
     التزم بالتدرّج، واهتم بالتكنيك الصحيح.
   </footer>
 
-  <!-- شريط التنقل الثابت أسفل الشاشة -->
   <nav class="bottom-nav" aria-label="التنقل الرئيسي">
 
-    <!-- Profile -->
-    <button
-      class="bottom-nav-item"
-      type="button"
-      disabled
-      aria-label="Profile"
-    >
+    <button class="bottom-nav-item" type="button"
+      disabled aria-label="Profile">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="8" r="4"></circle>
         <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
@@ -409,13 +302,8 @@
       <span>Profile</span>
     </button>
 
-    <!-- Progress -->
-    <button
-      class="bottom-nav-item"
-      type="button"
-      disabled
-      aria-label="Progress"
-    >
+    <button class="bottom-nav-item" type="button"
+      disabled aria-label="Progress">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 21h18"></path>
         <rect x="5" y="12" width="3" height="9" rx="1"></rect>
@@ -425,12 +313,8 @@
       <span>Progress</span>
     </button>
 
-    <!-- Workouts -->
-    <a
-      class="bottom-nav-item"
-      href="#publicExercises"
-      aria-label="Workouts"
-    >
+    <a class="bottom-nav-item" href="#publicExercises"
+      aria-label="Workouts">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 9v6"></path>
         <path d="M6 7v10"></path>
@@ -441,12 +325,8 @@
       <span>Workouts</span>
     </a>
 
-    <!-- Home -->
-    <a
-      class="bottom-nav-item active"
-      href="#top"
-      aria-label="Home"
-    >
+    <a class="bottom-nav-item active" href="#top"
+      aria-label="Home">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="m3 10 9-7 9 7"></path>
         <path d="M5 9v12h14V9"></path>
@@ -470,7 +350,6 @@
 
       if (total < 2) return;
 
-      // نسخ أول وآخر كارت للحركة اللانهائية
       const firstClone = originalCards[0].cloneNode(true);
       const lastClone = originalCards[total - 1].cloneNode(true);
 
@@ -494,12 +373,10 @@
       const interval = 3000;
       const swipeThreshold = 50;
 
-      // عرض المساحة الكاملة لكل شريحة
       function getWidth() {
         return slider.clientWidth;
       }
 
-      // تحريك الكارت بالكامل
       function setPosition(animate = true) {
         const width = getWidth();
 
@@ -511,17 +388,14 @@
           `translate3d(${-currentIndex * width}px, 0, 0)`;
       }
 
-      // الانتقال للكارت التالي أو السابق
       function moveTo(nextIndex) {
         if (isAnimating || isDragging) return;
 
         currentIndex = nextIndex;
         isAnimating = true;
-
         setPosition(true);
       }
 
-      // معالجة نهاية الحركة اللانهائية
       track.addEventListener("transitionend", (event) => {
         if (
           event.target !== track ||
@@ -546,65 +420,48 @@
         moveTo(currentIndex + 1);
       }
 
-      // إيقاف الحركة التلقائية
       function stopAuto() {
         clearInterval(autoTimer);
         clearTimeout(resumeTimer);
-
         autoTimer = null;
         resumeTimer = null;
       }
 
-      // تشغيل الحركة التلقائية
       function startAuto() {
         stopAuto();
-
-        autoTimer = setInterval(() => {
-          nextSlide();
-        }, interval);
+        autoTimer = setInterval(nextSlide, interval);
       }
 
-      // استئناف الحركة بعد السحب
       function resumeAuto() {
         stopAuto();
-
-        resumeTimer = setTimeout(() => {
-          startAuto();
-        }, 1000);
+        resumeTimer = setTimeout(startAuto, 1000);
       }
 
-      // بداية السحب
       slider.addEventListener("pointerdown", (event) => {
         if (event.pointerType === "mouse" && event.button !== 0) return;
         if (isAnimating || isDragging) return;
 
         isDragging = true;
-
         startX = event.clientX;
         currentX = startX;
-
         startTranslate = -currentIndex * getWidth();
 
         stopAuto();
 
         slider.setPointerCapture(event.pointerId);
-
         track.style.transition = "none";
       });
 
-      // تحريك الكارت مع الإصبع أو الماوس
       slider.addEventListener("pointermove", (event) => {
         if (!isDragging) return;
 
         currentX = event.clientX;
-
         const distance = currentX - startX;
 
         track.style.transform =
           `translate3d(${startTranslate + distance}px, 0, 0)`;
       });
 
-      // إنهاء السحب
       function endDrag() {
         if (!isDragging) return;
 
@@ -616,10 +473,13 @@
           currentIndex += distance < 0 ? 1 : -1;
         }
 
-        isAnimating = true;
-
-        // تثبيت الكارت بالكامل في مكانه
-        setPosition(true);
+        if (distance === 0) {
+          isAnimating = false;
+          setPosition(false);
+        } else {
+          isAnimating = true;
+          setPosition(true);
+        }
 
         resumeAuto();
       }
@@ -627,22 +487,18 @@
       slider.addEventListener("pointerup", endDrag);
       slider.addEventListener("pointercancel", endDrag);
 
-      // إيقاف الحركة عند الوقوف بالماوس
       slider.addEventListener("mouseenter", stopAuto);
 
       slider.addEventListener("mouseleave", () => {
         if (!isDragging) resumeAuto();
       });
 
-      // إعادة ضبط مكان الكروت عند تغيير حجم الشاشة
       window.addEventListener("resize", () => {
         setPosition(false);
       });
 
-      // بداية السلايدر
       setPosition(false);
       startAuto();
-
     })();
   </script>
 
