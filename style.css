@@ -182,9 +182,9 @@ a {
   width: 100%;
   margin-bottom: 44px;
   overflow: hidden;
-  border: 1px solid #294746;
-  border-radius: 22px;
-  background: #151c25;
+  border: none;
+  border-radius: 0;
+  background: transparent;
   direction: ltr;
   touch-action: pan-y;
   user-select: none;
@@ -198,23 +198,42 @@ a {
 .hero-track {
   display: flex;
   width: 100%;
+  direction: ltr;
   transition: transform .65s cubic-bezier(.22, .75, .25, 1);
   will-change: transform;
 }
 
+/* الكروت */
+
 .hero-card {
   position: relative;
-  flex: 0 0 100%;
-  min-width: 100%;
+  flex: 0 0 88%;
+  min-width: 88%;
+  width: 88%;
+  margin-inline: 6%;
+
   min-height: 310px;
-  padding: 45px 42px;
+  padding: 35px 30px;
+
+  box-sizing: border-box;
   direction: rtl;
   text-align: right;
   overflow: hidden;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
+
+/* إزالة الخطوط والزخارف الداخلية */
+
+.hero-track > .hero-card::before,
+.hero-track > .hero-card::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* ألوان الكروت */
 
 .hero-card-one {
   background: linear-gradient(120deg, #1b292d, #17252b 55%, #151c25);
@@ -232,16 +251,13 @@ a {
   background: linear-gradient(120deg, #1b3030, #19282e 55%, #151c25);
 }
 
+/* الأرقام القديمة */
+
 .hero-number {
-  position: absolute;
-  top: 22px;
-  left: 25px;
-  direction: ltr;
-  color: #8994a3;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
+  display: none !important;
 }
+
+/* أيقونة الكارت */
 
 .hero-icon {
   position: absolute;
@@ -251,6 +267,8 @@ a {
   opacity: .13;
   pointer-events: none;
 }
+
+/* النصوص */
 
 .hero-card .eyebrow {
   color: var(--lime);
@@ -276,42 +294,13 @@ a {
   line-height: 2;
 }
 
-.hero-slider-footer {
-  min-height: 48px;
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-top: 1px solid #294746;
-  background: #101820;
-  direction: rtl;
-}
+/* إزالة النقاط والتعليمات */
 
-.hero-dots {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.hero-dot {
-  width: 8px;
-  height: 8px;
-  padding: 0;
-  border: 0;
-  border-radius: 20px;
-  background: #56616e;
-  transition: .3s ease;
-}
-
-.hero-dot.active {
-  width: 24px;
-  background: var(--lime);
-}
-
+.hero-slider-footer,
+.hero-dots,
+.hero-dot,
 .hero-hint {
-  color: var(--muted);
-  font-size: 10px;
+  display: none !important;
 }
 
 /* Public sections */
@@ -988,14 +977,15 @@ body.menu-open .menu-overlay {
   }
 
   /* Slider mobile */
+
   .hero-slider {
     margin-bottom: 44px;
-    border-radius: 18px;
+    border-radius: 0;
   }
 
-  .hero-card {
-    min-height: 290px;
-    padding: 38px 22px;
+  .hero-track > .hero-card {
+    min-height: 310px;
+    padding: 35px 24px;
   }
 
   .hero-card h1 {
@@ -1013,16 +1003,11 @@ body.menu-open .menu-overlay {
   }
 
   .hero-number {
-    top: 17px;
-    left: 18px;
+    display: none !important;
   }
 
   .hero-slider-footer {
-    padding: 10px 14px;
-  }
-
-  .hero-hint {
-    font-size: 9px;
+    display: none !important;
   }
 
   .public-nav {
