@@ -11,13 +11,16 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    html { visibility: hidden; }
+    html {
+      visibility: hidden;
+    }
 
-    /* إعدادات الكروت المتحركة */
+    /* السلايدر */
     .hero-slider {
       overflow: hidden;
       touch-action: pan-y;
       cursor: grab;
+      width: 100%;
     }
 
     .hero-slider:active {
@@ -27,20 +30,21 @@
     .hero-track {
       display: flex;
       direction: ltr;
+      width: 100%;
       will-change: transform;
     }
 
+    /* الكارت بالكامل يتحرك كوحدة واحدة */
     .hero-track > .hero-card {
-      flex: 0 0 92%;
-      min-width: 92%;
-      margin-inline: 4%;
+      flex: 0 0 88%;
+      min-width: 88%;
+      margin-inline: 6%;
       box-sizing: border-box;
       direction: rtl;
 
-      /* زيادة ارتفاع الكارت وتقليل عرضه */
-      min-height: 275px;
-      padding-top: 26px;
-      padding-bottom: 26px;
+      min-height: 290px;
+      padding-top: 30px;
+      padding-bottom: 30px;
     }
   </style>
 
@@ -466,7 +470,7 @@
 
       if (total < 2) return;
 
-      // إنشاء نسخ الكروت للدوران المستمر
+      // نسخ أول وآخر كارت للحركة اللانهائية
       const firstClone = originalCards[0].cloneNode(true);
       const lastClone = originalCards[total - 1].cloneNode(true);
 
@@ -487,14 +491,15 @@
       let autoTimer = null;
       let resumeTimer = null;
 
-      // الحركة التلقائية كل 3 ثوانٍ
       const interval = 3000;
       const swipeThreshold = 50;
 
+      // عرض المساحة الكاملة لكل شريحة
       function getWidth() {
         return slider.clientWidth;
       }
 
+      // تحريك الكارت بالكامل
       function setPosition(animate = true) {
         const width = getWidth();
 
@@ -503,9 +508,10 @@
           : "none";
 
         track.style.transform =
-          `translate3d(${-currentIndex * width}px,0,0)`;
+          `translate3d(${-currentIndex * width}px, 0, 0)`;
       }
 
+      // الانتقال للكارت التالي أو السابق
       function moveTo(nextIndex) {
         if (isAnimating || isDragging) return;
 
@@ -515,7 +521,7 @@
         setPosition(true);
       }
 
-      // معالجة الانتقال عند الوصول للنسخ
+      // معالجة نهاية الحركة اللانهائية
       track.addEventListener("transitionend", (event) => {
         if (
           event.target !== track ||
@@ -540,6 +546,7 @@
         moveTo(currentIndex + 1);
       }
 
+      // إيقاف الحركة التلقائية
       function stopAuto() {
         clearInterval(autoTimer);
         clearTimeout(resumeTimer);
@@ -548,6 +555,7 @@
         resumeTimer = null;
       }
 
+      // تشغيل الحركة التلقائية
       function startAuto() {
         stopAuto();
 
@@ -556,6 +564,7 @@
         }, interval);
       }
 
+      // استئناف الحركة بعد السحب
       function resumeAuto() {
         stopAuto();
 
@@ -567,7 +576,6 @@
       // بداية السحب
       slider.addEventListener("pointerdown", (event) => {
         if (event.pointerType === "mouse" && event.button !== 0) return;
-
         if (isAnimating || isDragging) return;
 
         isDragging = true;
@@ -584,7 +592,7 @@
         track.style.transition = "none";
       });
 
-      // حركة السحب
+      // تحريك الكارت مع الإصبع أو الماوس
       slider.addEventListener("pointermove", (event) => {
         if (!isDragging) return;
 
@@ -593,7 +601,7 @@
         const distance = currentX - startX;
 
         track.style.transform =
-          `translate3d(${startTranslate + distance}px,0,0)`;
+          `translate3d(${startTranslate + distance}px, 0, 0)`;
       });
 
       // إنهاء السحب
@@ -606,19 +614,12 @@
 
         if (Math.abs(distance) >= swipeThreshold) {
           currentIndex += distance < 0 ? 1 : -1;
-
-          isAnimating = true;
-          setPosition(true);
-        } else {
-          // الرجوع لمكان الكارت لو السحب بسيط
-          if (Math.abs(distance) > 0) {
-            isAnimating = true;
-            setPosition(true);
-          } else {
-            isAnimating = false;
-            setPosition(false);
-          }
         }
+
+        isAnimating = true;
+
+        // تثبيت الكارت بالكامل في مكانه
+        setPosition(true);
 
         resumeAuto();
       }
@@ -633,12 +634,12 @@
         if (!isDragging) resumeAuto();
       });
 
-      // ضبط الحجم عند تغيير الشاشة
+      // إعادة ضبط مكان الكروت عند تغيير حجم الشاشة
       window.addEventListener("resize", () => {
         setPosition(false);
       });
 
-      // تشغيل السلايدر
+      // بداية السلايدر
       setPosition(false);
       startAuto();
 
