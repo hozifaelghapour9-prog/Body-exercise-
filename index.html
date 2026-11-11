@@ -31,14 +31,16 @@
     }
 
     .hero-track > .hero-card {
-      flex: 0 0 100%;
-      min-width: 100%;
+      flex: 0 0 92%;
+      min-width: 92%;
+      margin-inline: 4%;
+      box-sizing: border-box;
       direction: rtl;
 
-      /* تقليل ارتفاع الكارت */
-      min-height: 250px;
-      padding-top: 22px;
-      padding-bottom: 22px;
+      /* زيادة ارتفاع الكارت وتقليل عرضه */
+      min-height: 275px;
+      padding-top: 26px;
+      padding-bottom: 26px;
     }
   </style>
 
@@ -217,7 +219,6 @@
         <!-- الكارت الأول -->
         <article class="hero-card hero-card-one">
 
-          
           <span class="hero-icon">🧠</span>
 
           <p class="eyebrow">TRAIN SMARTER</p>
@@ -236,7 +237,6 @@
         <!-- الكارت الثاني -->
         <article class="hero-card hero-card-two">
 
-          
           <span class="hero-icon">💪</span>
 
           <p class="eyebrow">SMART TRAINING</p>
@@ -255,7 +255,6 @@
         <!-- الكارت الثالث -->
         <article class="hero-card hero-card-three">
 
-          
           <span class="hero-icon">🚀</span>
 
           <p class="eyebrow">START FROM ZERO</p>
@@ -274,7 +273,6 @@
         <!-- الكارت الرابع -->
         <article class="hero-card hero-card-four">
 
-          
           <span class="hero-icon">📅</span>
 
           <p class="eyebrow">YOUR TRAINING PLAN</p>
@@ -289,39 +287,6 @@
           </p>
 
         </article>
-
-      </div>
-
-      <!-- نقاط التنقل -->
-      <div class="hero-slider-footer">
-
-        <div class="hero-dots" id="heroDots">
-
-          <button
-            class="hero-dot active"
-            type="button"
-            aria-label="الكارت الأول"
-          ></button>
-
-          <button
-            class="hero-dot"
-            type="button"
-            aria-label="الكارت الثاني"
-          ></button>
-
-          <button
-            class="hero-dot"
-            type="button"
-            aria-label="الكارت الثالث"
-          ></button>
-
-          <button
-            class="hero-dot"
-            type="button"
-            aria-label="الكارت الرابع"
-          ></button>
-
-        </div>
 
       </div>
 
@@ -493,14 +458,13 @@
     (() => {
       const slider = document.getElementById("heroSlider");
       const track = document.getElementById("heroTrack");
-      const dots = [...document.querySelectorAll(".hero-dot")];
 
-      if (!slider || !track || !dots.length) return;
+      if (!slider || !track) return;
 
       const originalCards = [...track.children];
       const total = originalCards.length;
 
-      if (total !== dots.length || total < 2) return;
+      if (total < 2) return;
 
       // إنشاء نسخ الكروت للدوران المستمر
       const firstClone = originalCards[0].cloneNode(true);
@@ -542,17 +506,6 @@
           `translate3d(${-currentIndex * width}px,0,0)`;
       }
 
-      function updateDots() {
-        let realIndex = currentIndex - 1;
-
-        if (realIndex < 0) realIndex = total - 1;
-        if (realIndex >= total) realIndex = 0;
-
-        dots.forEach((dot, i) => {
-          dot.classList.toggle("active", i === realIndex);
-        });
-      }
-
       function moveTo(nextIndex) {
         if (isAnimating || isDragging) return;
 
@@ -560,7 +513,6 @@
         isAnimating = true;
 
         setPosition(true);
-        updateDots();
       }
 
       // معالجة الانتقال عند الوصول للنسخ
@@ -581,7 +533,6 @@
         }
 
         isAnimating = false;
-        updateDots();
       });
 
       function nextSlide() {
@@ -613,20 +564,8 @@
         }, 1000);
       }
 
-      // التنقل بالنقاط
-      dots.forEach((dot, index) => {
-        dot.addEventListener("click", () => {
-          if (isAnimating || isDragging) return;
-
-          moveTo(index + 1);
-          resumeAuto();
-        });
-      });
-
       // بداية السحب
       slider.addEventListener("pointerdown", (event) => {
-        if (event.target.closest(".hero-slider-footer")) return;
-
         if (event.pointerType === "mouse" && event.button !== 0) return;
 
         if (isAnimating || isDragging) return;
@@ -667,12 +606,19 @@
 
         if (Math.abs(distance) >= swipeThreshold) {
           currentIndex += distance < 0 ? 1 : -1;
+
+          isAnimating = true;
+          setPosition(true);
+        } else {
+          // الرجوع لمكان الكارت لو السحب بسيط
+          if (Math.abs(distance) > 0) {
+            isAnimating = true;
+            setPosition(true);
+          } else {
+            isAnimating = false;
+            setPosition(false);
+          }
         }
-
-        isAnimating = true;
-
-        setPosition(true);
-        updateDots();
 
         resumeAuto();
       }
@@ -694,7 +640,6 @@
 
       // تشغيل السلايدر
       setPosition(false);
-      updateDots();
       startAuto();
 
     })();
