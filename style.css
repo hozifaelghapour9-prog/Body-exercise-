@@ -173,9 +173,7 @@ a {
   padding: 48px 0 70px;
 }
 
-/* =================================
-   BODY RESET - HERO SLIDER
-================================= */
+/* BODY RESET - HERO SLIDER */
 
 .hero-slider {
   position: relative;
@@ -211,15 +209,12 @@ a {
   min-width: 88%;
   width: 88%;
   margin-inline: 6%;
-
   min-height: 310px;
   padding: 35px 30px;
-
   box-sizing: border-box;
   direction: rtl;
   text-align: right;
   overflow: hidden;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -249,6 +244,38 @@ a {
 
 .hero-card-four {
   background: linear-gradient(120deg, #1b3030, #19282e 55%, #151c25);
+}
+
+/* صور خلفيات الكروت */
+
+.hero-track > .hero-card-one {
+  background-image:
+    linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)),
+    url("images/young-man-sportswear-exercise-class-gym.jpg");
+}
+
+.hero-track > .hero-card-two {
+  background-image:
+    linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)),
+    url("images/gym2.jpg");
+}
+
+.hero-track > .hero-card-three {
+  background-image:
+    linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)),
+    url("images/gym3.jpg");
+}
+
+.hero-track > .hero-card-four {
+  background-image:
+    linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)),
+    url("images/gym4.jpg");
+}
+
+.hero-track > .hero-card {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* الأرقام القديمة */
@@ -877,15 +904,12 @@ body.menu-open .menu-overlay {
   width: 100%;
   min-height: 76px;
   z-index: 80;
-
   display: flex;
   flex-direction: row;
   direction: ltr;
   justify-content: space-around;
   align-items: center;
-
   padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
-
   background: #101820;
   border-top: 1px solid #294746;
   box-shadow: 0 -5px 20px #0005;
@@ -894,22 +918,18 @@ body.menu-open .menu-overlay {
 .bottom-nav-item {
   flex: 1;
   min-width: 0;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 5px;
-
   color: #8994a3;
   background: transparent;
   border: 0;
   text-decoration: none;
-
   font-size: 11px;
   font-weight: 700;
   font-family: inherit;
-
   transition: .2s ease;
 }
 
@@ -1095,27 +1115,7 @@ body.menu-open .menu-overlay {
     align-items: flex-start;
     flex-direction: column;
   }
-.hero-track > .hero-card-one {
-  background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)), url("images/young-man-sportswear-exercise-class-gym.jpg") !important;
-}
 
-.hero-track > .hero-card-two {
-  background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)), url("images/gym2.jpg") !important;
-}
-
-.hero-track > .hero-card-three {
-  background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)), url("images/gym3.jpg") !important;
-}
-
-.hero-track > .hero-card-four {
-  background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)), url("images/gym4.jpg") !important;
-}
-
-.hero-track > .hero-card {
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-}
   .bottom-nav {
     min-height: 72px;
   }
@@ -1129,4 +1129,3 @@ body.menu-open .menu-overlay {
     height: 24px;
   }
 }
-
