@@ -246,30 +246,20 @@ a {
   background: linear-gradient(120deg, #1b3030, #19282e 55%, #151c25);
 }
 
-/* صور خلفيات الكروت */
+/* صورة خلفية أول كارت فقط */
 
 .hero-track > .hero-card-one {
   background-image:
     linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)),
-    url("images/young-man-sportswear-exercise-class-gym.jpg");
+    url("young-man-sportswear-exercise-class-gym.jpg");
 }
 
-.hero-track > .hero-card-two {
-  background-image:
-    linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)),
-    url("images/gym2.jpg");
-}
+/* باقي الكروت بدون صور */
 
-.hero-track > .hero-card-three {
-  background-image:
-    linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)),
-    url("images/gym3.jpg");
-}
-
+.hero-track > .hero-card-two,
+.hero-track > .hero-card-three,
 .hero-track > .hero-card-four {
-  background-image:
-    linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)),
-    url("images/gym4.jpg");
+  background-image: none;
 }
 
 .hero-track > .hero-card {
