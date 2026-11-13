@@ -1095,7 +1095,27 @@ body.menu-open .menu-overlay {
     align-items: flex-start;
     flex-direction: column;
   }
+.hero-track > .hero-card-one {
+  background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)), url("Gym-body") !important;
+}
 
+.hero-track > .hero-card-two {
+  background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)), url("images/gym2.jpg") !important;
+}
+
+.hero-track > .hero-card-three {
+  background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)), url("images/gym3.jpg") !important;
+}
+
+.hero-track > .hero-card-four {
+  background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)), url("images/gym4.jpg") !important;
+}
+
+.hero-track > .hero-card {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
   .bottom-nav {
     min-height: 72px;
   }
@@ -1109,3 +1129,4 @@ body.menu-open .menu-overlay {
     height: 24px;
   }
 }
+
