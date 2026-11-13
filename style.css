@@ -1096,7 +1096,7 @@ body.menu-open .menu-overlay {
     flex-direction: column;
   }
 .hero-track > .hero-card-one {
-  background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)), url("Gym-body") !important;
+  background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.7)), url("images/young-man-sportswear-exercise-class-gym.jpg") !important;
 }
 
 .hero-track > .hero-card-two {
