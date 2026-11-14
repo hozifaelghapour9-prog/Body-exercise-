@@ -56,11 +56,73 @@
       overflow: hidden;
     }
 
+    /* Daily Tip */
+    .daily-tip-section {
+      width: 100%;
+      margin: 30px auto;
+      direction: rtl;
+    }
+
+    .daily-tip-title {
+      color: #d0d0d0;
+      font-size: 25px;
+      font-weight: 800;
+      text-align: right;
+      margin: 0 0 14px;
+    }
+
+    .daily-tip-card {
+      width: 100%;
+      background: #000000;
+      border: none;
+      border-radius: 14px;
+      padding: 28px 15px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .daily-tip-quote {
+      direction: ltr;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      margin: 0;
+      color: #bdbdbd;
+      font-family: Arial, sans-serif;
+      line-height: 1.15;
+    }
+
+    .daily-tip-quote span {
+      font-size: 25px;
+      font-weight: 600;
+      color: #bdbdbd;
+    }
+
+    .daily-tip-quote strong {
+      font-size: clamp(27px, 7vw, 42px);
+      font-weight: 900;
+      color: #bdbdbd;
+      letter-spacing: 1px;
+    }
+
     @media (max-width: 480px) {
       .hero-track > .hero-card {
         min-height: 310px;
         padding: 35px 20px;
         border-radius: 18px;
+      }
+
+      .daily-tip-title {
+        font-size: 22px;
+      }
+
+      .daily-tip-card {
+        padding: 24px 10px;
+      }
+
+      .daily-tip-quote strong {
+        font-size: 30px;
       }
     }
   </style>
@@ -233,6 +295,24 @@
       </div>
     </section>
 
+    <!-- Daily Tip -->
+    <section class="daily-tip-section" aria-label="نصيحة اليوم">
+
+      <h2 class="daily-tip-title">نصيحة اليوم</h2>
+
+      <div class="daily-tip-card">
+        <p class="daily-tip-quote" lang="en" dir="ltr">
+          <span>your</span>
+          <strong>Strength</strong>
+          <strong>BEGINS</strong>
+          <span>Where</span>
+          <strong>EXCUSES</strong>
+          <strong>END</strong>
+        </p>
+      </div>
+
+    </section>
+
   </main>
 
   <footer class="site-footer">
@@ -263,8 +343,7 @@
       <span>Progress</span>
     </button>
 
-    <a class="bottom-nav-item" href="#top"
-      aria-label="Workouts">
+    <a class="bottom-nav-item" href="#top" aria-label="Workouts">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 9v6"></path>
         <path d="M6 7v10"></path>
@@ -275,8 +354,7 @@
       <span>Workouts</span>
     </a>
 
-    <a class="bottom-nav-item active" href="#top"
-      aria-label="Home">
+    <a class="bottom-nav-item active" href="#top" aria-label="Home">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="m3 10 9-7 9 7"></path>
         <path d="M5 9v12h14V9"></path>
