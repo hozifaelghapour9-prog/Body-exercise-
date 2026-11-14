@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b0e13">
 
-  <title>BODY RESET | التمارين والبرامج</title>
+  <title>BODY RESET | الصفحة الرئيسية</title>
 
   <link rel="stylesheet" href="style.css">
 
@@ -15,7 +15,6 @@
       visibility: hidden;
     }
 
-    /* منطقة السلايدر بدون برواز ثابت */
     .hero-slider {
       position: relative;
       overflow: hidden;
@@ -34,7 +33,6 @@
       cursor: grabbing;
     }
 
-    /* مسار حركة الكروت */
     .hero-track {
       display: flex;
       direction: ltr;
@@ -42,7 +40,6 @@
       will-change: transform;
     }
 
-    /* البرواز والخلفية والمحتوى يتحركون مع الكارت */
     .hero-track > .hero-card {
       position: relative;
       flex: 0 0 100%;
@@ -51,10 +48,8 @@
       margin: 0;
       box-sizing: border-box;
       direction: rtl;
-
       min-height: 310px;
       padding: 35px 30px;
-
       border: 1px solid #294746;
       border-radius: 22px;
       background-color: #151c25;
@@ -72,7 +67,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- التحقق من تسجيل الدخول -->
   <script>
     (() => {
       const AUTH_SUPABASE_URL =
@@ -183,7 +177,6 @@
 
   <main class="public-main">
 
-    <!-- الكروت المتحركة -->
     <section class="hero-slider" id="heroSlider"
       aria-label="مميزات BODY RESET">
 
@@ -240,58 +233,6 @@
       </div>
     </section>
 
-    <nav class="public-nav">
-      <button class="nav-link active" data-public-tab="exercises"
-        type="button">التمارين</button>
-
-      <button class="nav-link" data-public-tab="programs"
-        type="button">البرامج التدريبية</button>
-    </nav>
-
-    <section id="publicExercises" class="public-section">
-      <div class="section-heading">
-        <div>
-          <h2>مكتبة التمارين</h2>
-          <p>اختر التمرين المناسب لهدفك ومستواك.</p>
-        </div>
-      </div>
-
-      <div class="filters">
-        <input id="publicExerciseSearch" class="field" type="search"
-          placeholder="ابحث باسم التمرين أو العضلة">
-
-        <select id="publicMuscleFilter" class="field">
-          <option value="">كل العضلات</option>
-        </select>
-
-        <select id="publicLevelFilter" class="field">
-          <option value="">كل المستويات</option>
-          <option>مبتدئ</option>
-          <option>متوسط</option>
-          <option>متقدم</option>
-        </select>
-      </div>
-
-      <div id="publicExerciseGrid" class="exercise-grid">
-        <div class="empty-state">جاري تحميل التمارين...</div>
-      </div>
-    </section>
-
-    <section id="publicPrograms" class="public-section hidden">
-      <div class="section-heading">
-        <div>
-          <h2>البرامج التدريبية</h2>
-          <p>برامج منظمة لمساعدتك على التقدم.</p>
-        </div>
-      </div>
-
-      <div id="publicProgramList" class="program-grid">
-        <div class="empty-state">جاري تحميل البرامج...</div>
-      </div>
-    </section>
-
-    <p id="publicMessage" class="notice" role="status"></p>
-
   </main>
 
   <footer class="site-footer">
@@ -322,7 +263,7 @@
       <span>Progress</span>
     </button>
 
-    <a class="bottom-nav-item" href="#publicExercises"
+    <a class="bottom-nav-item" href="#top"
       aria-label="Workouts">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 9v6"></path>
@@ -346,7 +287,6 @@
 
   </nav>
 
-  <!-- Infinite Slider -->
   <script>
     (() => {
       const slider = document.getElementById("heroSlider");
