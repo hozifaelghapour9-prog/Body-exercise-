@@ -1,67 +1,326 @@
 
-<!doctype html>
-<html lang="en" dir="ltr">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b0e13">
-
-  <title>BODY RESET | WORKOUT</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101010">
+  <title>BODY RESET | Workouts</title>
   <link rel="stylesheet" href="style.css">
 
   <style>
-    body {
-      margin: 0;
-      background: #0b0e13;
-      color: #ffffff;
-      font-family: Arial, sans-serif;
-    }
-
-    .workout-main {
-      width: 100%;
-      padding: 15px;
-      padding-bottom: 100px;
-      box-sizing: border-box;
+    .anatomy-page {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px 16px 110px;
+      color: #fff;
     }
 
     .workout-hero {
-      width: 100%;
-      overflow: hidden;
-      border-radius: 18px;
-      background: #151c25;
-      border: 1px solid #30363e;
+      text-align: center;
+      margin-bottom: 35px;
     }
 
     .workout-hero img {
-      display: block;
       width: 100%;
-      height: 250px;
+      max-height: 340px;
       object-fit: cover;
-      object-position: center;
+      border-radius: 18px;
+      display: block;
     }
 
-    .workout-intro {
-      padding: 25px 16px 28px;
-      text-align: center;
-    }
-
-    .workout-intro p {
-      margin: 0;
-      color: #ffffff;
-      font-size: clamp(22px, 5.5vw, 30px);
+    .hero-quote {
+      font-size: clamp(23px, 5vw, 38px);
       font-weight: 900;
-      line-height: 1.5;
-      letter-spacing: 0.5px;
+      line-height: 1.25;
+      margin: 22px 0;
+      letter-spacing: .3px;
     }
 
-    @media (max-width: 480px) {
-      .workout-hero img {
-        height: 220px;
+    .section-heading {
+      text-align: center;
+      margin: 35px 0 20px;
+    }
+
+    .section-heading h1 {
+      font-size: 27px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .section-heading p {
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .anatomy-search {
+      width: 100%;
+      padding: 15px 17px;
+      border: 1px solid #444;
+      border-radius: 12px;
+      background: #1b1b1b;
+      color: white;
+      font-size: 16px;
+      outline: none;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+
+    .anatomy-search:focus {
+      border-color: #d7ff00;
+    }
+
+    .category-list {
+      display: flex;
+      gap: 9px;
+      overflow-x: auto;
+      padding: 4px 0 15px;
+      scrollbar-width: none;
+    }
+
+    .category-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-btn {
+      flex-shrink: 0;
+      border: 1px solid #444;
+      background: #202020;
+      color: white;
+      border-radius: 30px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .category-btn.active {
+      background: #d7ff00;
+      color: #111;
+      border-color: #d7ff00;
+    }
+
+    .diagram-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+      margin: 15px 0 25px;
+    }
+
+    .diagram-card {
+      background: #191919;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 12px;
+      text-align: center;
+      min-width: 0;
+    }
+
+    .diagram-card h3 {
+      font-size: 16px;
+      margin: 5px 0 12px;
+      letter-spacing: 1px;
+    }
+
+    .diagram-card svg {
+      width: 100%;
+      height: auto;
+      max-height: 390px;
+      display: block;
+      margin: auto;
+    }
+
+    .body-shape {
+      fill: #555;
+      stroke: #999;
+      stroke-width: 2;
+    }
+
+    .muscle-zone {
+      fill: #a5a5a5;
+      fill-opacity: .45;
+      stroke: #ddd;
+      stroke-width: 1.2;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .muscle-zone:hover,
+    .muscle-zone.selected {
+      fill: #d7ff00;
+      fill-opacity: .9;
+      stroke: #fff;
+      stroke-width: 2;
+    }
+
+    .diagram-hint {
+      color: #999;
+      font-size: 11px;
+      margin-top: 8px;
+    }
+
+    .muscle-results {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .muscle-card {
+      background: #1b1b1b;
+      border: 1px solid #333;
+      border-radius: 13px;
+      padding: 15px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .muscle-card:hover,
+    .muscle-card.selected {
+      border-color: #d7ff00;
+      transform: translateY(-2px);
+    }
+
+    .muscle-card h3 {
+      font-size: 16px;
+      margin: 0 0 5px;
+    }
+
+    .muscle-card .arabic-name {
+      color: #d7ff00;
+      font-size: 14px;
+      margin-bottom: 9px;
+    }
+
+    .muscle-card p {
+      color: #aaa;
+      font-size: 12px;
+      line-height: 1.6;
+      margin: 4px 0;
+    }
+
+    .muscle-category {
+      display: inline-block;
+      background: #303030;
+      color: #d7ff00;
+      border-radius: 20px;
+      padding: 5px 9px;
+      font-size: 10px;
+      margin-top: 8px;
+    }
+
+    .muscle-details {
+      display: none;
+      background: #202020;
+      border: 1px solid #d7ff00;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .muscle-details.show {
+      display: block;
+    }
+
+    .muscle-details h2 {
+      font-size: 23px;
+      margin: 0 0 5px;
+    }
+
+    .muscle-details .detail-arabic {
+      color: #d7ff00;
+      margin-bottom: 18px;
+    }
+
+    .detail-row {
+      margin: 12px 0;
+      line-height: 1.7;
+      color: #ddd;
+      font-size: 14px;
+    }
+
+    .detail-row strong {
+      color: #d7ff00;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .close-details {
+      float: right;
+      background: transparent;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 8px;
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+
+    .empty-results {
+      color: #aaa;
+      text-align: center;
+      padding: 25px;
+      grid-column: 1 / -1;
+    }
+
+    .anatomy-note {
+      color: #888;
+      font-size: 12px;
+      line-height: 1.6;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 999;
+      background: #111;
+      border-top: 1px solid #333;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 5px calc(12px + env(safe-area-inset-bottom));
+      box-sizing: border-box;
+    }
+
+    .bottom-nav a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .bottom-nav a.active {
+      color: #d7ff00;
+    }
+
+    .bottom-nav a.disabled {
+      opacity: .4;
+      pointer-events: none;
+    }
+
+    .bottom-nav span {
+      font-size: 19px;
+    }
+
+    @media (max-width: 520px) {
+      .diagram-grid {
+        gap: 8px;
       }
 
-      .workout-intro {
-        padding: 22px 12px;
+      .diagram-card {
+        padding: 7px;
+      }
+
+      .muscle-results {
+        grid-template-columns: 1fr;
+      }
+
+      .diagram-card h3 {
+        font-size: 13px;
       }
     }
   </style>
@@ -69,71 +328,816 @@
 
 <body data-page="public">
 
-  <main class="workout-main">
+<main class="anatomy-page">
 
-    <!-- Workout Hero Image -->
-    <section class="workout-hero">
+  <!-- HERO -->
+  <section class="workout-hero">
+    <img
+      src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=85"
+      alt="Gym workout"
+    >
 
-      <img
-        src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=85"
-        alt="Dark professional gym interior"
-      >
+    <div class="hero-quote">
+      Your only competition is<br>
+      who you were yesterday
+    </div>
+  </section>
 
-      <div class="workout-intro">
-        <p>
-          Your only competition is<br>
-          who you were yesterday
-        </p>
+  <!-- MUSCLE ANATOMY -->
+  <section id="muscleAnatomy">
+
+    <div class="section-heading">
+      <h1>MUSCLE ANATOMY</h1>
+      <p>Explore the human muscular system</p>
+    </div>
+
+    <input
+      type="search"
+      id="muscleSearch"
+      class="anatomy-search"
+      placeholder="Search muscles by name..."
+      autocomplete="off"
+    >
+
+    <div class="category-list" id="categoryList">
+      <button class="category-btn active" data-category="All">All Muscles</button>
+      <button class="category-btn" data-category="Chest">Chest</button>
+      <button class="category-btn" data-category="Back">Back</button>
+      <button class="category-btn" data-category="Shoulders">Shoulders</button>
+      <button class="category-btn" data-category="Arms">Arms</button>
+      <button class="category-btn" data-category="Core">Core</button>
+      <button class="category-btn" data-category="Legs">Legs</button>
+      <button class="category-btn" data-category="Other">Other</button>
+    </div>
+
+    <!-- INTERACTIVE BODY DIAGRAMS -->
+    <div class="section-heading">
+      <h1>INTERACTIVE BODY MAP</h1>
+      <p>Tap a highlighted area to explore its muscles</p>
+    </div>
+
+    <div class="diagram-grid">
+
+      <!-- FRONT VIEW -->
+      <div class="diagram-card">
+        <h3>FRONT VIEW</h3>
+
+        <svg viewBox="0 0 220 440" role="img" aria-label="Front body muscle map">
+
+          <!-- Body silhouette -->
+          <circle class="body-shape" cx="110" cy="35" r="24"/>
+          <path class="body-shape" d="
+            M88 64
+            Q72 66 62 83
+            L45 155
+            Q42 166 51 169
+            Q60 171 64 159
+            L80 105
+            L77 190
+            Q75 218 81 246
+            L72 320
+            Q68 345 82 348
+            L91 348
+            L103 260
+            L110 250
+            L117 260
+            L129 348
+            L139 348
+            Q152 345 148 320
+            L139 246
+            Q145 218 143 190
+            L140 105
+            L156 159
+            Q160 171 169 169
+            Q178 166 175 155
+            L158 83
+            Q148 66 132 64
+            Q110 73 88 64
+            Z
+            M82 348 L76 415 Q75 427 86 427
+            L98 427 L110 350
+            L122 427 L134 427
+            Q145 427 144 415
+            L138 348
+          "/>
+
+          <!-- Chest -->
+          <ellipse class="muscle-zone" data-area="Chest"
+            cx="94" cy="111" rx="19" ry="12"/>
+          <ellipse class="muscle-zone" data-area="Chest"
+            cx="126" cy="111" rx="19" ry="12"/>
+
+          <!-- Shoulders -->
+          <ellipse class="muscle-zone" data-area="Shoulders"
+            cx="68" cy="85" rx="13" ry="17"/>
+          <ellipse class="muscle-zone" data-area="Shoulders"
+            cx="152" cy="85" rx="13" ry="17"/>
+
+          <!-- Arms -->
+          <ellipse class="muscle-zone" data-area="Arms"
+            cx="57" cy="130" rx="9" ry="25"/>
+          <ellipse class="muscle-zone" data-area="Arms"
+            cx="163" cy="130" rx="9" ry="25"/>
+          <ellipse class="muscle-zone" data-area="Arms"
+            cx="51" cy="163" rx="8" ry="12"/>
+          <ellipse class="muscle-zone" data-area="Arms"
+            cx="169" cy="163" rx="8" ry="12"/>
+
+          <!-- Core -->
+          <rect class="muscle-zone" data-area="Core"
+            x="91" y="130" width="38" height="61" rx="10"/>
+          <ellipse class="muscle-zone" data-area="Core"
+            cx="110" cy="201" rx="19" ry="12"/>
+
+          <!-- Legs -->
+          <ellipse class="muscle-zone" data-area="Legs"
+            cx="91" cy="270" rx="13" ry="42"/>
+          <ellipse class="muscle-zone" data-area="Legs"
+            cx="129" cy="270" rx="13" ry="42"/>
+          <ellipse class="muscle-zone" data-area="Legs"
+            cx="91" cy="352" rx="10" ry="38"/>
+          <ellipse class="muscle-zone" data-area="Legs"
+            cx="129" cy="352" rx="10" ry="38"/>
+
+        </svg>
+
+        <p class="diagram-hint">Tap a muscle area</p>
       </div>
 
-    </section>
+      <!-- BACK VIEW -->
+      <div class="diagram-card">
+        <h3>BACK VIEW</h3>
 
-    <!-- Workout content will be added here later -->
+        <svg viewBox="0 0 220 440" role="img" aria-label="Back body muscle map">
 
-  </main>
+          <!-- Body silhouette -->
+          <circle class="body-shape" cx="110" cy="35" r="24"/>
+          <path class="body-shape" d="
+            M88 64
+            Q72 66 62 83
+            L45 155
+            Q42 166 51 169
+            Q60 171 64 159
+            L80 105
+            L77 190
+            Q75 218 81 246
+            L72 320
+            Q68 345 82 348
+            L91 348
+            L103 260
+            L110 250
+            L117 260
+            L129 348
+            L139 348
+            Q152 345 148 320
+            L139 246
+            Q145 218 143 190
+            L140 105
+            L156 159
+            Q160 171 169 169
+            Q178 166 175 155
+            L158 83
+            Q148 66 132 64
+            Q110 73 88 64
+            Z
+            M82 348 L76 415 Q75 427 86 427
+            L98 427 L110 350
+            L122 427 L134 427
+            Q145 427 144 415
+            L138 348
+          "/>
 
-  <!-- Bottom Navigation -->
-  <nav class="bottom-nav" aria-label="Main navigation">
+          <!-- Back / trapezius -->
+          <path class="muscle-zone" data-area="Back"
+            d="M86 73 Q110 91 134 73 L143 115
+               Q110 138 77 115 Z"/>
 
-    <button class="bottom-nav-item" type="button" disabled>
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="8" r="4"></circle>
-        <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
-      </svg>
-      <span>Profile</span>
-    </button>
+          <!-- Lats -->
+          <path class="muscle-zone" data-area="Back"
+            d="M80 116 Q93 120 105 138
+               L100 185 Q81 177 80 145 Z"/>
+          <path class="muscle-zone" data-area="Back"
+            d="M140 116 Q127 120 115 138
+               L120 185 Q139 177 140 145 Z"/>
 
-    <button class="bottom-nav-item" type="button" disabled>
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M3 21h18"></path>
-        <rect x="5" y="12" width="3" height="9" rx="1"></rect>
-        <rect x="11" y="7" width="3" height="14" rx="1"></rect>
-        <rect x="17" y="3" width="3" height="18" rx="1"></rect>
-      </svg>
-      <span>Progress</span>
-    </button>
+          <!-- Rear shoulders -->
+          <ellipse class="muscle-zone" data-area="Shoulders"
+            cx="69" cy="86" rx="12" ry="16"/>
+          <ellipse class="muscle-zone" data-area="Shoulders"
+            cx="151" cy="86" rx="12" ry="16"/>
 
-    <a class="bottom-nav-item active" href="workout.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M3 9v6"></path>
-        <path d="M6 7v10"></path>
-        <path d="M18 7v10"></path>
-        <path d="M21 9v6"></path>
-        <path d="M6 12h12"></path>
-      </svg>
-      <span>Workouts</span>
-    </a>
+          <!-- Triceps / arms -->
+          <ellipse class="muscle-zone" data-area="Arms"
+            cx="57" cy="130" rx="9" ry="25"/>
+          <ellipse class="muscle-zone" data-area="Arms"
+            cx="163" cy="130" rx="9" ry="25"/>
+          <ellipse class="muscle-zone" data-area="Arms"
+            cx="51" cy="163" rx="8" ry="12"/>
+          <ellipse class="muscle-zone" data-area="Arms"
+            cx="169" cy="163" rx="8" ry="12"/>
 
-    <a class="bottom-nav-item" href="index.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m3 10 9-7 9 7"></path>
-        <path d="M5 9v12h14V9"></path>
-        <path d="M9 21v-7h6v7"></path>
-      </svg>
-      <span>Home</span>
-    </a>
+          <!-- Lower back -->
+          <rect class="muscle-zone" data-area="Back"
+            x="94" y="145" width="32" height="60" rx="8"/>
 
-  </nav>
+          <!-- Glutes -->
+          <ellipse class="muscle-zone" data-area="Legs"
+            cx="94" cy="220" rx="16" ry="17"/>
+          <ellipse class="muscle-zone" data-area="Legs"
+            cx="126" cy="220" rx="16" ry="17"/>
+
+          <!-- Hamstrings -->
+          <ellipse class="muscle-zone" data-area="Legs"
+            cx="91" cy="276" rx="13" ry="38"/>
+          <ellipse class="muscle-zone" data-area="Legs"
+            cx="129" cy="276" rx="13" ry="38"/>
+
+          <!-- Calves -->
+          <ellipse class="muscle-zone" data-area="Legs"
+            cx="91" cy="359" rx="10" ry="32"/>
+          <ellipse class="muscle-zone" data-area="Legs"
+            cx="129" cy="359" rx="10" ry="32"/>
+
+        </svg>
+
+        <p class="diagram-hint">Tap a muscle area</p>
+      </div>
+
+    </div>
+
+    <!-- MUSCLE DETAILS -->
+    <div class="muscle-details" id="muscleDetails">
+      <button class="close-details" id="closeDetails">Close ✕</button>
+      <h2 id="detailName"></h2>
+      <div class="detail-arabic" id="detailArabic"></div>
+
+      <div class="detail-row">
+        <strong>Location</strong>
+        <span id="detailLocation"></span>
+      </div>
+
+      <div class="detail-row">
+        <strong>Function</strong>
+        <span id="detailFunction"></span>
+      </div>
+
+      <div class="detail-row">
+        <strong>Training examples</strong>
+        <span id="detailExercises"></span>
+      </div>
+    </div>
+
+    <!-- MUSCLE LIST -->
+    <div class="section-heading">
+      <h1>ALL MUSCLES</h1>
+      <p>Choose a muscle to see its details</p>
+    </div>
+
+    <div class="muscle-results" id="muscleResults"></div>
+
+    <p class="anatomy-note">
+      Educational overview only. The body diagrams are simplified interactive
+      illustrations, not precise medical anatomical drawings.
+    </p>
+
+  </section>
+
+</main>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="bottom-nav">
+  <a href="#" class="disabled">
+    <span>👤</span>
+    Profile
+  </a>
+
+  <a href="#" class="disabled">
+    <span>📊</span>
+    Progress
+  </a>
+
+  <a href="workout.html" class="active">
+    <span>🏋️</span>
+    Workouts
+  </a>
+
+  <a href="index.html">
+    <span>⌂</span>
+    Home
+  </a>
+</nav>
+
+<script>
+const muscles = [
+  {
+    name: "Pectoralis Major",
+    ar: "العضلة الصدرية الكبرى",
+    category: "Chest",
+    location: "Front of the chest.",
+    function: "Moves the arm forward and toward the center of the body.",
+    exercises: "Bench Press, Push-ups, Chest Fly."
+  },
+  {
+    name: "Pectoralis Minor",
+    ar: "العضلة الصدرية الصغرى",
+    category: "Chest",
+    location: "Deep beneath the pectoralis major.",
+    function: "Helps stabilize and move the shoulder blade.",
+    exercises: "Scapular exercises and controlled push-up variations."
+  },
+  {
+    name: "Serratus Anterior",
+    ar: "العضلة المنشارية الأمامية",
+    category: "Chest",
+    location: "Along the sides of the ribs.",
+    function: "Moves and stabilizes the shoulder blade.",
+    exercises: "Push-up Plus, Serratus Punch."
+  },
+
+  {
+    name: "Latissimus Dorsi",
+    ar: "العضلة الظهرية العريضة",
+    category: "Back",
+    location: "Large muscles across the middle and lower back.",
+    function: "Pulls the arm down and backward.",
+    exercises: "Lat Pulldown, Pull-ups, Rows."
+  },
+  {
+    name: "Trapezius",
+    ar: "العضلة شبه المنحرفة",
+    category: "Back",
+    location: "Upper and middle back, extending toward the neck.",
+    function: "Moves and stabilizes the shoulder blades.",
+    exercises: "Shrugs, Face Pulls, Rows."
+  },
+  {
+    name: "Rhomboid Major",
+    ar: "المعينية الكبرى",
+    category: "Back",
+    location: "Between the shoulder blades.",
+    function: "Pulls the shoulder blades toward the spine.",
+    exercises: "Seated Rows, Reverse Fly."
+  },
+  {
+    name: "Rhomboid Minor",
+    ar: "المعينية الصغرى",
+    category: "Back",
+    location: "Upper back between the shoulder blades.",
+    function: "Helps retract and stabilize the shoulder blades.",
+    exercises: "Rows, Scapular Retraction."
+  },
+  {
+    name: "Erector Spinae",
+    ar: "ناصبات الفقرات",
+    category: "Back",
+    location: "Along both sides of the spine.",
+    function: "Extends and stabilizes the spine.",
+    exercises: "Back Extensions, Bird Dog."
+  },
+  {
+    name: "Teres Major",
+    ar: "المدورة الكبرى",
+    category: "Back",
+    location: "Behind the shoulder, near the upper back.",
+    function: "Helps extend and rotate the arm inward.",
+    exercises: "Rows, Pulldowns."
+  },
+  {
+    name: "Infraspinatus",
+    ar: "تحت الشوكة",
+    category: "Back",
+    location: "Back of the shoulder blade.",
+    function: "Rotates the arm outward and stabilizes the shoulder.",
+    exercises: "External Rotations, Face Pulls."
+  },
+  {
+    name: "Teres Minor",
+    ar: "المدورة الصغرى",
+    category: "Back",
+    location: "Back of the shoulder.",
+    function: "Externally rotates the arm.",
+    exercises: "Cable External Rotation."
+  },
+
+  {
+    name: "Deltoid Anterior",
+    ar: "الجزء الأمامي من الكتف",
+    category: "Shoulders",
+    location: "Front of the shoulder.",
+    function: "Raises the arm forward.",
+    exercises: "Front Raises, Shoulder Press."
+  },
+  {
+    name: "Deltoid Lateral",
+    ar: "الجزء الجانبي من الكتف",
+    category: "Shoulders",
+    location: "Outer side of the shoulder.",
+    function: "Raises the arm out to the side.",
+    exercises: "Lateral Raises."
+  },
+  {
+    name: "Deltoid Posterior",
+    ar: "الجزء الخلفي من الكتف",
+    category: "Shoulders",
+    location: "Back of the shoulder.",
+    function: "Moves the arm backward.",
+    exercises: "Reverse Fly, Face Pulls."
+  },
+  {
+    name: "Supraspinatus",
+    ar: "فوق الشوكة",
+    category: "Shoulders",
+    location: "Upper part of the shoulder blade.",
+    function: "Assists the beginning of arm elevation.",
+    exercises: "Controlled Shoulder Elevation."
+  },
+
+  {
+    name: "Biceps Brachii",
+    ar: "العضلة ذات الرأسين العضدية",
+    category: "Arms",
+    location: "Front of the upper arm.",
+    function: "Bends the elbow and helps rotate the forearm.",
+    exercises: "Biceps Curls, Hammer Curls."
+  },
+  {
+    name: "Brachialis",
+    ar: "العضلة العضدية",
+    category: "Arms",
+    location: "Deep beneath the biceps.",
+    function: "A major elbow flexor.",
+    exercises: "Hammer Curls, Reverse Curls."
+  },
+  {
+    name: "Brachioradialis",
+    ar: "العضدية الكعبرية",
+    category: "Arms",
+    location: "Outer side of the forearm.",
+    function: "Helps bend the elbow.",
+    exercises: "Hammer Curls, Reverse Curls."
+  },
+  {
+    name: "Triceps Brachii",
+    ar: "العضلة ثلاثية الرؤوس العضدية",
+    category: "Arms",
+    location: "Back of the upper arm.",
+    function: "Straightens the elbow.",
+    exercises: "Triceps Pushdown, Dips, Extensions."
+  },
+  {
+    name: "Flexor Carpi Radialis",
+    ar: "مثنية الرسغ الكعبرية",
+    category: "Arms",
+    location: "Front of the forearm.",
+    function: "Bends the wrist and moves it toward the thumb.",
+    exercises: "Wrist Curls."
+  },
+  {
+    name: "Extensor Carpi Radialis",
+    ar: "باسطة الرسغ الكعبرية",
+    category: "Arms",
+    location: "Back of the forearm.",
+    function: "Extends the wrist.",
+    exercises: "Reverse Wrist Curls."
+  },
+
+  {
+    name: "Rectus Abdominis",
+    ar: "المستقيمة البطنية",
+    category: "Core",
+    location: "Front center of the abdomen.",
+    function: "Flexes the trunk and supports the abdominal wall.",
+    exercises: "Crunches, Reverse Crunches."
+  },
+  {
+    name: "External Oblique",
+    ar: "المائلة الخارجية",
+    category: "Core",
+    location: "Outer sides of the abdomen.",
+    function: "Rotates and bends the trunk.",
+    exercises: "Side Planks, Woodchoppers."
+  },
+  {
+    name: "Internal Oblique",
+    ar: "المائلة الداخلية",
+    category: "Core",
+    location: "Deep beneath the external oblique.",
+    function: "Rotates and stabilizes the trunk.",
+    exercises: "Side Planks, Controlled Twists."
+  },
+  {
+    name: "Transversus Abdominis",
+    ar: "المستعرضة البطنية",
+    category: "Core",
+    location: "Deep abdominal wall.",
+    function: "Stabilizes the trunk and supports abdominal pressure.",
+    exercises: "Dead Bug, Plank, Bracing."
+  },
+  {
+    name: "Diaphragm",
+    ar: "الحجاب الحاجز",
+    category: "Core",
+    location: "Below the lungs.",
+    function: "Main muscle responsible for breathing.",
+    exercises: "Diaphragmatic Breathing."
+  },
+
+  {
+    name: "Rectus Femoris",
+    ar: "المستقيمة الفخذية",
+    category: "Legs",
+    location: "Front of the thigh.",
+    function: "Extends the knee and helps flex the hip.",
+    exercises: "Squats, Leg Extensions."
+  },
+  {
+    name: "Vastus Lateralis",
+    ar: "المتسعة الوحشية",
+    category: "Legs",
+    location: "Outer front of the thigh.",
+    function: "Extends the knee.",
+    exercises: "Squats, Leg Press."
+  },
+  {
+    name: "Vastus Medialis",
+    ar: "المتسعة الإنسية",
+    category: "Legs",
+    location: "Inner front of the thigh near the knee.",
+    function: "Extends the knee and helps stabilize the kneecap.",
+    exercises: "Leg Extensions, Squats."
+  },
+  {
+    name: "Vastus Intermedius",
+    ar: "المتسعة المتوسطة",
+    category: "Legs",
+    location: "Deep in the front of the thigh.",
+    function: "Extends the knee.",
+    exercises: "Leg Press, Squats."
+  },
+  {
+    name: "Biceps Femoris",
+    ar: "ذات الرأسين الفخذية",
+    category: "Legs",
+    location: "Back and outer part of the thigh.",
+    function: "Bends the knee and extends the hip.",
+    exercises: "Leg Curls, Romanian Deadlift."
+  },
+  {
+    name: "Semitendinosus",
+    ar: "نصف الوترية",
+    category: "Legs",
+    location: "Back of the thigh.",
+    function: "Bends the knee and extends the hip.",
+    exercises: "Leg Curls, Romanian Deadlift."
+  },
+  {
+    name: "Semimembranosus",
+    ar: "نصف الغشائية",
+    category: "Legs",
+    location: "Deep back of the thigh.",
+    function: "Helps bend the knee and extend the hip.",
+    exercises: "Leg Curls, Hip Hinge."
+  },
+  {
+    name: "Gluteus Maximus",
+    ar: "الألوية الكبرى",
+    category: "Legs",
+    location: "Main muscle of the buttocks.",
+    function: "Extends and rotates the hip.",
+    exercises: "Hip Thrust, Squats, Lunges."
+  },
+  {
+    name: "Gluteus Medius",
+    ar: "الألوية الوسطى",
+    category: "Legs",
+    location: "Outer side of the hip.",
+    function: "Moves the leg outward and stabilizes the pelvis.",
+    exercises: "Hip Abduction, Side Walks."
+  },
+  {
+    name: "Gluteus Minimus",
+    ar: "الألوية الصغرى",
+    category: "Legs",
+    location: "Deep beneath the gluteus medius.",
+    function: "Assists hip abduction and pelvic stability.",
+    exercises: "Hip Abduction, Side Leg Raises."
+  },
+  {
+    name: "Gastrocnemius",
+    ar: "التوأمية",
+    category: "Legs",
+    location: "Superficial back of the lower leg.",
+    function: "Helps point the foot downward and bend the knee.",
+    exercises: "Standing Calf Raises."
+  },
+  {
+    name: "Soleus",
+    ar: "النعلية",
+    category: "Legs",
+    location: "Deep beneath the gastrocnemius.",
+    function: "Points the foot downward.",
+    exercises: "Seated Calf Raises."
+  },
+  {
+    name: "Tibialis Anterior",
+    ar: "الظنبوبية الأمامية",
+    category: "Legs",
+    location: "Front of the lower leg.",
+    function: "Lifts the foot upward.",
+    exercises: "Tibialis Raises."
+  },
+  {
+    name: "Adductor Longus",
+    ar: "المقربة الطويلة",
+    category: "Legs",
+    location: "Inner thigh.",
+    function: "Moves the thigh toward the body's center.",
+    exercises: "Adductor Machine, Copenhagen Plank."
+  },
+  {
+    name: "Sartorius",
+    ar: "الخياطية",
+    category: "Legs",
+    location: "Runs diagonally across the front of the thigh.",
+    function: "Assists hip and knee movements.",
+    exercises: "Lunges and controlled hip mobility."
+  },
+
+  {
+    name: "Masseter",
+    ar: "الماضغة",
+    category: "Other",
+    location: "Side of the jaw.",
+    function: "Raises the lower jaw during chewing.",
+    exercises: "Not a standard gym training target."
+  },
+  {
+    name: "Sternocleidomastoid",
+    ar: "القصية الترقوية الخشائية",
+    category: "Other",
+    location: "Front and sides of the neck.",
+    function: "Rotates and bends the neck.",
+    exercises: "Controlled neck mobility."
+  },
+  {
+    name: "Splenius Capitis",
+    ar: "العضلة الطحالية للرأس",
+    category: "Other",
+    location: "Back of the neck.",
+    function: "Extends and rotates the head.",
+    exercises: "Controlled neck exercises."
+  }
+];
+
+let selectedCategory = "All";
+let selectedMuscle = null;
+
+const results = document.getElementById("muscleResults");
+const searchInput = document.getElementById("muscleSearch");
+const details = document.getElementById("muscleDetails");
+
+function showMuscle(muscle) {
+  selectedMuscle = muscle.name;
+
+  document.getElementById("detailName").textContent = muscle.name;
+  document.getElementById("detailArabic").textContent = muscle.ar;
+  document.getElementById("detailLocation").textContent = muscle.location;
+  document.getElementById("detailFunction").textContent = muscle.function;
+  document.getElementById("detailExercises").textContent = muscle.exercises;
+
+  details.classList.add("show");
+
+  document.querySelectorAll(".muscle-card").forEach(card => {
+    card.classList.toggle(
+      "selected",
+      card.dataset.name === muscle.name
+    );
+  });
+
+  details.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest"
+  });
+}
+
+function renderMuscles() {
+  const search = searchInput.value.trim().toLowerCase();
+
+  const filtered = muscles.filter(muscle => {
+    const matchesCategory =
+      selectedCategory === "All" ||
+      muscle.category === selectedCategory;
+
+    const matchesSearch =
+      muscle.name.toLowerCase().includes(search) ||
+      muscle.ar.toLowerCase().includes(search) ||
+      muscle.location.toLowerCase().includes(search);
+
+    return matchesCategory && matchesSearch;
+  });
+
+  results.innerHTML = "";
+
+  if (!filtered.length) {
+    results.innerHTML =
+      '<div class="empty-results">No muscles found. Try another search.</div>';
+    return;
+  }
+
+  filtered.forEach(muscle => {
+    const card = document.createElement("article");
+    card.className = "muscle-card";
+    card.dataset.name = muscle.name;
+
+    const title = document.createElement("h3");
+    title.textContent = muscle.name;
+
+    const arabic = document.createElement("div");
+    arabic.className = "arabic-name";
+    arabic.textContent = muscle.ar;
+
+    const location = document.createElement("p");
+    location.textContent = "Location: " + muscle.location;
+
+    const category = document.createElement("span");
+    category.className = "muscle-category";
+    category.textContent = muscle.category;
+
+    card.append(title, arabic, location, category);
+
+    card.addEventListener("click", () => {
+      showMuscle(muscle);
+    });
+
+    results.appendChild(card);
+  });
+}
+
+// Category buttons
+document.querySelectorAll(".category-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".category-btn").forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+    selectedCategory = button.dataset.category;
+
+    renderMuscles();
+  });
+});
+
+// Live search
+searchInput.addEventListener("input", renderMuscles);
+
+// Close details
+document.getElementById("closeDetails").addEventListener("click", () => {
+  details.classList.remove("show");
+  selectedMuscle = null;
+
+  document.querySelectorAll(".muscle-card").forEach(card => {
+    card.classList.remove("selected");
+  });
+
+  document.querySelectorAll(".muscle-zone").forEach(zone => {
+    zone.classList.remove("selected");
+  });
+});
+
+// Interactive diagram areas
+document.querySelectorAll(".muscle-zone").forEach(zone => {
+  zone.addEventListener("click", () => {
+    const area = zone.dataset.area;
+
+    document.querySelectorAll(".muscle-zone").forEach(item => {
+      item.classList.remove("selected");
+    });
+
+    zone.classList.add("selected");
+
+    selectedCategory = area;
+
+    document.querySelectorAll(".category-btn").forEach(button => {
+      button.classList.toggle(
+        "active",
+        button.dataset.category === area
+      );
+    });
+
+    searchInput.value = "";
+    renderMuscles();
+
+    const firstMuscle = muscles.find(m => m.category === area);
+
+    if (firstMuscle) {
+      showMuscle(firstMuscle);
+    }
+  });
+});
+
+// Initial render
+renderMuscles();
+</script>
 
 </body>
 </html>
