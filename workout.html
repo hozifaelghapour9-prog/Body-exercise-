@@ -25,8 +25,6 @@
       box-sizing: border-box;
     }
 
-    /* HERO */
-
     .workout-hero {
       width: 100%;
       overflow: hidden;
@@ -56,8 +54,6 @@
       line-height: 1.5;
       letter-spacing: 0.5px;
     }
-
-    /* MUSCLE ANATOMY SECTION */
 
     .anatomy-section {
       margin-top: 22px;
@@ -116,8 +112,6 @@
       margin: 15px 0;
     }
 
-    /* SEARCH */
-
     .muscle-search {
       width: 100%;
       height: 48px;
@@ -140,8 +134,6 @@
       color: #82909d;
     }
 
-    /* CATEGORY */
-
     .muscle-category {
       margin-bottom: 16px;
     }
@@ -153,8 +145,6 @@
       margin: 18px 0 9px;
       text-transform: uppercase;
     }
-
-    /* MUSCLE BUTTONS */
 
     .muscle-list {
       display: grid;
@@ -206,8 +196,6 @@
       padding: 25px 5px;
     }
 
-    /* ANATOMY MODAL */
-
     .muscle-dialog {
       width: calc(100% - 30px);
       max-width: 520px;
@@ -256,11 +244,19 @@
     .muscle-dialog img {
       display: block;
       width: 100%;
-      max-height: 440px;
+      height: 340px;
       object-fit: contain;
       background: #ffffff;
       border-radius: 10px;
       margin-bottom: 15px;
+    }
+
+    .image-status {
+      color: #aeb9c4;
+      font-size: 12px;
+      line-height: 1.6;
+      text-align: center;
+      margin: -5px 0 14px;
     }
 
     .dialog-muscle-name {
@@ -301,8 +297,6 @@
       color: #b7e0d2;
     }
 
-    /* MOBILE */
-
     @media (max-width: 480px) {
       .workout-hero img {
         height: 220px;
@@ -331,10 +325,7 @@
 
   <main class="workout-main">
 
-    <!-- WORKOUT HERO -->
-
     <section class="workout-hero">
-
       <img
         src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=85"
         alt="Dark professional gym interior"
@@ -346,11 +337,7 @@
           who you were yesterday
         </p>
       </div>
-
     </section>
-
-
-    <!-- MUSCLE ANATOMY -->
 
     <section class="anatomy-section">
 
@@ -369,8 +356,6 @@
             location, structure and main function.
           </p>
 
-          <!-- SEARCH -->
-
           <input
             type="search"
             id="muscleSearch"
@@ -378,8 +363,6 @@
             placeholder="Search muscles... / ابحث عن عضلة"
             autocomplete="off"
           >
-
-          <!-- MUSCLE GROUPS -->
 
           <div id="muscleGroups">
 
@@ -422,29 +405,17 @@
           <p class="anatomy-credit">
             Anatomical reference illustrations:
             <a
-              href="https://commons.wikimedia.org/wiki/File:Muscles_anterior_labeled.png"
+              href="https://commons.wikimedia.org/"
               target="_blank"
               rel="noopener"
-            >Anterior anatomy</a>
-            ·
-            <a
-              href="https://commons.wikimedia.org/wiki/File:Muscle_posterior_labeled.png"
-              target="_blank"
-              rel="noopener"
-            >Posterior anatomy</a>
+            >Wikimedia Commons</a>
             · Gray's Anatomy
           </p>
 
         </div>
-
       </details>
-
     </section>
-
   </main>
-
-
-  <!-- MUSCLE DETAILS DIALOG -->
 
   <dialog class="muscle-dialog" id="muscleDialog">
 
@@ -466,8 +437,11 @@
         alt="Anatomical muscle illustration"
       >
 
-      <h3 class="dialog-muscle-name" id="dialogName"></h3>
+      <p class="image-status" id="imageStatus">
+        Searching for anatomical illustration...
+      </p>
 
+      <h3 class="dialog-muscle-name" id="dialogName"></h3>
       <p class="dialog-arabic" id="dialogArabic"></p>
 
       <p class="dialog-label">LOCATION</p>
@@ -480,11 +454,7 @@
       <p class="dialog-text" id="dialogNote"></p>
 
     </div>
-
   </dialog>
-
-
-  <!-- BOTTOM NAVIGATION -->
 
   <nav class="bottom-nav" aria-label="Main navigation">
 
@@ -528,39 +498,24 @@
 
   </nav>
 
-
-  <!-- MUSCLE DATA AND INTERACTIONS -->
-
   <script>
-
-    const frontImage =
-      "https://upload.wikimedia.org/wikipedia/commons/e/e5/Muscles_anterior_labeled.png";
-
-    const backImage =
-      "https://upload.wikimedia.org/wikipedia/commons/4/46/Muscle_posterior_labeled.png";
-
-
     const muscles = [
-
-      // CHEST
 
       {
         name: "Pectoralis Major",
         arabic: "العضلة الصدرية الكبرى",
         category: "Chest",
-        view: "front",
+        search: "pectoralis major chest muscle anatomy isolated",
         location: "Located on the front of the chest, covering much of the upper rib cage.",
         function: "Moves the arm forward and inward, and helps rotate the arm inward.",
         note: "It is the large superficial muscle that forms most of the chest."
       },
 
-      // BACK
-
       {
         name: "Latissimus Dorsi",
         arabic: "العضلة الظهرية العريضة",
         category: "Back",
-        view: "back",
+        search: "latissimus dorsi muscle anatomy isolated",
         location: "Located across the middle and lower back, extending toward the upper arm.",
         function: "Pulls the arm downward and backward and helps bring it toward the body.",
         note: "It is one of the largest muscles of the back."
@@ -570,7 +525,7 @@
         name: "Trapezius",
         arabic: "العضلة شبه المنحرفة",
         category: "Back",
-        view: "back",
+        search: "trapezius muscle anatomy isolated",
         location: "Extends from the back of the neck across the upper back to the shoulders.",
         function: "Moves and stabilizes the shoulder blades and helps control neck movement.",
         note: "It has upper, middle and lower fiber regions."
@@ -580,31 +535,27 @@
         name: "Rhomboids",
         arabic: "العضلات المعينية",
         category: "Back",
-        view: "back",
+        search: "rhomboid major minor muscles anatomy",
         location: "Located between the spine and the inner borders of the shoulder blades.",
         function: "Pull the shoulder blades toward the spine and help stabilize them.",
         note: "They include the rhomboid major and rhomboid minor."
       },
 
-      // SHOULDERS
-
       {
         name: "Deltoid",
         arabic: "العضلة الدالية",
         category: "Shoulders",
-        view: "front",
+        search: "deltoid muscle anatomy isolated",
         location: "Covers the outer part of the shoulder joint.",
         function: "Raises the arm and assists with forward and backward shoulder movements.",
         note: "It has anterior, middle and posterior parts."
       },
 
-      // ARMS
-
       {
         name: "Biceps Brachii",
         arabic: "العضلة ذات الرأسين العضدية",
         category: "Arms",
-        view: "front",
+        search: "biceps brachii muscle anatomy isolated",
         location: "Located on the front of the upper arm.",
         function: "Bends the elbow and helps rotate the forearm so the palm faces upward.",
         note: "It has two heads: a long head and a short head."
@@ -614,7 +565,7 @@
         name: "Triceps Brachii",
         arabic: "العضلة ثلاثية الرؤوس العضدية",
         category: "Arms",
-        view: "back",
+        search: "triceps brachii muscle anatomy isolated",
         location: "Located on the back of the upper arm.",
         function: "Extends the elbow and straightens the arm.",
         note: "It has three heads: long, lateral and medial."
@@ -624,19 +575,17 @@
         name: "Brachioradialis",
         arabic: "العضلة العضدية الكعبرية",
         category: "Arms",
-        view: "front",
+        search: "brachioradialis muscle anatomy isolated",
         location: "Runs along the outer side of the forearm, near the elbow.",
         function: "Helps bend the elbow, especially with the thumb pointing upward.",
         note: "It is a prominent superficial forearm muscle."
       },
 
-      // LEGS
-
       {
         name: "Quadriceps Femoris",
         arabic: "العضلة رباعية الرؤوس الفخذية",
         category: "Legs",
-        view: "front",
+        search: "quadriceps femoris muscle anatomy isolated",
         location: "Located on the front of the thigh.",
         function: "Extends the knee and helps straighten the leg.",
         note: "It consists of four muscles: rectus femoris, vastus lateralis, vastus medialis and vastus intermedius."
@@ -646,7 +595,7 @@
         name: "Hamstrings",
         arabic: "عضلات الفخذ الخلفية",
         category: "Legs",
-        view: "back",
+        search: "hamstring muscles anatomy isolated",
         location: "Located on the back of the thigh.",
         function: "Bend the knee and help extend the hip.",
         note: "The main muscles are biceps femoris, semitendinosus and semimembranosus."
@@ -656,7 +605,7 @@
         name: "Gluteus Maximus",
         arabic: "العضلة الألوية الكبرى",
         category: "Legs",
-        view: "back",
+        search: "gluteus maximus muscle anatomy isolated",
         location: "Located in the buttock region.",
         function: "Extends and externally rotates the hip, especially during powerful movements.",
         note: "It is the largest and most superficial gluteal muscle."
@@ -666,7 +615,7 @@
         name: "Gastrocnemius",
         arabic: "العضلة التوأمية",
         category: "Legs",
-        view: "back",
+        search: "gastrocnemius muscle anatomy isolated",
         location: "Located in the superficial back of the lower leg, forming much of the calf.",
         function: "Helps point the foot downward and assists with knee flexion.",
         note: "It has two heads and joins the Achilles tendon."
@@ -676,19 +625,17 @@
         name: "Soleus",
         arabic: "العضلة النعلية",
         category: "Legs",
-        view: "back",
+        search: "soleus muscle anatomy isolated",
         location: "Located deep to the gastrocnemius in the back of the lower leg.",
         function: "Points the foot downward and helps maintain standing posture.",
         note: "It is a deep calf muscle."
       },
 
-      // CORE
-
       {
         name: "Rectus Abdominis",
         arabic: "العضلة المستقيمة البطنية",
         category: "Core",
-        view: "front",
+        search: "rectus abdominis muscle anatomy isolated",
         location: "Runs vertically along the front of the abdomen.",
         function: "Flexes the trunk and helps stabilize the abdominal wall.",
         note: "It is the muscle commonly associated with the six-pack appearance."
@@ -698,7 +645,7 @@
         name: "External Oblique",
         arabic: "العضلة المائلة الخارجية للبطن",
         category: "Core",
-        view: "front",
+        search: "external oblique muscle anatomy isolated",
         location: "Located on the outer sides of the abdominal wall.",
         function: "Helps rotate and bend the trunk and compress the abdomen.",
         note: "Its fibers run diagonally along the sides of the abdomen."
@@ -708,26 +655,22 @@
         name: "Transversus Abdominis",
         arabic: "العضلة المستعرضة البطنية",
         category: "Core",
-        view: "front",
+        search: "transversus abdominis muscle anatomy isolated",
         location: "Located deep within the abdominal wall, beneath the other abdominal muscle layers.",
         function: "Compresses the abdominal contents and contributes to trunk stability.",
-        note: "This is a deep muscle and is not separately visible in the superficial front-view illustration."
+        note: "This is a deep muscle beneath the superficial abdominal layers."
       },
 
       {
         name: "Erector Spinae",
         arabic: "العضلات الناصبة للفقار",
         category: "Core",
-        view: "back",
+        search: "erector spinae muscles anatomy isolated",
         location: "A group of muscles running vertically along both sides of the spine.",
         function: "Extends the spine and helps maintain upright posture and control spinal movement.",
         note: "It includes the iliocostalis, longissimus and spinalis muscle groups."
       }
-
     ];
-
-
-    // CATEGORY LISTS
 
     const categoryElements = {
       Chest: document.getElementById("chestList"),
@@ -738,12 +681,13 @@
       Core: document.getElementById("coreList")
     };
 
-
     const searchInput = document.getElementById("muscleSearch");
     const noResults = document.getElementById("noResults");
+    const dialog = document.getElementById("muscleDialog");
+    const muscleImage = document.getElementById("muscleImage");
+    const imageStatus = document.getElementById("imageStatus");
 
-
-    // RENDER MUSCLES
+    let currentImageRequest = 0;
 
     function renderMuscles(searchTerm = "") {
 
@@ -768,53 +712,147 @@
         visibleCount++;
 
         const button = document.createElement("button");
-
         button.type = "button";
         button.className = "muscle-item";
 
-        button.innerHTML = `
-          <strong>${muscle.name}</strong>
-          <small>${muscle.arabic}</small>
-          <span class="open-label">VIEW DETAILS →</span>
-        `;
+        const name = document.createElement("strong");
+        name.textContent = muscle.name;
+
+        const arabic = document.createElement("small");
+        arabic.textContent = muscle.arabic;
+
+        const label = document.createElement("span");
+        label.className = "open-label";
+        label.textContent = "VIEW DETAILS →";
+
+        button.append(name, arabic, label);
 
         button.addEventListener("click", () => {
           openMuscle(index);
         });
 
         categoryElements[muscle.category].appendChild(button);
-
       });
-
-
-      // HIDE EMPTY CATEGORIES
 
       document.querySelectorAll(".muscle-category").forEach(section => {
-
         const list = section.querySelector(".muscle-list");
-
         section.style.display =
           list.children.length > 0 ? "block" : "none";
-
       });
-
 
       noResults.style.display =
         visibleCount === 0 ? "block" : "none";
-
     }
-
-
-    // SEARCH
 
     searchInput.addEventListener("input", function() {
       renderMuscles(this.value.trim());
     });
 
+    async function findMuscleImage(muscle, requestId) {
 
-    // MUSCLE DETAILS
+      imageStatus.textContent =
+        "Searching Wikimedia Commons for this muscle...";
 
-    const dialog = document.getElementById("muscleDialog");
+      muscleImage.removeAttribute("src");
+
+      const query =
+        "filetype:bitmap " + muscle.search;
+
+      const apiUrl = new URL(
+        "https://commons.wikimedia.org/w/api.php"
+      );
+
+      apiUrl.search = new URLSearchParams({
+        action: "query",
+        generator: "search",
+        gsrsearch: query,
+        gsrnamespace: "6",
+        gsrlimit: "12",
+        prop: "imageinfo",
+        iiprop: "url",
+        iiurlwidth: "1000",
+        format: "json",
+        origin: "*"
+      }).toString();
+
+      try {
+
+        const response = await fetch(apiUrl.toString());
+
+        if (!response.ok) {
+          throw new Error("Image search failed");
+        }
+
+        const data = await response.json();
+
+        if (requestId !== currentImageRequest) {
+          return;
+        }
+
+        const pages = Object.values(data.query?.pages || {});
+
+        const validPages = pages.filter(page => {
+          const info = page.imageinfo?.[0];
+          const url = info?.thumburl || info?.url;
+
+          return url && !/\.svg(\?|$)/i.test(url);
+        });
+
+        if (!validPages.length) {
+          throw new Error("No image found");
+        }
+
+        const muscleWords = muscle.name
+          .toLowerCase()
+          .replace(/[^a-z0-9 ]/g, "")
+          .split(/\s+/)
+          .filter(word => word.length > 3);
+
+        validPages.sort((a, b) => {
+
+          const titleA = a.title.toLowerCase();
+          const titleB = b.title.toLowerCase();
+
+          const score = title =>
+            muscleWords.reduce((total, word) => {
+              return total + (title.includes(word) ? 1 : 0);
+            }, 0);
+
+          return score(titleB) - score(titleA);
+        });
+
+        const selected = validPages[0];
+        const info = selected.imageinfo[0];
+
+        const imageUrl = info.thumburl || info.url;
+
+        muscleImage.onload = () => {
+          if (requestId !== currentImageRequest) return;
+
+          imageStatus.textContent =
+            "Illustration source: Wikimedia Commons";
+        };
+
+        muscleImage.onerror = () => {
+          if (requestId !== currentImageRequest) return;
+
+          imageStatus.textContent =
+            "The selected image could not be loaded.";
+        };
+
+        muscleImage.src = imageUrl;
+
+      } catch (error) {
+
+        if (requestId !== currentImageRequest) {
+          return;
+        }
+
+        imageStatus.textContent =
+          "No suitable image was found. Try again later or check your internet connection.";
+
+      }
+    }
 
     function openMuscle(index) {
 
@@ -835,40 +873,33 @@
       document.getElementById("dialogNote").textContent =
         muscle.note;
 
-      const image = document.getElementById("muscleImage");
+      currentImageRequest++;
 
-      image.src =
-        muscle.view === "front" ? frontImage : backImage;
+      const requestId = currentImageRequest;
 
-      image.alt =
-        muscle.view === "front"
-          ? "Anterior human muscle anatomy"
-          : "Posterior human muscle anatomy";
+      muscleImage.removeAttribute("src");
+      muscleImage.alt = muscle.name + " anatomical illustration";
+
+      imageStatus.textContent =
+        "Searching for anatomical illustration...";
 
       dialog.showModal();
 
+      findMuscleImage(muscle, requestId);
     }
 
-
-    // CLOSE DIALOG
-
-    document.getElementById("closeDialog").addEventListener("click", () => {
-      dialog.close();
-    });
+    document.getElementById("closeDialog")
+      .addEventListener("click", () => {
+        dialog.close();
+      });
 
     dialog.addEventListener("click", function(event) {
-
       if (event.target === dialog) {
         dialog.close();
       }
-
     });
 
-
-    // INITIAL DISPLAY
-
     renderMuscles();
-
   </script>
 
 </body>
