@@ -56,7 +56,7 @@
       overflow: hidden;
     }
 
-    /* Daily Tip - Original Design */
+    /* Daily Tip */
 
     .daily-tip-section {
       width: 100%;
@@ -107,6 +107,70 @@
       letter-spacing: 1px;
     }
 
+    /* Important Information */
+
+    .important-section {
+      width: 100%;
+      margin: 30px auto;
+      direction: rtl;
+    }
+
+    .important-title {
+      color: #d0d0d0;
+      font-size: 25px;
+      font-weight: 800;
+      text-align: left;
+      direction: ltr;
+      margin: 0 0 14px;
+      letter-spacing: 1px;
+    }
+
+    .important-card {
+      position: relative;
+      width: 100%;
+      min-height: 240px;
+      box-sizing: border-box;
+      overflow: hidden;
+      border-radius: 14px;
+      padding: 28px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: #15191f;
+      background-image:
+        linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 0.82),
+          rgba(0, 0, 0, 0.58)
+        ),
+        url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1000&q=85");
+      background-size: cover;
+      background-position: center;
+      border: 1px solid #30363e;
+    }
+
+    .important-card h3 {
+      color: #ffffff;
+      font-size: 23px;
+      font-weight: 900;
+      margin: 0 0 14px;
+      text-align: right;
+    }
+
+    .important-card p {
+      color: #eeeeee;
+      font-size: 16px;
+      line-height: 1.9;
+      font-weight: 600;
+      margin: 0;
+      text-align: right;
+    }
+
+    .important-card .important-highlight {
+      color: #b7e0d2;
+      font-weight: 900;
+    }
+
     @media (max-width: 480px) {
       .hero-track > .hero-card {
         min-height: 310px;
@@ -124,6 +188,23 @@
 
       .daily-tip-quote strong {
         font-size: 30px;
+      }
+
+      .important-title {
+        font-size: 22px;
+      }
+
+      .important-card {
+        min-height: 230px;
+        padding: 24px 17px;
+      }
+
+      .important-card h3 {
+        font-size: 21px;
+      }
+
+      .important-card p {
+        font-size: 15px;
       }
     }
   </style>
@@ -309,6 +390,29 @@
           <span>Where</span>
           <strong>EXCUSES</strong>
           <strong>END</strong>
+        </p>
+      </div>
+
+    </section>
+
+    <!-- Important Information -->
+    <section class="important-section" aria-label="معلومات مهمة">
+
+      <h2 class="important-title" lang="en" dir="ltr">
+        IMPORTANT INFORMATION
+      </h2>
+
+      <div class="important-card">
+        <h3>التكنيك الصحيح أولاً</h3>
+
+        <p>
+          متستعجلش في زيادة الأوزان.
+          <br>
+          اهتم بأداء الحركة بشكل صحيح وتحكم في الوزن خلال التمرين.
+          <br>
+          <span class="important-highlight">
+            جودة التكرار أهم من الوزن اللي بترفعه.
+          </span>
         </p>
       </div>
 
