@@ -171,6 +171,60 @@
       font-weight: 900;
     }
 
+    /* Daily Motivation */
+
+    .motivation-section {
+      width: 100%;
+      margin: 30px auto;
+      direction: rtl;
+    }
+
+    .motivation-title {
+      color: #d0d0d0;
+      font-size: 25px;
+      font-weight: 800;
+      text-align: right;
+      margin: 0 0 14px;
+    }
+
+    .motivation-card {
+      position: relative;
+      width: 100%;
+      min-height: 220px;
+      box-sizing: border-box;
+      overflow: hidden;
+      border-radius: 14px;
+      padding: 28px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #15191f;
+      background-image:
+        linear-gradient(
+          rgba(0, 0, 0, 0.55),
+          rgba(0, 0, 0, 0.78)
+        ),
+        url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1000&q=85");
+      background-size: cover;
+      background-position: center;
+      border: 1px solid #30363e;
+    }
+
+    .motivation-text {
+      color: #ffffff;
+      font-size: 21px;
+      font-weight: 800;
+      line-height: 2;
+      text-align: center;
+      margin: 0;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+    }
+
+    .motivation-text span {
+      color: #b7e0d2;
+      font-weight: 900;
+    }
+
     @media (max-width: 480px) {
       .hero-track > .hero-card {
         min-height: 310px;
@@ -205,6 +259,19 @@
 
       .important-card p {
         font-size: 15px;
+      }
+
+      .motivation-title {
+        font-size: 22px;
+      }
+
+      .motivation-card {
+        min-height: 210px;
+        padding: 24px 17px;
+      }
+
+      .motivation-text {
+        font-size: 18px;
       }
     }
   </style>
@@ -413,6 +480,23 @@
           <span class="important-highlight">
             جودة التكرار أهم من الوزن اللي بترفعه.
           </span>
+        </p>
+      </div>
+
+    </section>
+
+    <!-- Daily Motivation -->
+    <section class="motivation-section" aria-label="تحفيز يومي">
+
+      <h2 class="motivation-title">تحفيز يومي</h2>
+
+      <div class="motivation-card">
+        <p class="motivation-text">
+          مفيش وقت مثالي تبدأ فيه...
+          <br>
+          ابدأ دلوقتي، وخلي كل يوم خطوة
+          <br>
+          <span>أقرب للنسخة الأقوى منك.</span>
         </p>
       </div>
 
