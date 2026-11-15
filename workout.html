@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WORKOUT | BODY RESET</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .workout-hero {
+      text-align: center;
+      padding: 45px 15px;
+      background: linear-gradient(135deg, #192b32, #101820);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      margin-bottom: 35px;
+    }
+
+    .workout-hero h1 {
+      color: var(--lime);
+      font-size: clamp(30px, 6vw, 48px);
+      letter-spacing: 2px;
+    }
+
+    .workout-hero p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .workout-categories {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .workout-category {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 25px 12px;
+      text-align: center;
+      transition: .2s;
+    }
+
+    .workout-category:hover {
+      border-color: var(--lime);
+      transform: translateY(-4px);
+    }
+
+    .workout-category .emoji {
+      font-size: 35px;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .workout-category h3 {
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .workout-category p {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .workout-category a {
+      display: inline-block;
+      margin-top: 12px;
+      color: var(--lime);
+      font-size: 12px;
+    }
+
+    .workout-note {
+      margin-top: 30px;
+      padding: 20px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      line-height: 2;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media(max-width:620px) {
+      .workout-categories {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+
+<body data-page="public">
+
+  <header class="site-header">
+    <a href="index.html" class="brand">
+      <div class="brand-mark">B</div>
+      <div>
+        <strong>BODY RESET</strong>
+        <small>BUILD YOUR BEST SELF</small>
+      </div>
+    </a>
+
+    <a href="index.html" class="btn btn-quiet">الرئيسية</a>
+  </header>
+
+  <main class="public-main">
+
+    <section class="workout-hero">
+      <h1>WORKOUT</h1>
+      <p>اختار العضلة وابدأ رحلتك نحو جسم أقوى</p>
+    </section>
+
+    <section class="public-section">
+      <div class="section-heading">
+        <div>
+          <h2>أقسام التمارين</h2>
+          <p>اختار القسم اللي عايز تتمرن عليه</p>
+        </div>
+      </div>
+
+      <div class="workout-categories">
+
+        <article class="workout-category">
+          <span class="emoji">🏋️</span>
+          <h3>الصدر</h3>
+          <p>CHEST WORKOUT</p>
+          <a href="#chest">عرض التمارين ←</a>
+        </article>
+
+        <article class="workout-category">
+          <span class="emoji">💪</span>
+          <h3>الظهر</h3>
+          <p>BACK WORKOUT</p>
+          <a href="#back">عرض التمارين ←</a>
+        </article>
+
+        <article class="workout-category">
+          <span class="emoji">🔥</span>
+          <h3>الأكتاف</h3>
+          <p>SHOULDER WORKOUT</p>
+          <a href="#shoulders">عرض التمارين ←</a>
+        </article>
+
+        <article class="workout-category">
+          <span class="emoji">💪</span>
+          <h3>البايسبس</h3>
+          <p>BICEPS WORKOUT</p>
+          <a href="#biceps">عرض التمارين ←</a>
+        </article>
+
+        <article class="workout-category">
+          <span class="emoji">⚡</span>
+          <h3>الترايسبس</h3>
+          <p>TRICEPS WORKOUT</p>
+          <a href="#triceps">عرض التمارين ←</a>
+        </article>
+
+        <article class="workout-category">
+          <span class="emoji">🦵</span>
+          <h3>الأرجل</h3>
+          <p>LEG WORKOUT</p>
+          <a href="#legs">عرض التمارين ←</a>
+        </article>
+
+        <article class="workout-category">
+          <span class="emoji">🎯</span>
+          <h3>البطن</h3>
+          <p>ABS WORKOUT</p>
+          <a href="#abs">عرض التمارين ←</a>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="public-section" id="chest">
+      <div class="section-heading"><h2>تمارين الصدر</h2></div>
+      <div class="workout-note">Bench Press – Incline Dumbbell Press – Chest Fly</div>
+    </section>
+
+    <section class="public-section" id="back">
+      <div class="section-heading"><h2>تمارين الظهر</h2></div>
+      <div class="workout-note">Lat Pulldown – Seated Row – Barbell Row</div>
+    </section>
+
+    <section class="public-section" id="shoulders">
+      <div class="section-heading"><h2>تمارين الأكتاف</h2></div>
+      <div class="workout-note">Shoulder Press – Lateral Raise – Rear Delt Fly</div>
+    </section>
+
+    <section class="public-section" id="biceps">
+      <div class="section-heading"><h2>تمارين البايسبس</h2></div>
+      <div class="workout-note">Dumbbell Curl – Hammer Curl – Barbell Curl</div>
+    </section>
+
+    <section class="public-section" id="triceps">
+      <div class="section-heading"><h2>تمارين الترايسبس</h2></div>
+      <div class="workout-note">Triceps Pushdown – Overhead Extension – Dips</div>
+    </section>
+
+    <section class="public-section" id="legs">
+      <div class="section-heading"><h2>تمارين الأرجل</h2></div>
+      <div class="workout-note">Squat – Leg Press – Leg Extension – Leg Curl</div>
+    </section>
+
+    <section class="public-section" id="abs">
+      <div class="section-heading"><h2>تمارين البطن</h2></div>
+      <div class="workout-note">Crunches – Plank – Leg Raises</div>
+    </section>
+
+    <div class="workout-note">
+      <strong style="color:var(--lime)">نصيحة BODY RESET</strong>
+      <p>اهتم بالتكنيك الصحيح، وابدأ بأوزان مناسبة لمستواك، وخد وقتك في الراحة بين المجموعات.</p>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    © BODY RESET - ALL RIGHTS RESERVED
+  </footer>
+
+  <nav class="bottom-nav">
+    <a href="index.html" class="bottom-nav-item">
+      <span>⌂</span>
+      <span>الرئيسية</span>
+    </a>
+    <a href="workout.html" class="bottom-nav-item active">
+      <span>🏋️</span>
+      <span>التمارين</span>
+    </a>
+  </nav>
+
+</body>
+</html>
