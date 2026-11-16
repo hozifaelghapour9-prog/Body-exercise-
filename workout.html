@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Workouts</title>
+
 <style>
 *{box-sizing:border-box}
 body{
@@ -32,16 +33,84 @@ main{padding:25px;max-width:850px;margin:auto}
 .exercise-box h2{margin:0;color:#e5a323;font-size:25px}
 .exercise-box p{margin:9px 0 0;color:#bbb}
 .exercise-box .arrow{font-size:30px;color:#e5a323}
+
+.exercises-section{margin-top:25px}
+.exercises-title{
+  color:#e5a323;font-size:25px;
+  margin:0 0 8px;font-weight:900
+}
+.exercises-description{
+  color:#aaa;font-size:14px;line-height:1.6;
+  margin:0 0 18px
+}
+.exercise-search{
+  width:100%;padding:14px;
+  background:#1d1f24;color:white;
+  border:1px solid #444;border-radius:10px;
+  font-size:15px;margin-bottom:18px;
+  outline:none
+}
+.exercise-search:focus{border-color:#e5a323}
+.exercise-category{margin-bottom:22px}
+.exercise-category h3{
+  color:#e5a323;font-size:15px;
+  letter-spacing:1px;margin:0 0 10px
+}
+.exercise-card{
+  background:#1d1f24;border:1px solid #383838;
+  border-radius:14px;padding:15px;
+  margin-bottom:12px
+}
+.exercise-name{
+  color:#e5a323;font-size:18px;
+  font-weight:bold;margin:0 0 13px
+}
+.exercise-info{margin:9px 0}
+.exercise-info strong{
+  display:block;color:#e5a323;
+  font-size:12px;letter-spacing:.5px;
+  margin-bottom:5px
+}
+.exercise-info p{
+  color:#ddd;font-size:14px;
+  line-height:1.7;margin:0
+}
+.exercise-video{
+  width:100%;margin-top:13px;
+  border-radius:10px;background:#090909;
+  display:block;max-height:350px
+}
+.video-placeholder{
+  width:100%;min-height:150px;
+  background:#111318;border:1px dashed #777;
+  border-radius:10px;margin-top:13px;
+  display:flex;align-items:center;
+  justify-content:center;text-align:center;
+  padding:15px;color:#aaa;font-size:13px;
+  line-height:1.7
+}
+.no-exercises{
+  display:none;text-align:center;
+  padding:25px;color:#aaa
+}
 nav{
   position:fixed;bottom:0;left:0;right:0;
   background:#191a1f;border-top:1px solid #333;
-  display:flex;justify-content:space-around;padding:13px 5px
+  display:flex;justify-content:space-around;padding:13px 5px;
+  z-index:10
 }
 nav a{color:#aaa;text-decoration:none;font-size:12px;text-align:center}
 nav a.active{color:#e5a323}
 nav span{display:block;font-size:20px;margin-bottom:4px}
+
+@media(max-width:480px){
+  main{padding:18px}
+  header{height:210px}
+  .exercise-box{padding:20px}
+}
 </style>
 </head>
+
 <body>
 
 <header>
@@ -50,6 +119,8 @@ nav span{display:block;font-size:20px;margin-bottom:4px}
 </header>
 
 <main>
+
+  <!-- ORIGINAL EXERCISE CARD - UNCHANGED -->
   <a class="exercise-box" href="exercises.html">
     <div>
       <h2>EXERCISE</h2>
@@ -57,14 +128,340 @@ nav span{display:block;font-size:20px;margin-bottom:4px}
     </div>
     <div class="arrow">←</div>
   </a>
+
+  <!-- EXERCISES SECTION -->
+  <section class="exercises-section">
+
+    <h2 class="exercises-title">EXERCISES</h2>
+    <p class="exercises-description">
+      Explore exercises, learn the correct technique
+      and identify the target muscle.
+    </p>
+
+    <input
+      type="search"
+      class="exercise-search"
+      id="exerciseSearch"
+      placeholder="Search exercises..."
+    >
+
+    <div id="exerciseContainer"></div>
+
+    <div class="no-exercises" id="noExercises">
+      No exercises found.
+    </div>
+
+  </section>
+
 </main>
 
+<!-- ORIGINAL BOTTOM NAVIGATION - UNCHANGED -->
 <nav>
   <a href="profile.html"><span>👤</span>Profile</a>
   <a href="progress.html"><span>📊</span>Progress</a>
   <a href="workout.html" class="active"><span>🏋️</span>Workouts</a>
   <a href="index.html"><span>⌂</span>Home</a>
 </nav>
+
+<script>
+
+/*
+  ADD OR EDIT EXERCISES HERE.
+
+  Video files go inside the videos folder.
+  Example: videos/bench-press.mp4
+*/
+
+const exercises = [
+
+{
+name:"Bench Press",
+category:"CHEST",
+muscle:"Pectoralis Major",
+technique:"Lie on the bench, grip the bar slightly wider than shoulder width. Lower it with control toward your chest, then press upward without locking your elbows aggressively.",
+video:"videos/bench-press.mp4"
+},
+
+{
+name:"Incline Dumbbell Press",
+category:"CHEST",
+muscle:"Upper Chest",
+technique:"Set the bench to an incline. Hold the dumbbells above your chest, lower them slowly beside your upper chest, then press upward.",
+video:"videos/incline-dumbbell-press.mp4"
+},
+
+{
+name:"Chest Fly",
+category:"CHEST",
+muscle:"Pectoralis Major",
+technique:"Lie on a bench with a slight bend in your elbows. Open your arms in a controlled arc, then bring the dumbbells together above your chest.",
+video:"videos/chest-fly.mp4"
+},
+
+{
+name:"Push Up",
+category:"CHEST",
+muscle:"Chest, Triceps",
+technique:"Keep your body in a straight line. Lower your chest toward the floor by bending your elbows, then push back up.",
+video:"videos/push-up.mp4"
+},
+
+{
+name:"Lat Pulldown",
+category:"BACK",
+muscle:"Latissimus Dorsi",
+technique:"Grip the bar wider than shoulder width. Pull it toward your upper chest while keeping your torso stable, then return slowly.",
+video:"videos/lat-pulldown.mp4"
+},
+
+{
+name:"Seated Cable Row",
+category:"BACK",
+muscle:"Latissimus Dorsi, Rhomboids",
+technique:"Sit upright, pull the handle toward your abdomen, squeeze your shoulder blades together, then extend your arms slowly.",
+video:"videos/seated-cable-row.mp4"
+},
+
+{
+name:"Barbell Row",
+category:"BACK",
+muscle:"Latissimus Dorsi, Trapezius",
+technique:"Hinge at your hips with a neutral spine. Pull the bar toward your lower ribs, then lower it under control.",
+video:"videos/barbell-row.mp4"
+},
+
+{
+name:"Pull Up",
+category:"BACK",
+muscle:"Latissimus Dorsi",
+technique:"Hang from the bar with a secure grip. Pull your body upward until your chin reaches bar height, then lower slowly.",
+video:"videos/pull-up.mp4"
+},
+
+{
+name:"Shoulder Press",
+category:"SHOULDERS",
+muscle:"Deltoid",
+technique:"Hold dumbbells at shoulder height. Press them overhead while keeping your torso stable, then lower under control.",
+video:"videos/shoulder-press.mp4"
+},
+
+{
+name:"Lateral Raise",
+category:"SHOULDERS",
+muscle:"Middle Deltoid",
+technique:"Hold dumbbells beside your body. Raise your arms out to the sides to shoulder height with a slight elbow bend, then lower slowly.",
+video:"videos/lateral-raise.mp4"
+},
+
+{
+name:"Front Raise",
+category:"SHOULDERS",
+muscle:"Anterior Deltoid",
+technique:"Raise the dumbbells in front of your body to approximately shoulder height. Avoid swinging and lower slowly.",
+video:"videos/front-raise.mp4"
+},
+
+{
+name:"Biceps Curl",
+category:"ARMS",
+muscle:"Biceps Brachii",
+technique:"Keep your elbows close to your sides. Curl the dumbbells toward your shoulders, then lower them slowly without swinging.",
+video:"videos/biceps-curl.mp4"
+},
+
+{
+name:"Hammer Curl",
+category:"ARMS",
+muscle:"Biceps, Brachioradialis",
+technique:"Hold dumbbells with palms facing each other. Bend your elbows to raise the weights, keeping your wrists neutral.",
+video:"videos/hammer-curl.mp4"
+},
+
+{
+name:"Triceps Pushdown",
+category:"ARMS",
+muscle:"Triceps Brachii",
+technique:"Keep your elbows close to your torso. Push the cable downward until your arms are extended, then return slowly.",
+video:"videos/triceps-pushdown.mp4"
+},
+
+{
+name:"Overhead Triceps Extension",
+category:"ARMS",
+muscle:"Triceps Brachii",
+technique:"Hold one dumbbell overhead. Bend your elbows to lower it behind your head, then extend your arms upward.",
+video:"videos/overhead-triceps-extension.mp4"
+},
+
+{
+name:"Squat",
+category:"LEGS",
+muscle:"Quadriceps, Gluteus Maximus",
+technique:"Stand with feet around shoulder width. Bend your hips and knees while keeping your chest stable, then push through your feet to stand.",
+video:"videos/squat.mp4"
+},
+
+{
+name:"Leg Press",
+category:"LEGS",
+muscle:"Quadriceps, Gluteus Maximus",
+technique:"Place your feet on the platform. Lower the weight with control, then press through your feet without locking your knees.",
+video:"videos/leg-press.mp4"
+},
+
+{
+name:"Leg Extension",
+category:"LEGS",
+muscle:"Quadriceps Femoris",
+technique:"Sit with your knees aligned with the machine pivot. Extend your knees to raise the pad, then lower slowly.",
+video:"videos/leg-extension.mp4"
+},
+
+{
+name:"Leg Curl",
+category:"LEGS",
+muscle:"Hamstrings",
+technique:"Position your legs against the machine pad. Bend your knees to bring your heels toward your body, then return slowly.",
+video:"videos/leg-curl.mp4"
+},
+
+{
+name:"Romanian Deadlift",
+category:"LEGS",
+muscle:"Hamstrings, Gluteus Maximus",
+technique:"Hold the bar in front of your thighs. Push your hips backward with a slight knee bend, lower the bar along your legs, then stand by driving your hips forward.",
+video:"videos/romanian-deadlift.mp4"
+},
+
+{
+name:"Standing Calf Raise",
+category:"LEGS",
+muscle:"Gastrocnemius, Soleus",
+technique:"Stand with the balls of your feet on the platform. Raise your heels, pause briefly, then lower your heels with control.",
+video:"videos/calf-raise.mp4"
+},
+
+{
+name:"Plank",
+category:"ABS & CORE",
+muscle:"Transversus Abdominis, Rectus Abdominis",
+technique:"Support your body on your forearms and toes. Keep your body straight, brace your abdomen and avoid letting your hips drop.",
+video:"videos/plank.mp4"
+},
+
+{
+name:"Crunch",
+category:"ABS & CORE",
+muscle:"Rectus Abdominis",
+technique:"Lie on your back with knees bent. Lift your shoulders toward your pelvis using your abdominal muscles, then lower slowly.",
+video:"videos/crunch.mp4"
+},
+
+{
+name:"Russian Twist",
+category:"ABS & CORE",
+muscle:"Obliques",
+technique:"Sit with your knees bent and torso slightly leaned back. Rotate your torso from side to side while keeping the movement controlled.",
+video:"videos/russian-twist.mp4"
+},
+
+{
+name:"Hanging Knee Raise",
+category:"ABS & CORE",
+muscle:"Rectus Abdominis",
+technique:"Hang from a bar with a stable grip. Raise your knees toward your chest without swinging, then lower them slowly.",
+video:"videos/hanging-knee-raise.mp4"
+}
+
+];
+
+const container=document.getElementById("exerciseContainer");
+const search=document.getElementById("exerciseSearch");
+const noExercises=document.getElementById("noExercises");
+
+function renderExercises(term=""){
+
+container.innerHTML="";
+let count=0;
+
+const categories=[...new Set(exercises.map(item=>item.category))];
+
+categories.forEach(category=>{
+
+const matching=exercises.filter(item=>
+item.category===category &&
+(item.name+" "+item.muscle+" "+item.technique+" "+item.category)
+.toLowerCase().includes(term.toLowerCase())
+);
+
+if(!matching.length)return;
+
+const section=document.createElement("section");
+section.className="exercise-category";
+
+const heading=document.createElement("h3");
+heading.textContent=category;
+section.appendChild(heading);
+
+matching.forEach(item=>{
+
+count++;
+
+const card=document.createElement("article");
+card.className="exercise-card";
+
+const title=document.createElement("h3");
+title.className="exercise-name";
+title.textContent=item.name;
+
+const technique=document.createElement("div");
+technique.className="exercise-info";
+technique.innerHTML="<strong>TECHNIQUE</strong>";
+const techniqueText=document.createElement("p");
+techniqueText.textContent=item.technique;
+technique.appendChild(techniqueText);
+
+const muscle=document.createElement("div");
+muscle.className="exercise-info";
+muscle.innerHTML="<strong>TARGET MUSCLE</strong>";
+const muscleText=document.createElement("p");
+muscleText.textContent=item.muscle;
+muscle.appendChild(muscleText);
+
+const video=document.createElement("video");
+video.className="exercise-video";
+video.controls=true;
+video.preload="metadata";
+video.src=item.video;
+
+video.addEventListener("error",()=>{
+video.style.display="none";
+const placeholder=document.createElement("div");
+placeholder.className="video-placeholder";
+placeholder.textContent="VIDEO PLACEHOLDER — Upload your video to: "+item.video;
+card.appendChild(placeholder);
+});
+
+card.append(title,technique,muscle,video);
+section.appendChild(card);
+
+});
+
+container.appendChild(section);
+
+});
+
+noExercises.style.display=count===0?"block":"none";
+}
+
+search.addEventListener("input",()=>{
+renderExercises(search.value.trim());
+});
+
+renderExercises();
+
+</script>
 
 </body>
 </html>
