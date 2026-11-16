@@ -1,156 +1,63 @@
 
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>التمارين | Body Exercise</title>
-
+<title>Workouts</title>
 <style>
 *{box-sizing:border-box}
 body{
-  margin:0;background:#101114;color:#fff;
-  font-family:Arial,Tahoma,sans-serif;padding-bottom:85px
+  margin:0;background:#101114;color:white;
+  font-family:Arial,sans-serif;
+  min-height:100vh;padding-bottom:80px
 }
 header{
-  min-height:210px;padding:35px 22px;
-  background:linear-gradient(90deg,rgba(0,0,0,.9),rgba(0,0,0,.35)),
-  url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200") center/cover;
-  display:flex;flex-direction:column;justify-content:center
+  height:230px;padding:30px;
+  display:flex;flex-direction:column;justify-content:center;
+  background:linear-gradient(90deg,#000b,#0003),
+  url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200") center/cover
 }
 header h1{font-size:32px;margin:0 0 10px}
-header p{color:#ddd;line-height:1.7;margin:0}
-.container{padding:20px;max-width:1000px;margin:auto}
-.search{
-  width:100%;padding:15px;border-radius:12px;
-  border:1px solid #393b42;background:#1c1e23;
-  color:white;font-size:16px;outline:none;margin-bottom:15px
-}
-.filters{display:flex;gap:9px;overflow-x:auto;padding-bottom:12px}
-.filter{
-  flex-shrink:0;padding:10px 16px;border:1px solid #444;
-  border-radius:25px;background:#202228;color:#ddd;
-  cursor:pointer
-}
-.filter.active{background:#e5a323;color:#111;border-color:#e5a323}
-.count{color:#aaa;font-size:13px;margin:8px 0 16px}
-.grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:14px
-}
-.exercise{
-  background:#1b1d22;border:1px solid #303239;
-  border-radius:15px;padding:17px;cursor:pointer;
+header p{color:#ddd}
+main{padding:25px;max-width:850px;margin:auto}
+.exercise-box{
+  display:flex;align-items:center;justify-content:space-between;
+  background:#1d1f24;border:1px solid #e5a323;
+  border-radius:16px;padding:25px;
+  color:white;text-decoration:none;
   transition:.2s
 }
-.exercise:hover{border-color:#e5a323;transform:translateY(-2px)}
-.exercise h3{margin:0 0 12px;font-size:18px}
-.exercise .en{font-size:12px;color:#aaa;direction:ltr;text-align:right}
-.muscle{
-  display:inline-block;background:#332b1b;color:#f3bd55;
-  padding:6px 10px;border-radius:20px;font-size:12px;margin-top:10px
-}
-.open-video{color:#e5a323;font-size:13px;margin-top:13px}
-.empty{text-align:center;color:#aaa;padding:35px;display:none}
-.modal{
-  display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);
-  z-index:10;overflow-y:auto;padding:18px
-}
-.modal-box{
-  max-width:700px;margin:25px auto;background:#1b1d22;
-  border:1px solid #41434a;border-radius:17px;padding:20px
-}
-.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
-.close{
-  background:#34363d;color:white;border:0;border-radius:9px;
-  padding:9px 13px;font-size:18px;cursor:pointer
-}
-.video{
-  position:relative;width:100%;padding-top:56.25%;
-  margin:18px 0;border-radius:12px;overflow:hidden;background:#080808
-}
-.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.info-title{color:#e5a323;margin:20px 0 8px}
-.info-text{color:#ddd;line-height:1.9;margin:0}
-.warning{color:#aaa;font-size:12px;line-height:1.7;margin-top:18px}
+.exercise-box:hover{background:#292a2f;transform:translateY(-3px)}
+.exercise-box h2{margin:0;color:#e5a323;font-size:25px}
+.exercise-box p{margin:9px 0 0;color:#bbb}
+.exercise-box .arrow{font-size:30px;color:#e5a323}
 nav{
-  position:fixed;bottom:0;left:0;right:0;background:#191a1f;
-  border-top:1px solid #333;display:flex;justify-content:space-around;
-  padding:12px 5px;z-index:5
+  position:fixed;bottom:0;left:0;right:0;
+  background:#191a1f;border-top:1px solid #333;
+  display:flex;justify-content:space-around;padding:13px 5px
 }
 nav a{color:#aaa;text-decoration:none;font-size:12px;text-align:center}
 nav a.active{color:#e5a323}
 nav span{display:block;font-size:20px;margin-bottom:4px}
-@media(max-width:450px){
-  header h1{font-size:27px}
-  .container{padding:15px}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .exercise{padding:13px}
-  .exercise h3{font-size:15px}
-}
 </style>
 </head>
-
 <body>
 
 <header>
-  <h1>مكتبة التمارين</h1>
-  <p>ابحث عن التمرين، واعرف العضلة المستهدفة وطريقة الأداء الصحيحة، وشاهد الشرح بالفيديو.</p>
+  <h1>WORKOUTS</h1>
+  <p>Your training starts here.</p>
 </header>
 
-<main class="container">
-
-  <input id="search" class="search" type="search"
-  placeholder="ابحث باسم التمرين أو العضلة...">
-
-  <div class="filters" id="filters">
-    <button class="filter active" data-category="الكل">الكل</button>
-    <button class="filter" data-category="الصدر">الصدر</button>
-    <button class="filter" data-category="الظهر">الظهر</button>
-    <button class="filter" data-category="الأكتاف">الأكتاف</button>
-    <button class="filter" data-category="البايسبس">البايسبس</button>
-    <button class="filter" data-category="الترايسبس">الترايسبس</button>
-    <button class="filter" data-category="الأرجل">الأرجل</button>
-    <button class="filter" data-category="البطن">البطن</button>
-  </div>
-
-  <div class="count" id="count"></div>
-  <div class="grid" id="exerciseGrid"></div>
-  <div class="empty" id="empty">مفيش تمارين مطابقة للبحث.</div>
-
+<main>
+  <a class="exercise-box" href="exercises.html">
+    <div>
+      <h2>EXERCISE</h2>
+      <p>Open your exercise library</p>
+    </div>
+    <div class="arrow">←</div>
+  </a>
 </main>
-
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h2 id="modalTitle"></h2>
-      <button class="close" onclick="closeModal()">✕</button>
-    </div>
-
-    <div class="video">
-      <iframe id="videoFrame"
-        src=""
-        title="شرح التمرين"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen>
-      </iframe>
-    </div>
-
-    <div class="info-title">العضلة المستهدفة</div>
-    <p class="info-text" id="modalMuscle"></p>
-
-    <div class="info-title">طريقة الأداء</div>
-    <p class="info-text" id="modalTechnique"></p>
-
-    <div class="info-title">نصيحة</div>
-    <p class="info-text" id="modalTip"></p>
-
-    <p class="warning">
-      ابدأ بوزن مناسب لمستواك، وحافظ على التحكم في الحركة.
-      أوقف التمرين إذا شعرت بألم غير طبيعي.
-    </p>
-  </div>
-</div>
 
 <nav>
   <a href="profile.html"><span>👤</span>Profile</a>
@@ -158,334 +65,6 @@ nav span{display:block;font-size:20px;margin-bottom:4px}
   <a href="workout.html" class="active"><span>🏋️</span>Workouts</a>
   <a href="index.html"><span>⌂</span>Home</a>
 </nav>
-
-<script>
-// توقيت بداية شرح كل تمرين داخل الفيديو
-// يمكن إضافة تمارين جديدة بنفس طريقة كتابة العناصر الموجودة.
-
-const exercises = [
-  {
-    name:"ضغط البنش بالبار", en:"Barbell Bench Press",
-    category:"الصدر", muscle:"عضلات الصدر، والترايسبس، والكتف الأمامي",
-    start:352,
-    technique:"استلقِ على البنش وثبّت قدميك على الأرض. أمسك البار بقبضة أوسع قليلًا من الكتفين. أنزل البار بتحكم ناحية منتصف الصدر، ثم ادفعه لأعلى دون قفل المرفقين بعنف.",
-    tip:"لا ترفع أسفل ظهرك بشكل مبالغ فيه، ولا ترتد بالبار عن صدرك."
-  },
-  {
-    name:"ضغط دمبل مستوي", en:"Dumbbell Chest Press",
-    category:"الصدر", muscle:"الصدر والترايسبس والكتف الأمامي",
-    start:428,
-    technique:"استلقِ على البنش مع دمبل في كل يد. ابدأ والدمبل بجانب الصدر، ثم ادفعهما لأعلى. أنزلهما ببطء حتى مستوى الصدر.",
-    tip:"حافظ على ثبات الرسغين وتحكم في نزول الدمبل."
-  },
-  {
-    name:"ضغط بنش مائل", en:"Incline Bench Press",
-    category:"الصدر", muscle:"الجزء العلوي من الصدر والكتف الأمامي",
-    start:485,
-    technique:"اضبط البنش على ميل بسيط. أمسك البار وأنزله باتجاه أعلى الصدر، ثم ادفعه لأعلى بتحكم.",
-    tip:"لا تجعل زاوية البنش مرتفعة جدًا حتى لا يتحول التركيز بالكامل إلى الكتف."
-  },
-  {
-    name:"فراشة الصدر", en:"Pec Deck Fly",
-    category:"الصدر", muscle:"عضلات الصدر",
-    start:616,
-    technique:"اجلس وظهرك ثابت على المقعد. افتح الذراعين ثم قرّبهما أمام الصدر ببطء مع ثني بسيط للمرفقين.",
-    tip:"لا تستخدم وزنًا يجبرك على تحريك جسمك."
-  },
-  {
-    name:"تمرين الضغط", en:"Push Ups",
-    category:"الصدر", muscle:"الصدر والترايسبس والكتف الأمامي",
-    start:664,
-    technique:"ضع يديك على الأرض أوسع قليلًا من الكتفين. اجعل جسمك مستقيمًا، وانزل حتى يقترب صدرك من الأرض، ثم ادفع لأعلى.",
-    tip:"حافظ على استقامة الجسم ولا تترك الحوض يهبط."
-  },
-  {
-    name:"سحب أمامي واسع", en:"Lat Pulldown",
-    category:"الظهر", muscle:"العضلة الظهرية العريضة والبايسبس",
-    start:20,
-    technique:"اجلس وثبّت الفخذين أسفل الوسادة. اسحب البار باتجاه أعلى الصدر مع توجيه المرفقين لأسفل، ثم أعده ببطء.",
-    tip:"لا تسحب البار خلف الرقبة، ولا تستخدم اندفاع الجسم."
-  },
-  {
-    name:"سحب كيبل جالس", en:"Cable Seated Row",
-    category:"الظهر", muscle:"منتصف الظهر والعضلات الظهرية والبايسبس",
-    start:99,
-    technique:"اجلس مع ثني بسيط للركبتين. اسحب المقبض باتجاه البطن مع ضم لوحي الكتف، ثم مد الذراعين ببطء.",
-    tip:"تجنب التأرجح للخلف والأمام أثناء السحب."
-  },
-  {
-    name:"سحب دمبل يد واحدة", en:"Single Arm Dumbbell Row",
-    category:"الظهر", muscle:"الظهر والعضلة الظهرية العريضة",
-    start:279,
-    technique:"اسند يدًا وركبة على البنش. اسحب الدمبل باتجاه جانب الخصر مع إبقاء الظهر ثابتًا، ثم أنزله بتحكم.",
-    tip:"لا تلف جذعك لرفع وزن أكبر."
-  },
-  {
-    name:"تجديف بالبار", en:"Barbell Row",
-    category:"الظهر", muscle:"منتصف الظهر والعضلات الظهرية والبايسبس",
-    start:279,
-    technique:"اثنِ الوركين مع ظهر محايد. اسحب البار باتجاه أسفل البطن، ثم أنزله ببطء مع الحفاظ على وضع الجذع.",
-    tip:"حافظ على الظهر محايدًا ولا تستخدم وزنًا يفسد وضعك."
-  },
-  {
-    name:"الرفعة الميتة", en:"Barbell Deadlift",
-    category:"الظهر", muscle:"أسفل الظهر والأرداف وأوتار الركبة",
-    start:1392,
-    technique:"قف أمام البار والقدمان بعرض الوركين. اثنِ الوركين والركبتين للإمساك بالبار. ادفع الأرض بقدميك وارفع البار مع إبقائه قريبًا من الجسم.",
-    tip:"تعلم الحركة بوزن خفيف أولًا وحافظ على العمود الفقري في وضع محايد."
-  },
-  {
-    name:"ضغط كتف دمبل", en:"Dumbbell Shoulder Press",
-    category:"الأكتاف", muscle:"الكتف الأمامي والجانبي والترايسبس",
-    start:1262,
-    technique:"اجلس مع دعم الظهر. ابدأ بالدمبل عند مستوى الكتفين، ثم ادفعهما لأعلى وأنزلهما ببطء.",
-    tip:"لا تبالغ في تقويس أسفل الظهر."
-  },
-  {
-    name:"رفرفة جانبي", en:"Dumbbell Lateral Raise",
-    category:"الأكتاف", muscle:"الكتف الجانبي",
-    start:1333,
-    technique:"قف والدمبل بجانب جسمك. ارفع الذراعين إلى الجانبين حتى مستوى الكتفين تقريبًا، ثم أنزلهما ببطء.",
-    tip:"استخدم وزنًا خفيفًا وتجنب هز الجسم."
-  },
-  {
-    name:"ضغط كتف عسكري", en:"Military Press",
-    category:"الأكتاف", muscle:"الكتف الأمامي والترايسبس",
-    start:1144,
-    technique:"أمسك البار أمام أعلى الصدر. ادفعه رأسيًا لأعلى مع إبعاد الرأس قليلًا عن مساره، ثم أعده بتحكم.",
-    tip:"شد عضلات البطن والأرداف للمحافظة على ثبات الجذع."
-  },
-  {
-    name:"سحب خلفي للكتف", en:"Rear Delt Fly",
-    category:"الأكتاف", muscle:"الكتف الخلفي وأعلى الظهر",
-    start:1333,
-    technique:"انحنِ قليلًا للأمام مع ظهر ثابت. افتح الذراعين إلى الجانبين مع ثني بسيط للمرفقين ثم أعدهما ببطء.",
-    tip:"لا تستخدم اندفاع الجسم لرفع الدمبل."
-  },
-  {
-    name:"بايسبس بار", en:"Barbell Biceps Curl",
-    category:"البايسبس", muscle:"العضلة ذات الرأسين العضدية",
-    start:2077,
-    technique:"قف ممسكًا بالبار أمام الفخذين. اثنِ المرفقين وارفع البار باتجاه الصدر، ثم أنزله ببطء.",
-    tip:"ثبّت المرفقين بجانب الجسم وتجنب تأرجح الظهر."
-  },
-  {
-    name:"بايسبس دمبل", en:"Dumbbell Biceps Curl",
-    category:"البايسبس", muscle:"البايسبس",
-    start:2216,
-    technique:"أمسك دمبل في كل يد. ارفع الدمبل بالتبادل أو معًا عن طريق ثني المرفق، ثم أنزله بتحكم.",
-    tip:"لا تحرك الكتف للأمام لمساعدة الوزن."
-  },
-  {
-    name:"هامر كيرل", en:"Hammer Curl",
-    category:"البايسبس", muscle:"البايسبس والعضلة العضدية والساعد",
-    start:2216,
-    technique:"أمسك الدمبل بحيث تكون راحتا اليدين متقابلتين. ارفع الدمبل مع إبقاء القبضة ثابتة، ثم أنزله ببطء.",
-    tip:"حافظ على المرفقين بجانب الجسم."
-  },
-  {
-    name:"بايسبس على بنش مائل", en:"Incline Dumbbell Curl",
-    category:"البايسبس", muscle:"البايسبس",
-    start:2216,
-    technique:"اجلس على بنش مائل واترك الذراعين لأسفل. اثنِ المرفقين لرفع الدمبل ثم أنزلهما ببطء.",
-    tip:"لا تمد المرفقين بعنف في أسفل الحركة."
-  },
-  {
-    name:"سحب ترايسبس كيبل", en:"Cable Triceps Pushdown",
-    category:"الترايسبس", muscle:"العضلة ثلاثية الرؤوس العضدية",
-    start:2246,
-    technique:"قف أمام جهاز الكيبل وأمسك المقبض. ثبّت المرفقين بجانب الجسم وادفع المقبض لأسفل حتى امتداد الذراعين، ثم ارجع ببطء.",
-    tip:"لا تجعل الكتفين يتحركان مع كل تكرار."
-  },
-  {
-    name:"فرنش برس", en:"French Press",
-    category:"الترايسبس", muscle:"الترايسبس",
-    start:2336,
-    technique:"ارفع الدمبل أو البار فوق الرأس. اثنِ المرفقين لإنزال الوزن خلف الرأس، ثم مد الذراعين للعودة.",
-    tip:"حافظ على ثبات المرفقين قدر الإمكان."
-  },
-  {
-    name:"سكول كراشر", en:"Skull Crushers",
-    category:"الترايسبس", muscle:"الترايسبس",
-    start:2336,
-    technique:"استلقِ على البنش وارفع البار فوق الصدر. اثنِ المرفقين لإنزال البار باتجاه الجبهة أو خلفها قليلًا، ثم مد الذراعين.",
-    tip:"ابدأ بوزن خفيف وتحكم في مسار البار."
-  },
-  {
-    name:"القرفصاء بالبار", en:"Barbell Squat",
-    category:"الأرجل", muscle:"الفخذ الأمامي والأرداف وعضلات الجذع",
-    start:733,
-    technique:"ضع البار أعلى الظهر. انزل بثني الركبتين والوركين مع الحفاظ على ثبات القدمين والظهر، ثم ادفع الأرض للعودة للوقوف.",
-    tip:"اجعل الركبتين في اتجاه أصابع القدم ولا تفقد توازنك."
-  },
-  {
-    name:"ليج برس", en:"Leg Press",
-    category:"الأرجل", muscle:"الفخذ الأمامي والأرداف",
-    start:979,
-    technique:"ضع القدمين على المنصة بعرض مناسب. اخفض المنصة بتحكم حتى زاوية مريحة، ثم ادفعها لأعلى دون قفل الركبتين بعنف.",
-    tip:"لا تجعل أسفل ظهرك ينفصل عن المقعد."
-  },
-  {
-    name:"هاك سكوات", en:"Hack Squat",
-    category:"الأرجل", muscle:"الفخذ الأمامي والأرداف",
-    start:1043,
-    technique:"اسند ظهرك على الجهاز وضع قدميك على المنصة. انزل بثني الركبتين ثم ادفع المنصة للعودة.",
-    tip:"تحكم في النزول ولا ترتد من أسفل الحركة."
-  },
-  {
-    name:"تمديد الرجل", en:"Leg Extension",
-    category:"الأرجل", muscle:"العضلة الرباعية الأمامية",
-    start:1089,
-    technique:"اجلس واضبط الوسادة أمام أسفل الساق. ارفع الساقين حتى الاقتراب من الاستقامة، ثم أنزلهما ببطء.",
-    tip:"تجنب ركل الوزن بسرعة أو قفل الركبة بقوة."
-  },
-  {
-    name:"رفعة رومانية", en:"Romanian Deadlift",
-    category:"الأرجل", muscle:"أوتار الركبة والأرداف",
-    start:1527,
-    technique:"أمسك البار أمام الفخذين. ادفع الوركين للخلف مع ثني بسيط للركبتين وأنزل البار بمحاذاة الساقين، ثم ادفع الوركين للأمام للعودة.",
-    tip:"الحركة من مفصل الورك، وليس من تقويس الظهر."
-  },
-  {
-    name:"ثني الرجل الخلفي", en:"Hamstring Curl",
-    category:"الأرجل", muscle:"أوتار الركبة",
-    start:1599,
-    technique:"اضبط الجهاز بحيث تكون الوسادة عند أسفل الساق. اثنِ الركبتين لجذب الوسادة، ثم أعدها ببطء.",
-    tip:"حافظ على ثبات الحوض والجذع."
-  },
-  {
-    name:"هيب ثرست", en:"Hip Thrust",
-    category:"الأرجل", muscle:"عضلات الأرداف",
-    start:1860,
-    technique:"اسند أعلى الظهر على البنش وضع الوزن على الحوض. ادفع الحوض لأعلى حتى يصبح الجذع قريبًا من الاستقامة، ثم انزل بتحكم.",
-    tip:"لا تبالغ في تقويس أسفل الظهر عند أعلى الحركة."
-  },
-  {
-    name:"سكوات بلغاري", en:"Bulgarian Split Squat",
-    category:"الأرجل", muscle:"الفخذ الأمامي والأرداف",
-    start:1938,
-    technique:"ضع قدمًا خلفك على البنش والقدم الأخرى أمامك. انزل بثني ركبة الرجل الأمامية، ثم ادفع للأعلى للعودة.",
-    tip:"ابدأ بوزن الجسم حتى تتقن التوازن."
-  },
-  {
-    name:"رفع السمانة", en:"Calf Raises",
-    category:"الأرجل", muscle:"عضلات السمانة",
-    start:1994,
-    technique:"قف على منصة أو أرض ثابتة. ارفع الكعبين لأعلى، اثبت لحظة، ثم أنزلهما ببطء.",
-    tip:"استخدم مدى حركة كاملًا دون ارتداد."
-  },
-  {
-    name:"كرنش البطن", en:"Abdominal Crunch",
-    category:"البطن", muscle:"عضلات البطن الأمامية",
-    start:1644,
-    technique:"استلقِ مع ثني الركبتين. ارفع الكتفين وأعلى الظهر قليلًا باتجاه الحوض، ثم انزل ببطء.",
-    tip:"لا تشد رقبتك بيديك."
-  },
-  {
-    name:"بلانك", en:"Plank",
-    category:"البطن", muscle:"عضلات البطن والجذع",
-    start:1681,
-    technique:"استند على الساعدين وأطراف القدمين. اجعل الجسم في خط مستقيم، وشد البطن والأرداف مع التنفس الطبيعي.",
-    tip:"لا ترفع الحوض أو تترك أسفل الظهر يهبط."
-  },
-  {
-    name:"عجلة البطن", en:"Ab Wheel Rollout",
-    category:"البطن", muscle:"عضلات البطن والجذع",
-    start:1725,
-    technique:"ابدأ من وضع الركوع وأمسك العجلة. حركها للأمام ببطء بقدر قدرتك مع شد البطن، ثم اسحبها للعودة.",
-    tip:"لا تسمح لأسفل الظهر بالهبوط أثناء الحركة."
-  },
-  {
-    name:"رفع الرجلين للبطن", en:"Leg Raises",
-    category:"البطن", muscle:"عضلات البطن ومثنيات الورك",
-    start:1782,
-    technique:"استلقِ على ظهرك وارفع الساقين معًا بتحكم، ثم أنزلهما ببطء دون ترك أسفل الظهر يتقوس.",
-    tip:"اثنِ الركبتين قليلًا إذا كانت الحركة صعبة."
-  }
-];
-
-const grid = document.getElementById("exerciseGrid");
-const search = document.getElementById("search");
-const count = document.getElementById("count");
-const empty = document.getElementById("empty");
-let activeCategory = "الكل";
-
-function renderExercises(){
-  const term = search.value.trim().toLowerCase();
-
-  const filtered = exercises.filter(ex=>{
-    const matchesCategory =
-      activeCategory === "الكل" || ex.category === activeCategory;
-
-    const searchable =
-      (ex.name+" "+ex.en+" "+ex.category+" "+ex.muscle).toLowerCase();
-
-    return matchesCategory && searchable.includes(term);
-  });
-
-  grid.innerHTML = "";
-
-  filtered.forEach(ex=>{
-    const index = exercises.indexOf(ex);
-    const card = document.createElement("div");
-    card.className = "exercise";
-
-    card.innerHTML = `
-      <h3>${ex.name}</h3>
-      <div class="en">${ex.en}</div>
-      <div class="muscle">${ex.category}</div>
-      <div class="open-video">▶ شاهد الفيديو والتفاصيل</div>
-    `;
-
-    card.addEventListener("click",()=>openExercise(index));
-    grid.appendChild(card);
-  });
-
-  count.textContent = `عدد التمارين: ${filtered.length}`;
-  empty.style.display = filtered.length ? "none" : "block";
-}
-
-function openExercise(index){
-  const ex = exercises[index];
-
-  document.getElementById("modalTitle").textContent =
-    ex.name + " | " + ex.en;
-
-  document.getElementById("modalMuscle").textContent = ex.muscle;
-  document.getElementById("modalTechnique").textContent = ex.technique;
-  document.getElementById("modalTip").textContent = ex.tip;
-
-  // نفس فيديو الشرح، مع بدء التشغيل عند توقيت التمرين المختار
-  document.getElementById("videoFrame").src =
-    `https://www.youtube-nocookie.com/embed/ESRffixya9Y?start=${ex.start}&rel=0`;
-
-  document.getElementById("modal").style.display = "block";
-  document.body.style.overflow = "hidden";
-}
-
-function closeModal(){
-  document.getElementById("modal").style.display = "none";
-  document.getElementById("videoFrame").src = "";
-  document.body.style.overflow = "auto";
-}
-
-search.addEventListener("input",renderExercises);
-
-document.querySelectorAll(".filter").forEach(button=>{
-  button.addEventListener("click",()=>{
-    document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
-    button.classList.add("active");
-    activeCategory = button.dataset.category;
-    renderExercises();
-  });
-});
-
-document.getElementById("modal").addEventListener("click",event=>{
-  if(event.target.id === "modal") closeModal();
-});
-
-renderExercises();
-</script>
 
 </body>
 </html>
