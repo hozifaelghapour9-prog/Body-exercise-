@@ -1,0 +1,440 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | BODY RESET</title>
+
+  <link rel="stylesheet" href="./style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    .profile-page {
+      width: min(100% - 32px, 650px);
+      margin: 35px auto 110px;
+    }
+
+    .profile-header {
+      margin-bottom: 24px;
+    }
+
+    .profile-header h1 {
+      margin-bottom: 8px;
+    }
+
+    .profile-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    .profile-avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      color: var(--lime);
+    }
+
+    .profile-avatar svg {
+      width: 38px;
+      height: 38px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .profile-form {
+      display: grid;
+      gap: 17px;
+    }
+
+    .profile-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .profile-field label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .profile-field input,
+    .profile-field select {
+      width: 100%;
+      min-height: 46px;
+      padding: 11px 13px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel2);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+
+    .profile-field input:focus,
+    .profile-field select:focus {
+      border-color: var(--lime);
+    }
+
+    .profile-field input[readonly] {
+      opacity: .65;
+      cursor: not-allowed;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .profile-save,
+    .profile-logout {
+      min-height: 46px;
+      padding: 11px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .profile-save {
+      background: var(--lime);
+      color: #071313;
+      border: 0;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    .profile-logout {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .profile-message {
+      min-height: 22px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 480px) {
+      .profile-card {
+        padding: 17px;
+      }
+
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="profile-page">
+
+    <header class="profile-header">
+      <p style="color:var(--lime);font-weight:700;letter-spacing:2px;">
+        BODY RESET
+      </p>
+      <h1>My Profile</h1>
+      <p style="color:var(--muted);">
+        Manage your personal information and fitness goals.
+      </p>
+    </header>
+
+    <section class="profile-card">
+
+      <div class="profile-avatar">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
+        </svg>
+      </div>
+
+      <form id="profileForm" class="profile-form">
+
+        <div class="profile-field">
+          <label for="fullName">Full Name</label>
+          <input
+            id="fullName"
+            type="text"
+            placeholder="Enter your full name"
+            autocomplete="name"
+          >
+        </div>
+
+        <div class="profile-field">
+          <label for="email">Email Address</label>
+          <input id="email" type="email" readonly>
+        </div>
+
+        <div class="profile-field">
+          <label for="phone">Phone Number</label>
+          <input
+            id="phone"
+            type="tel"
+            placeholder="Enter your phone number"
+            autocomplete="tel"
+          >
+        </div>
+
+        <div class="profile-grid">
+
+          <div class="profile-field">
+            <label for="weight">Weight (kg)</label>
+            <input
+              id="weight"
+              type="number"
+              min="1"
+              max="500"
+              step="0.1"
+              placeholder="e.g. 75"
+            >
+          </div>
+
+          <div class="profile-field">
+            <label for="height">Height (cm)</label>
+            <input
+              id="height"
+              type="number"
+              min="50"
+              max="300"
+              step="0.1"
+              placeholder="e.g. 175"
+            >
+          </div>
+
+        </div>
+
+        <div class="profile-field">
+          <label for="goal">Fitness Goal</label>
+          <select id="goal">
+            <option value="">Select your goal</option>
+            <option value="Weight Loss">Weight Loss</option>
+            <option value="Muscle Gain">Muscle Gain</option>
+            <option value="Body Recomposition">Body Recomposition</option>
+            <option value="Fitness">General Fitness</option>
+            <option value="Strength">Strength</option>
+            <option value="Maintenance">Weight Maintenance</option>
+          </select>
+        </div>
+
+        <div class="profile-field">
+          <label for="fitnessLevel">Fitness Level</label>
+          <select id="fitnessLevel">
+            <option value="">Select your level</option>
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+          </select>
+        </div>
+
+        <p id="profileMessage" class="profile-message" role="status"></p>
+
+        <div class="profile-actions">
+          <button type="submit" class="profile-save" id="saveProfile">
+            Save Changes
+          </button>
+
+          <button type="button" class="profile-logout" id="logoutBtn">
+            Log Out
+          </button>
+        </div>
+
+      </form>
+    </section>
+  </main>
+
+  <script>
+    const SUPABASE_URL =
+      "https://xgxmtizyzjfxxwsmcspe.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
+
+    const db = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const $ = (id) => document.getElementById(id);
+
+    const form = $("profileForm");
+    const message = $("profileMessage");
+    const saveButton = $("saveProfile");
+
+    let currentUser = null;
+
+    function showMessage(text, isError = false) {
+      message.textContent = text;
+      message.style.color = isError
+        ? "var(--danger)"
+        : "var(--lime)";
+    }
+
+    function setLoading(loading) {
+      saveButton.disabled = loading;
+      saveButton.textContent = loading
+        ? "Saving..."
+        : "Save Changes";
+    }
+
+    async function loadProfile() {
+      const { data: sessionData, error: sessionError } =
+        await db.auth.getSession();
+
+      if (sessionError || !sessionData.session) {
+        location.replace("./login.html");
+        return;
+      }
+
+      const { data: userData, error: userError } =
+        await db.auth.getUser();
+
+      if (userError || !userData.user) {
+        location.replace("./login.html");
+        return;
+      }
+
+      currentUser = userData.user;
+
+      $("email").value = currentUser.email || "";
+
+      const { data, error } = await db
+        .from("profiles")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
+
+      if (error) {
+        showMessage(
+          "Could not load profile: " + error.message,
+          true
+        );
+        return;
+      }
+
+      if (!data) {
+        const { error: insertError } = await db
+          .from("profiles")
+          .insert({
+            user_id: currentUser.id,
+            full_name:
+              currentUser.user_metadata?.full_name || ""
+          });
+
+        if (insertError) {
+          showMessage(
+            "Could not create profile: " + insertError.message,
+            true
+          );
+          return;
+        }
+
+        $("fullName").value =
+          currentUser.user_metadata?.full_name || "";
+
+        return;
+      }
+
+      $("fullName").value = data.full_name || "";
+      $("phone").value = data.phone || "";
+      $("weight").value = data.weight ?? "";
+      $("height").value = data.height ?? "";
+      $("goal").value = data.goal || "";
+      $("fitnessLevel").value = data.fitness_level || "";
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!currentUser) return;
+
+      const weightValue = $("weight").value;
+      const heightValue = $("height").value;
+
+      const weight = weightValue === ""
+        ? null
+        : Number(weightValue);
+
+      const height = heightValue === ""
+        ? null
+        : Number(heightValue);
+
+      if (
+        (weight !== null &&
+          (!Number.isFinite(weight) || weight < 1 || weight > 500)) ||
+        (height !== null &&
+          (!Number.isFinite(height) || height < 50 || height > 300))
+      ) {
+        showMessage("Please enter a valid weight and height.", true);
+        return;
+      }
+
+      setLoading(true);
+      showMessage("");
+
+      const payload = {
+        user_id: currentUser.id,
+        full_name: $("fullName").value.trim(),
+        phone: $("phone").value.trim(),
+        weight,
+        height,
+        goal: $("goal").value || null,
+        fitness_level: $("fitnessLevel").value || null,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await db
+        .from("profiles")
+        .upsert(payload, {
+          onConflict: "user_id"
+        });
+
+      setLoading(false);
+
+      if (error) {
+        showMessage(
+          "Could not save profile: " + error.message,
+          true
+        );
+        return;
+      }
+
+      showMessage("Profile saved successfully.");
+    });
+
+    $("logoutBtn").addEventListener("click", async () => {
+      const { error } = await db.auth.signOut();
+
+      if (error) {
+        showMessage("Could not log out: " + error.message, true);
+        return;
+      }
+
+      location.replace("./login.html");
+    });
+
+    loadProfile();
+  </script>
+
+</body>
+</html>
