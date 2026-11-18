@@ -510,25 +510,28 @@
     التزم بالتدرّج، واهتم بالتكنيك الصحيح.
   </footer>
 
+  <!-- Bottom Navigation -->
   <nav class="bottom-nav" aria-label="التنقل الرئيسي">
 
-    <button class="bottom-nav-item" type="button"
-      disabled aria-label="Profile">
+    <!-- PROGRESS: مكان زر Profile القديم المعطّل -->
+    <a class="bottom-nav-item" href="progress.html" aria-label="Progress">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 3v18h18"></path>
+        <path d="m7 14 4-4 4 4 6-7"></path>
+      </svg>
+      <span>Progress</span>
+    </a>
+
+    <!-- PROFILE: الزر الشغال كما هو -->
+    <a class="bottom-nav-item" href="profile.html" aria-label="Profile">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="8" r="4"></circle>
         <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
       </svg>
       <span>Profile</span>
-    </button>
-  
-      <a class="bottom-nav-item" href="profile.html" aria-label="Profile">
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <circle cx="12" cy="8" r="4"></circle>
-    <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
-  </svg>
-  <span>Profile</span>
-      </a>
-    <!-- WORKOUTS: تم تعديل الرابط فقط -->
+    </a>
+
+    <!-- WORKOUTS -->
     <a class="bottom-nav-item" href="workout.html" aria-label="Workouts">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 9v6"></path>
@@ -540,6 +543,7 @@
       <span>Workouts</span>
     </a>
 
+    <!-- HOME -->
     <a class="bottom-nav-item active" href="#top" aria-label="Home">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="m3 10 9-7 9 7"></path>
