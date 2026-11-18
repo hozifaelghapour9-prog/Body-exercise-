@@ -300,43 +300,38 @@
   <!-- Bottom Navigation -->
   <nav class="bottom-nav" aria-label="Main navigation">
 
-    <button
+    <!-- Progress -->
+    <a
       class="bottom-nav-item"
-      type="button"
-      disabled
+      href="./progress.html"
+      aria-label="Progress"
     >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 3v18h18"></path>
+        <path d="m7 14 4-4 4 4 6-7"></path>
+      </svg>
+      <span>Progress</span>
+    </a>
 
+    <!-- Profile -->
+    <a
+      class="bottom-nav-item"
+      href="./profile.html"
+      aria-label="Profile"
+    >
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="8" r="4"></circle>
         <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
       </svg>
-
       <span>Profile</span>
+    </a>
 
-    </button>
-
-    <button
-      class="bottom-nav-item"
-      type="button"
-      disabled
-    >
-
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M3 21h18"></path>
-        <rect x="5" y="12" width="3" height="9" rx="1"></rect>
-        <rect x="11" y="7" width="3" height="14" rx="1"></rect>
-        <rect x="17" y="3" width="3" height="18" rx="1"></rect>
-      </svg>
-
-      <span>Progress</span>
-
-    </button>
-
+    <!-- Workouts -->
     <a
       class="bottom-nav-item active"
       href="./workout.html"
+      aria-label="Workouts"
     >
-
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 9v6"></path>
         <path d="M6 7v10"></path>
@@ -344,24 +339,21 @@
         <path d="M21 9v6"></path>
         <path d="M6 12h12"></path>
       </svg>
-
       <span>Workouts</span>
-
     </a>
 
+    <!-- Home -->
     <a
       class="bottom-nav-item"
       href="./index.html"
+      aria-label="Home"
     >
-
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="m3 10 9-7 9 7"></path>
         <path d="M5 9v12h14V9"></path>
         <path d="M9 21v-7h6v7"></path>
       </svg>
-
       <span>Home</span>
-
     </a>
 
   </nav>
