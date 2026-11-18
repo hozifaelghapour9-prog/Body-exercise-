@@ -1,6 +1,7 @@
 
 <!doctype html>
 <html lang="en" dir="ltr">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +9,7 @@
 
   <title>BODY exercise | WORKOUT</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./style.css">
 
   <style>
     body {
@@ -25,6 +26,7 @@
       box-sizing: border-box;
     }
 
+    /* Workout Hero */
     .workout-hero {
       position: relative;
       width: 100%;
@@ -106,6 +108,10 @@
       transition: transform 0.2s ease;
     }
 
+    .exercises-entry button[aria-expanded="true"] svg {
+      transform: rotate(90deg);
+    }
+
     /* Exercises Section */
     .exercises-section {
       display: none;
@@ -128,15 +134,107 @@
       letter-spacing: 1px;
     }
 
+    /* Exercises List */
+    #workoutExerciseList {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      width: 100%;
+    }
+
+    #workoutExerciseList .exercise-card {
+      width: 100%;
+      overflow: hidden;
+      box-sizing: border-box;
+      background: #0b0e13;
+      border: 1px solid #30363e;
+      border-radius: 15px;
+    }
+
+    #workoutExerciseList .exercise-image img {
+      display: block;
+      width: 100%;
+      max-height: 230px;
+      object-fit: cover;
+    }
+
+    #workoutExerciseList .exercise-info {
+      padding: 16px;
+    }
+
+    #workoutExerciseList .exercise-info h3 {
+      margin: 0 0 12px;
+      color: #b7e0d2;
+      font-size: 21px;
+    }
+
+    #workoutExerciseList .exercise-info p {
+      color: #d0d0d0;
+      line-height: 1.7;
+    }
+
+    #workoutExerciseList .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    #workoutExerciseList .tag {
+      display: inline-block;
+      padding: 6px 10px;
+      background: #151c25;
+      border: 1px solid #30363e;
+      border-radius: 20px;
+      color: #b7e0d2;
+      font-size: 12px;
+    }
+
+    /* Exercise Video */
+    #workoutExerciseList video {
+      display: block;
+      width: 100%;
+      max-height: 420px;
+      margin-top: 16px;
+      border-radius: 12px;
+      background: #000000;
+      object-fit: contain;
+    }
+
+    .workout-loading,
+    .workout-empty,
+    .workout-error {
+      padding: 20px;
+      text-align: center;
+      color: #b7e0d2;
+      line-height: 1.7;
+    }
+
+    @media (min-width: 700px) {
+      #workoutExerciseList {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     @media (max-width: 480px) {
       .workout-hero {
         height: 220px;
       }
+
+      .exercises-section {
+        padding: 15px;
+      }
     }
   </style>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Main JavaScript -->
+  <script defer src="./app.js"></script>
 </head>
 
-<body data-page="public">
+<body data-page="workout">
 
   <main class="workout-main">
 
@@ -144,7 +242,7 @@
     <section class="workout-hero">
 
       <img
-        src="body-exersice-gym-exact.jpg"
+        src="./body-exersice-gym-exact.jpg"
         alt="Dark professional gym interior"
       >
 
@@ -159,18 +257,22 @@
 
     <!-- Exercises Entry -->
     <div class="exercises-entry">
+
       <button
         type="button"
         id="exercisesToggle"
         aria-expanded="false"
         aria-controls="exercisesSection"
       >
+
         <span>EXERCISES</span>
 
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="m9 18 6-6-6-6"></path>
         </svg>
+
       </button>
+
     </div>
 
     <!-- Exercises Section -->
@@ -179,9 +281,17 @@
       id="exercisesSection"
       aria-label="Exercises"
     >
+
       <h2>EXERCISES</h2>
 
-      <!-- Exercise content will be added here later -->
+      <!-- Exercises loaded from Supabase -->
+      <div id="workoutExerciseList">
+
+        <p class="workout-loading">
+          Loading exercises...
+        </p>
+
+      </div>
 
     </section>
 
@@ -190,25 +300,43 @@
   <!-- Bottom Navigation -->
   <nav class="bottom-nav" aria-label="Main navigation">
 
-    <button class="bottom-nav-item" type="button" disabled>
+    <button
+      class="bottom-nav-item"
+      type="button"
+      disabled
+    >
+
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="8" r="4"></circle>
         <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
       </svg>
+
       <span>Profile</span>
+
     </button>
 
-    <button class="bottom-nav-item" type="button" disabled>
+    <button
+      class="bottom-nav-item"
+      type="button"
+      disabled
+    >
+
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 21h18"></path>
         <rect x="5" y="12" width="3" height="9" rx="1"></rect>
         <rect x="11" y="7" width="3" height="14" rx="1"></rect>
         <rect x="17" y="3" width="3" height="18" rx="1"></rect>
       </svg>
+
       <span>Progress</span>
+
     </button>
 
-    <a class="bottom-nav-item active" href="workout.html">
+    <a
+      class="bottom-nav-item active"
+      href="./workout.html"
+    >
+
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 9v6"></path>
         <path d="M6 7v10"></path>
@@ -216,28 +344,45 @@
         <path d="M21 9v6"></path>
         <path d="M6 12h12"></path>
       </svg>
+
       <span>Workouts</span>
+
     </a>
 
-    <a class="bottom-nav-item" href="index.html">
+    <a
+      class="bottom-nav-item"
+      href="./index.html"
+    >
+
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="m3 10 9-7 9 7"></path>
         <path d="M5 9v12h14V9"></path>
         <path d="M9 21v-7h6v7"></path>
       </svg>
+
       <span>Home</span>
+
     </a>
 
   </nav>
 
+  <!-- Exercises Toggle -->
   <script>
-    const exercisesToggle = document.getElementById("exercisesToggle");
-    const exercisesSection = document.getElementById("exercisesSection");
+    const exercisesToggle =
+      document.getElementById("exercisesToggle");
+
+    const exercisesSection =
+      document.getElementById("exercisesSection");
 
     exercisesToggle.addEventListener("click", function () {
-      const isOpen = exercisesSection.classList.toggle("active");
 
-      exercisesToggle.setAttribute("aria-expanded", isOpen);
+      const isOpen =
+        exercisesSection.classList.toggle("active");
+
+      exercisesToggle.setAttribute(
+        "aria-expanded",
+        isOpen
+      );
 
       if (isOpen) {
         exercisesSection.scrollIntoView({
@@ -245,6 +390,7 @@
           block: "start"
         });
       }
+
     });
   </script>
 
