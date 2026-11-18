@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -17,7 +18,7 @@
 
   <main class="admin-shell">
 
-    <!-- تسجيل الدخول -->
+    <!-- Admin Login -->
 
     <section id="loginScreen" class="login-screen">
 
@@ -72,7 +73,7 @@
 
     </section>
 
-    <!-- لوحة الإدارة -->
+    <!-- Admin Dashboard -->
 
     <section id="adminApp" class="admin-app hidden">
 
@@ -102,19 +103,19 @@
 
           <p class="sidebar-label">القائمة الرئيسية</p>
 
-          <button class="admin-nav active" data-admin-tab="dashboard">
+          <button class="admin-nav active" data-admin-tab="dashboard" type="button">
             الرئيسية
           </button>
 
-          <button class="admin-nav" data-admin-tab="exercises">
+          <button class="admin-nav" data-admin-tab="exercises" type="button">
             إدارة التمارين
           </button>
 
-          <button class="admin-nav" data-admin-tab="programs">
+          <button class="admin-nav" data-admin-tab="programs" type="button">
             إدارة البرامج
           </button>
 
-          <button class="admin-nav" data-admin-tab="clients">
+          <button class="admin-nav" data-admin-tab="clients" type="button">
             إدارة العملاء
           </button>
 
@@ -126,7 +127,7 @@
 
         <div class="admin-content">
 
-          <!-- الرئيسية -->
+          <!-- Dashboard -->
 
           <section id="dashboard" class="admin-section">
 
@@ -166,7 +167,7 @@
 
           </section>
 
-          <!-- التمارين -->
+          <!-- Exercises -->
 
           <section id="exercises" class="admin-section hidden">
 
@@ -183,6 +184,7 @@
             </div>
 
             <div class="toolbar">
+
               <input
                 id="exerciseSearch"
                 class="field"
@@ -201,13 +203,14 @@
                 <option>البطن</option>
                 <option>الكارديو</option>
               </select>
+
             </div>
 
             <div id="exerciseGrid" class="exercise-grid"></div>
 
           </section>
 
-          <!-- البرامج -->
+          <!-- Programs -->
 
           <section id="programs" class="admin-section hidden">
 
@@ -227,7 +230,7 @@
 
           </section>
 
-          <!-- العملاء -->
+          <!-- Clients -->
 
           <section id="clients" class="admin-section hidden">
 
@@ -255,7 +258,7 @@
 
   </main>
 
-  <!-- نافذة الإضافة والتعديل -->
+  <!-- Modal -->
 
   <div id="modal" class="modal hidden" aria-hidden="true">
 
