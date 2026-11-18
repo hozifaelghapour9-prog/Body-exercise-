@@ -9,6 +9,9 @@ const SUPABASE_URL = "https://xgxmtizyzjfxxwsmcspe.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
 
+const VIDEO_BUCKET = "exercise-videos";
+const MAX_VIDEO_SIZE = 100 * 1024 * 1024;
+
 const configured =
   SUPABASE_URL.startsWith("https://") &&
   !SUPABASE_URL.includes("PASTE_") &&
@@ -88,8 +91,133 @@ async function getRows(table, query = q => q) {
 }
 
 /* =========================
-واجهة العميل
-لا يتم تشغيلها في الصفحة الرئيسية حاليًا
+عرض بطاقة التمرين
+========================= */
+
+function exerciseCard(item, admin = false) {
+  const image = safeURL(item.image);
+  const video = safeURL(item.video);
+
+  return `
+    <article class="exercise-card">
+
+      <div class="exercise-image">
+        ${
+          image
+            ? `<img
+                src="${escapeHTML(image)}"
+                alt="${escapeHTML(item.name)}"
+                loading="lazy"
+              >`
+            : "🏋️"
+        }
+      </div>
+
+      <div class="exercise-info">
+
+        <h3>${escapeHTML(item.name)}</h3>
+
+        <p>
+          ${escapeHTML(
+            item.description || "لا يوجد وصف متاح."
+          )}
+        </p>
+
+        <div class="tags">
+
+          <span class="tag">
+            ${escapeHTML(item.muscle || "عام")}
+          </span>
+
+          <span class="tag">
+            ${escapeHTML(item.level || "غير محدد")}
+          </span>
+
+          ${
+            item.equipment
+              ? `<span class="tag">${escapeHTML(item.equipment)}</span>`
+              : ""
+          }
+
+        </div>
+
+        ${
+          video
+            ? `
+              <div class="exercise-video" style="margin-top:15px">
+
+                <video
+                  controls
+                  playsinline
+                  preload="metadata"
+                  style="
+                    display:block;
+                    width:100%;
+                    max-height:420px;
+                    border-radius:12px;
+                    background:#000;
+                    object-fit:contain;
+                  "
+                >
+                  <source
+                    src="${escapeHTML(video)}"
+                  >
+
+                  المتصفح لا يدعم تشغيل الفيديو.
+                </video>
+
+              </div>
+            `
+            : ""
+        }
+
+        ${
+          admin
+            ? `
+              <div class="tags">
+                <span class="tag">
+                  ${item.is_published ? "منشور" : "مسودة"}
+                </span>
+              </div>
+
+              <div class="item-actions" style="margin-top:12px">
+
+                <button
+                  class="small-btn"
+                  data-edit="exercise"
+                  data-id="${escapeHTML(item.id)}"
+                >
+                  تعديل
+                </button>
+
+                <button
+                  class="small-btn publish"
+                  data-publish="exercise"
+                  data-id="${escapeHTML(item.id)}"
+                >
+                  ${item.is_published ? "إلغاء النشر" : "نشر"}
+                </button>
+
+                <button
+                  class="small-btn danger"
+                  data-delete="exercise"
+                  data-id="${escapeHTML(item.id)}"
+                >
+                  حذف
+                </button>
+
+              </div>
+            `
+            : ""
+        }
+
+      </div>
+    </article>
+  `;
+}
+
+/* =========================
+واجهة العميل العامة
 ========================= */
 
 function setupPublic() {
@@ -168,94 +296,6 @@ async function loadPublicData() {
   }
 }
 
-function exerciseCard(item, admin = false) {
-  const image = safeURL(item.image);
-  const video = safeURL(item.video);
-
-  return `
-    <article class="exercise-card">
-      <div class="exercise-image">
-        ${
-          image
-            ? `<img src="${escapeHTML(image)}"
-                alt="${escapeHTML(item.name)}"
-                loading="lazy">`
-            : "🏋️"
-        }
-      </div>
-
-      <div class="exercise-info">
-        <h3>${escapeHTML(item.name)}</h3>
-
-        <p>
-          ${escapeHTML(
-            item.description || "لا يوجد وصف متاح."
-          )}
-        </p>
-
-        <div class="tags">
-          <span class="tag">
-            ${escapeHTML(item.muscle || "عام")}
-          </span>
-
-          <span class="tag">
-            ${escapeHTML(item.level || "غير محدد")}
-          </span>
-
-          ${
-            item.equipment
-              ? `<span class="tag">${escapeHTML(item.equipment)}</span>`
-              : ""
-          }
-        </div>
-
-        ${
-          video
-            ? `<a class="text-link"
-                href="${escapeHTML(video)}"
-                target="_blank"
-                rel="noopener noreferrer">
-                مشاهدة شرح التمرين
-              </a>`
-            : ""
-        }
-
-        ${
-          admin
-            ? `
-              <div class="tags">
-                <span class="tag">
-                  ${item.is_published ? "منشور" : "مسودة"}
-                </span>
-              </div>
-
-              <div class="item-actions" style="margin-top:12px">
-                <button class="small-btn"
-                  data-edit="exercise"
-                  data-id="${escapeHTML(item.id)}">
-                  تعديل
-                </button>
-
-                <button class="small-btn publish"
-                  data-publish="exercise"
-                  data-id="${escapeHTML(item.id)}">
-                  ${item.is_published ? "إلغاء النشر" : "نشر"}
-                </button>
-
-                <button class="small-btn danger"
-                  data-delete="exercise"
-                  data-id="${escapeHTML(item.id)}">
-                  حذف
-                </button>
-              </div>
-            `
-            : ""
-        }
-      </div>
-    </article>
-  `;
-}
-
 function fillPublicMuscles() {
   const select = $("#publicMuscleFilter");
   if (!select) return;
@@ -317,7 +357,9 @@ function renderPublicPrograms() {
   list.innerHTML = state.programs.length
     ? state.programs.map(item => `
         <article class="program-card">
+
           <div class="program-card-body">
+
             <h3>${escapeHTML(item.name)}</h3>
 
             <p>
@@ -327,6 +369,7 @@ function renderPublicPrograms() {
             </p>
 
             <div class="tags">
+
               <span class="tag">
                 ${escapeHTML(item.duration || "المدة غير محددة")}
               </span>
@@ -334,11 +377,48 @@ function renderPublicPrograms() {
               <span class="tag">
                 ${escapeHTML(item.level || "كل المستويات")}
               </span>
+
             </div>
+
           </div>
+
         </article>
       `).join("")
     : '<div class="empty-state">لا توجد برامج منشورة حاليًا.</div>';
+}
+
+/* =========================
+صفحة WORKOUT
+========================= */
+
+async function setupWorkoutPage() {
+  const container = $("#workoutExerciseList");
+
+  if (!container) return;
+
+  container.innerHTML =
+    '<p class="workout-loading">جاري تحميل التمارين...</p>';
+
+  try {
+    requireDatabase();
+
+    const exercises = await getRows(
+      "exercises",
+      q => q.eq("is_published", true)
+    );
+
+    state.exercises = exercises;
+
+    container.innerHTML = exercises.length
+      ? exercises.map(item => exerciseCard(item)).join("")
+      : '<p class="workout-empty">لا توجد تمارين منشورة حتى الآن.</p>';
+
+  } catch (error) {
+    console.error("Workout loading error:", error);
+
+    container.innerHTML =
+      '<p class="workout-error">تعذر تحميل التمارين. حاول مرة أخرى.</p>';
+  }
 }
 
 /* =========================
@@ -453,9 +533,17 @@ async function refreshAdminData() {
   state.programs = programs;
   state.clients = clients;
 
-  $("#totalExercises").textContent = exercises.length;
-  $("#totalPrograms").textContent = programs.length;
-  $("#totalClients").textContent = clients.length;
+  if ($("#totalExercises")) {
+    $("#totalExercises").textContent = exercises.length;
+  }
+
+  if ($("#totalPrograms")) {
+    $("#totalPrograms").textContent = programs.length;
+  }
+
+  if ($("#totalClients")) {
+    $("#totalClients").textContent = clients.length;
+  }
 
   renderAdminExercises();
   renderAdminPrograms();
@@ -472,6 +560,7 @@ function renderRecentExercises() {
   element.innerHTML = recent.length
     ? recent.map(item => `
         <div class="list-card">
+
           <div>
             <h3>${escapeHTML(item.name)}</h3>
             <p>${escapeHTML(item.muscle || "عام")}</p>
@@ -480,6 +569,7 @@ function renderRecentExercises() {
           <span class="tag">
             ${item.is_published ? "منشور" : "مسودة"}
           </span>
+
         </div>
       `).join("")
     : "لا توجد تمارين حتى الآن.";
@@ -533,12 +623,15 @@ function renderAdminPrograms() {
   list.innerHTML = state.programs.length
     ? state.programs.map(item => `
         <article class="program-card">
+
           <div class="program-card-body">
+
             <h3>${escapeHTML(item.name)}</h3>
 
             <p>${escapeHTML(item.description || "")}</p>
 
             <div class="tags">
+
               <span class="tag">
                 ${escapeHTML(item.duration || "المدة غير محددة")}
               </span>
@@ -550,28 +643,39 @@ function renderAdminPrograms() {
               <span class="tag">
                 ${item.is_published ? "منشور" : "مسودة"}
               </span>
+
             </div>
 
             <div class="item-actions" style="margin-top:14px">
-              <button class="small-btn"
+
+              <button
+                class="small-btn"
                 data-edit="program"
-                data-id="${escapeHTML(item.id)}">
+                data-id="${escapeHTML(item.id)}"
+              >
                 تعديل
               </button>
 
-              <button class="small-btn publish"
+              <button
+                class="small-btn publish"
                 data-publish="program"
-                data-id="${escapeHTML(item.id)}">
+                data-id="${escapeHTML(item.id)}"
+              >
                 ${item.is_published ? "إلغاء النشر" : "نشر"}
               </button>
 
-              <button class="small-btn danger"
+              <button
+                class="small-btn danger"
                 data-delete="program"
-                data-id="${escapeHTML(item.id)}">
+                data-id="${escapeHTML(item.id)}"
+              >
                 حذف
               </button>
+
             </div>
+
           </div>
+
         </article>
       `).join("")
     : '<div class="empty-state">لم تضف برامج بعد.</div>';
@@ -584,7 +688,9 @@ function renderAdminClients() {
   list.innerHTML = state.clients.length
     ? state.clients.map(item => `
         <article class="list-card">
+
           <div>
+
             <h3>${escapeHTML(item.name)}</h3>
 
             <p>
@@ -600,21 +706,29 @@ function renderAdminClients() {
             </p>
 
             <p>${escapeHTML(item.notes || "")}</p>
+
           </div>
 
           <div class="item-actions">
-            <button class="small-btn"
+
+            <button
+              class="small-btn"
               data-edit="client"
-              data-id="${escapeHTML(item.id)}">
+              data-id="${escapeHTML(item.id)}"
+            >
               تعديل
             </button>
 
-            <button class="small-btn danger"
+            <button
+              class="small-btn danger"
               data-delete="client"
-              data-id="${escapeHTML(item.id)}">
+              data-id="${escapeHTML(item.id)}"
+            >
               حذف
             </button>
+
           </div>
+
         </article>
       `).join("")
     : '<div class="empty-state">لا يوجد عملاء مسجلون.</div>';
@@ -650,6 +764,7 @@ function field(
 ) {
   return `
     <div class="form-group">
+
       <label>
         ${label}
 
@@ -660,7 +775,9 @@ function field(
           value="${escapeHTML(value)}"
           ${extra}
         >
+
       </label>
+
     </div>
   `;
 }
@@ -668,6 +785,7 @@ function field(
 function textarea(label, name, value = "") {
   return `
     <div class="form-group full">
+
       <label>
         ${label}
 
@@ -676,7 +794,9 @@ function textarea(label, name, value = "") {
           name="${name}"
           rows="3"
         >${escapeHTML(value)}</textarea>
+
       </label>
+
     </div>
   `;
 }
@@ -684,10 +804,12 @@ function textarea(label, name, value = "") {
 function select(label, name, options, value = "") {
   return `
     <div class="form-group">
+
       <label>
         ${label}
 
         <select class="field" name="${name}">
+
           ${options.map(option => `
             <option
               value="${escapeHTML(option)}"
@@ -696,8 +818,11 @@ function select(label, name, options, value = "") {
               ${escapeHTML(option)}
             </option>
           `).join("")}
+
         </select>
+
       </label>
+
     </div>
   `;
 }
@@ -705,24 +830,37 @@ function select(label, name, options, value = "") {
 function formActions() {
   return `
     <div class="form-actions">
-      <button class="btn btn-primary" type="submit">
+
+      <button
+        class="btn btn-primary"
+        type="submit"
+      >
         حفظ
       </button>
 
-      <button class="btn btn-quiet"
+      <button
+        class="btn btn-quiet"
         type="button"
-        data-close-modal>
+        data-close-modal
+      >
         إلغاء
       </button>
+
     </div>
   `;
 }
 
+/* =========================
+إضافة وتعديل التمارين
+========================= */
+
 function openExerciseEditor(item = {}) {
   showModal(
     item.id ? "تعديل تمرين" : "إضافة تمرين",
+
     `
       <form id="recordForm">
+
         <div class="form-grid">
 
           ${field(
@@ -769,8 +907,49 @@ function openExerciseEditor(item = {}) {
             "url"
           )}
 
+          <div class="form-group full">
+
+            <label for="exerciseVideoFile">
+              رفع فيديو التمرين من الجهاز
+            </label>
+
+            <input
+              class="field"
+              id="exerciseVideoFile"
+              name="video_file"
+              type="file"
+              accept="video/mp4,video/webm,video/quicktime"
+            >
+
+            <small style="display:block;margin-top:8px;color:#aaa">
+              الصيغ المدعومة: MP4 وWEBM وMOV.
+              الحد الأقصى 100 ميجابايت.
+            </small>
+
+            ${
+              item.video
+                ? `
+                  <p style="color:#b7e0d2;margin-top:10px">
+                    يوجد فيديو محفوظ حاليًا.
+                    اختيار فيديو جديد سيستبدل الرابط القديم.
+                  </p>
+
+                  <video
+                    controls
+                    playsinline
+                    preload="metadata"
+                    style="width:100%;max-height:200px;margin-top:8px;background:#000;border-radius:10px"
+                  >
+                    <source src="${escapeHTML(safeURL(item.video))}">
+                  </video>
+                `
+                : ""
+            }
+
+          </div>
+
           ${field(
-            "رابط الفيديو",
+            "أو رابط فيديو مباشر",
             "video",
             item.video || "",
             "url"
@@ -785,15 +964,19 @@ function openExerciseEditor(item = {}) {
         </div>
 
         <label class="check-row">
+
           <input
             type="checkbox"
             name="is_published"
             ${item.is_published ? "checked" : ""}
           >
+
           نشر التمرين ليظهر للعميل
+
         </label>
 
         ${formActions()}
+
       </form>
     `
   );
@@ -801,11 +984,17 @@ function openExerciseEditor(item = {}) {
   bindRecordForm("exercises", item);
 }
 
+/* =========================
+إضافة وتعديل البرامج
+========================= */
+
 function openProgramEditor(item = {}) {
   showModal(
     item.id ? "تعديل برنامج" : "إضافة برنامج",
+
     `
       <form id="recordForm">
+
         <div class="form-grid">
 
           ${field(
@@ -843,15 +1032,19 @@ function openProgramEditor(item = {}) {
         </div>
 
         <label class="check-row">
+
           <input
             type="checkbox"
             name="is_published"
             ${item.is_published ? "checked" : ""}
           >
+
           نشر البرنامج ليظهر للعميل
+
         </label>
 
         ${formActions()}
+
       </form>
     `
   );
@@ -859,11 +1052,17 @@ function openProgramEditor(item = {}) {
   bindRecordForm("programs", item);
 }
 
+/* =========================
+إضافة وتعديل العملاء
+========================= */
+
 function openClientEditor(item = {}) {
   showModal(
     item.id ? "تعديل بيانات العميل" : "إضافة عميل",
+
     `
       <form id="recordForm">
+
         <div class="form-grid">
 
           ${field(
@@ -911,11 +1110,77 @@ function openClientEditor(item = {}) {
         </div>
 
         ${formActions()}
+
       </form>
     `
   );
 
   bindRecordForm("clients", item);
+}
+
+/* =========================
+رفع الفيديو إلى Supabase
+========================= */
+
+async function uploadExerciseVideo(file) {
+  requireDatabase();
+
+  if (!state.session?.user?.id) {
+    throw new Error(
+      "انتهت جلسة المدير. سجّل الدخول مرة أخرى."
+    );
+  }
+
+  const allowedTypes = [
+    "video/mp4",
+    "video/webm",
+    "video/quicktime"
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error(
+      "صيغة الفيديو غير مدعومة. اختر MP4 أو WEBM أو MOV."
+    );
+  }
+
+  if (file.size > MAX_VIDEO_SIZE) {
+    throw new Error(
+      "حجم الفيديو أكبر من الحد المسموح وهو 100 ميجابايت."
+    );
+  }
+
+  const extension = file.name
+    .split(".")
+    .pop()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
+  const filePath =
+    `${state.session.user.id}/${crypto.randomUUID()}.${extension}`;
+
+  const { error } = await db.storage
+    .from(VIDEO_BUCKET)
+    .upload(filePath, file, {
+      cacheControl: "3600",
+      contentType: file.type,
+      upsert: false
+    });
+
+  if (error) throw error;
+
+  const { data } = db.storage
+    .from(VIDEO_BUCKET)
+    .getPublicUrl(filePath);
+
+  const publicURL = safeURL(data.publicUrl);
+
+  if (!publicURL) {
+    throw new Error(
+      "تم رفع الفيديو لكن تعذر إنشاء رابط صالح له."
+    );
+  }
+
+  return publicURL;
 }
 
 /* =========================
@@ -928,8 +1193,14 @@ function bindRecordForm(table, item) {
     async event => {
       event.preventDefault();
 
-      const form = new FormData(event.currentTarget);
+      const formElement = event.currentTarget;
+      const form = new FormData(formElement);
+
       const payload = Object.fromEntries(form.entries());
+
+      const submitButton = formElement.querySelector(
+        'button[type="submit"]'
+      );
 
       if (table !== "clients") {
         payload.is_published =
@@ -937,9 +1208,34 @@ function bindRecordForm(table, item) {
       }
 
       if (table === "exercises") {
-        for (const key of ["image", "video"]) {
-          if (payload[key] && !safeURL(payload[key])) {
-            alert("رابط الصورة أو الفيديو غير صالح.");
+        const videoFile = form.get("video_file");
+
+        delete payload.video_file;
+
+        if (payload.image && !safeURL(payload.image)) {
+          alert("رابط الصورة غير صالح.");
+          return;
+        }
+
+        if (payload.video && !safeURL(payload.video)) {
+          alert("رابط الفيديو غير صالح.");
+          return;
+        }
+
+        if (videoFile && videoFile.size > 0) {
+          const allowedTypes = [
+            "video/mp4",
+            "video/webm",
+            "video/quicktime"
+          ];
+
+          if (!allowedTypes.includes(videoFile.type)) {
+            alert("اختر فيديو بصيغة MP4 أو WEBM أو MOV.");
+            return;
+          }
+
+          if (videoFile.size > MAX_VIDEO_SIZE) {
+            alert("حجم الفيديو يجب ألا يتجاوز 100 ميجابايت.");
             return;
           }
         }
@@ -952,10 +1248,32 @@ function bindRecordForm(table, item) {
       }
 
       try {
+        if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.textContent = "جاري الحفظ...";
+        }
+
+        /* رفع الفيديو أولًا عند اختيار ملف جديد */
+        if (table === "exercises") {
+          const videoFile = form.get("video_file");
+
+          if (videoFile && videoFile.size > 0) {
+            message(
+              "adminMessage",
+              "جاري رفع الفيديو..."
+            );
+
+            payload.video =
+              await uploadExerciseVideo(videoFile);
+          }
+        }
+
+        /* حفظ بيانات التمرين أو البرنامج أو العميل */
         const query = item.id
           ? db.from(table)
               .update(payload)
               .eq("id", item.id)
+
           : db.from(table).insert({
               ...payload,
               user_id: state.session.user.id
@@ -975,7 +1293,16 @@ function bindRecordForm(table, item) {
         );
 
       } catch (error) {
-        alert(error.message);
+        console.error("Save error:", error);
+
+        alert(
+          "تعذر حفظ البيانات: " + error.message
+        );
+
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = "حفظ";
+        }
       }
     }
   );
@@ -1242,7 +1569,7 @@ function setupSideMenu() {
       }
 
       closeMenu();
-      window.location.href = "index.html";
+      window.location.href = "./index.html";
     }
   );
 
@@ -1258,9 +1585,15 @@ function setupSideMenu() {
 document.addEventListener("DOMContentLoaded", () => {
   setupSideMenu();
 
-  // لا يتم تحميل مكتبة التمارين أو البرامج في الصفحة الرئيسية.
-
   if (document.body.dataset.page === "admin") {
     setupAdmin();
+  }
+
+  if (document.body.dataset.page === "workout") {
+    setupWorkoutPage();
+  }
+
+  if (document.body.dataset.page === "public") {
+    setupPublic();
   }
 });
