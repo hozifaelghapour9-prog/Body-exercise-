@@ -101,17 +101,19 @@ function exerciseCard(item, admin = false) {
   return `
     <article class="exercise-card">
 
-      <div class="exercise-image">
-        ${
-          image
-            ? `<img
+      ${
+        image
+          ? `
+            <div class="exercise-image">
+              <img
                 src="${escapeHTML(image)}"
                 alt="${escapeHTML(item.name)}"
                 loading="lazy"
-              >`
-            : "🏋️"
-        }
-      </div>
+              >
+            </div>
+          `
+          : ""
+      }
 
       <div class="exercise-info">
 
@@ -159,10 +161,7 @@ function exerciseCard(item, admin = false) {
                     object-fit:contain;
                   "
                 >
-                  <source
-                    src="${escapeHTML(video)}"
-                  >
-
+                  <source src="${escapeHTML(video)}">
                   المتصفح لا يدعم تشغيل الفيديو.
                 </video>
 
@@ -900,17 +899,10 @@ function openExerciseEditor(item = {}) {
             item.equipment || ""
           )}
 
-          ${field(
-            "رابط الصورة",
-            "image",
-            item.image || "",
-            "url"
-          )}
-
           <div class="form-group full">
 
             <label for="exerciseVideoFile">
-              رفع فيديو التمرين من الجهاز
+              ارفع الفيديو من جهازك
             </label>
 
             <input
@@ -922,7 +914,7 @@ function openExerciseEditor(item = {}) {
             >
 
             <small style="display:block;margin-top:8px;color:#aaa">
-              الصيغ المدعومة: MP4 وWEBM وMOV.
+              اختر فيديو بصيغة MP4 أو WEBM أو MOV.
               الحد الأقصى 100 ميجابايت.
             </small>
 
@@ -930,30 +922,33 @@ function openExerciseEditor(item = {}) {
               item.video
                 ? `
                   <p style="color:#b7e0d2;margin-top:10px">
-                    يوجد فيديو محفوظ حاليًا.
-                    اختيار فيديو جديد سيستبدل الرابط القديم.
+                    الفيديو الحالي:
                   </p>
 
                   <video
                     controls
                     playsinline
                     preload="metadata"
-                    style="width:100%;max-height:200px;margin-top:8px;background:#000;border-radius:10px"
+                    style="
+                      width:100%;
+                      max-height:220px;
+                      margin-top:8px;
+                      background:#000;
+                      border-radius:10px;
+                    "
                   >
                     <source src="${escapeHTML(safeURL(item.video))}">
                   </video>
+
+                  <small style="display:block;margin-top:8px;color:#aaa">
+                    لو اخترت فيديو جديد، سيتم استخدام الفيديو الجديد بدل الحالي.
+                    لو لم تختر ملفًا، سيظل الفيديو الحالي محفوظًا.
+                  </small>
                 `
                 : ""
             }
 
           </div>
-
-          ${field(
-            "أو رابط فيديو مباشر",
-            "video",
-            item.video || "",
-            "url"
-          )}
 
           ${textarea(
             "وصف التمرين وطريقة الأداء",
@@ -1211,16 +1206,6 @@ function bindRecordForm(table, item) {
         const videoFile = form.get("video_file");
 
         delete payload.video_file;
-
-        if (payload.image && !safeURL(payload.image)) {
-          alert("رابط الصورة غير صالح.");
-          return;
-        }
-
-        if (payload.video && !safeURL(payload.video)) {
-          alert("رابط الفيديو غير صالح.");
-          return;
-        }
 
         if (videoFile && videoFile.size > 0) {
           const allowedTypes = [
