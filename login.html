@@ -21,6 +21,11 @@
       margin: 0;
     }
 
+    body {
+      background: #0b0e13;
+    }
+
+    /* صورة الجيم كخلفية للصفحة */
     .auth-wrap {
       min-height: 100vh;
       min-height: 100dvh;
@@ -29,24 +34,27 @@
       align-items: stretch;
       justify-content: stretch;
       padding: 0;
-      background:
-        radial-gradient(circle at 15% 20%, rgba(85,199,194,.15), transparent 35%),
-        radial-gradient(circle at 85% 80%, rgba(85,199,194,.12), transparent 35%);
+
+      background-image: url("https://raw.githubusercontent.com/hozifaelghapour9-prog/Body-exercise-/main/body-exersice-gym-exact.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
     }
 
+    /* الكارت الشفاف */
     .auth-card {
       width: 100%;
       min-height: 100vh;
       min-height: 100dvh;
       padding: 40px 20px;
 
-      background: rgba(255,255,255,.09);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: rgba(11, 14, 19, .68);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
 
-      border: 1px solid rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.16);
       border-radius: 0;
-      box-shadow: none;
 
       display: flex;
       flex-direction: column;
@@ -68,7 +76,7 @@
     }
 
     .auth-sub {
-      color: var(--muted);
+      color: #c1c9d1;
       font-size: 12px;
       margin-bottom: 22px;
       line-height: 1.8;
@@ -82,21 +90,22 @@
     .auth-form label {
       display: block;
       font-size: 13px;
+      color: #f4f6f8;
     }
 
     .auth-form .field {
       width: 100%;
       margin-top: 7px;
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.17);
-      color: var(--text);
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.22);
+      color: #fff;
       border-radius: 11px;
       min-height: 45px;
     }
 
     .auth-form .field:focus {
       outline: none;
-      border-color: var(--lime);
+      border-color: #55c7c2;
       box-shadow: 0 0 0 3px rgba(85,199,194,.13);
     }
 
@@ -105,8 +114,8 @@
     }
 
     .auth-form select.field option {
-      background: var(--panel);
-      color: var(--text);
+      background: #121720;
+      color: #fff;
     }
 
     .auth-form .btn {
@@ -115,7 +124,7 @@
 
     .auth-switch {
       margin-top: 18px;
-      color: var(--muted);
+      color: #c1c9d1;
       font-size: 12px;
       text-align: center;
     }
@@ -124,7 +133,7 @@
     .auth-forgot {
       border: 0;
       background: none;
-      color: var(--lime);
+      color: #55c7c2;
       font: inherit;
       cursor: pointer;
     }
@@ -141,8 +150,8 @@
       margin-top: 14px;
       border: 1px solid rgba(255,255,255,.2);
       border-radius: 10px;
-      background: rgba(255,255,255,.06);
-      color: var(--text);
+      background: rgba(255,255,255,.08);
+      color: #fff;
       font: inherit;
       font-size: 13px;
       cursor: pointer;
@@ -150,7 +159,7 @@
     }
 
     .google-btn:hover {
-      background: rgba(255,255,255,.12);
+      background: rgba(255,255,255,.15);
     }
 
     .google-btn:disabled {
@@ -162,7 +171,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      color: var(--muted);
+      color: #c1c9d1;
       font-size: 11px;
       margin-top: 16px;
     }
@@ -172,7 +181,7 @@
       content: "";
       flex: 1;
       height: 1px;
-      background: var(--border);
+      background: rgba(255,255,255,.2);
     }
 
     #authMessage {
@@ -197,7 +206,11 @@
       font-size: 12px;
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 600px) {
+      .auth-wrap {
+        background-attachment: scroll;
+      }
+
       .auth-card {
         padding: 25px 18px;
       }
