@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -25,7 +24,6 @@
       background: #0b0e13;
     }
 
-    /* صورة الجيم كخلفية للصفحة */
     .auth-wrap {
       min-height: 100vh;
       min-height: 100dvh;
@@ -42,7 +40,6 @@
       background-attachment: fixed;
     }
 
-    /* الكارت الشفاف */
     .auth-card {
       width: 100%;
       min-height: 100vh;
@@ -199,13 +196,6 @@
       display: none !important;
     }
 
-    .auth-card .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      font-size: 12px;
-    }
-
     @media (max-width: 600px) {
       .auth-wrap {
         background-attachment: scroll;
@@ -331,10 +321,6 @@
         </button>
       </p>
 
-      <a class="back-link" href="index.html">
-        العودة للموقع
-      </a>
-
     </section>
   </main>
 
@@ -444,12 +430,10 @@
       location.replace("index.html");
     }
 
-    // التبديل بين الدخول وإنشاء الحساب
     $("switchMode").addEventListener("click", () => {
       setMode(mode === "signup" ? "login" : "signup");
     });
 
-    // تسجيل الدخول باستخدام Google
     $("googleBtn").addEventListener("click", async () => {
 
       const button = $("googleBtn");
@@ -479,7 +463,6 @@
       }
     });
 
-    // استعادة كلمة المرور
     $("forgotPassword").addEventListener("click", async () => {
 
       const email = $("email").value.trim();
@@ -526,7 +509,6 @@
       }
     });
 
-    // إنشاء حساب / تسجيل دخول / تغيير كلمة المرور
     $("authForm").addEventListener("submit", async event => {
 
       event.preventDefault();
@@ -565,7 +547,6 @@
 
       try {
 
-        // إنشاء حساب جديد
         if (mode === "signup") {
 
           const { data, error } = await db.auth.signUp({
@@ -598,7 +579,6 @@
           }
         }
 
-        // تسجيل الدخول
         else if (mode === "login") {
 
           const { error } = await db.auth.signInWithPassword({
@@ -611,7 +591,6 @@
           redirectToHome();
         }
 
-        // إرسال رابط استعادة كلمة المرور
         else if (mode === "forgot") {
 
           const { error } = await db.auth.resetPasswordForEmail(
@@ -631,7 +610,6 @@
           );
         }
 
-        // حفظ كلمة المرور الجديدة
         else if (mode === "reset") {
 
           const { error } = await db.auth.updateUser({
@@ -665,7 +643,6 @@
       }
     });
 
-    // استقبال رابط استعادة كلمة المرور أو تسجيل الدخول من Google
     db.auth.onAuthStateChange((event, session) => {
 
       if (event === "PASSWORD_RECOVERY") {
@@ -682,7 +659,6 @@
       }
     });
 
-    // التحقق من الجلسة عند فتح الصفحة
     db.auth.getSession().then(({ data, error }) => {
 
       if (error || !data.session) return;
