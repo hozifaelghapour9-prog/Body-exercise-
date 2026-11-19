@@ -15,15 +15,25 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 20px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(85,199,194,.13), transparent 35%),
+        radial-gradient(circle at 85% 80%, rgba(85,199,194,.10), transparent 35%);
     }
 
     .auth-card {
       width: min(430px, 100%);
       padding: 30px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,.09);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 22px;
+      box-shadow: 0 18px 55px rgba(0,0,0,.28);
+      position: relative;
+      z-index: 1;
     }
 
     .auth-card .brand {
@@ -39,11 +49,42 @@
       color: var(--muted);
       font-size: 12px;
       margin-bottom: 22px;
+      line-height: 1.8;
     }
 
     .auth-form {
       display: grid;
-      gap: 13px;
+      gap: 14px;
+    }
+
+    .auth-form label {
+      display: block;
+      font-size: 13px;
+    }
+
+    .auth-form .field {
+      width: 100%;
+      margin-top: 7px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.17);
+      color: var(--text);
+      border-radius: 11px;
+      min-height: 45px;
+    }
+
+    .auth-form .field:focus {
+      outline: none;
+      border-color: var(--lime);
+      box-shadow: 0 0 0 3px rgba(85,199,194,.13);
+    }
+
+    .auth-form select.field {
+      cursor: pointer;
+    }
+
+    .auth-form select.field option {
+      background: var(--panel);
+      color: var(--text);
     }
 
     .auth-form .btn {
@@ -76,17 +117,22 @@
       width: 100%;
       min-height: 46px;
       margin-top: 14px;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255,255,255,.2);
       border-radius: 10px;
-      background: transparent;
+      background: rgba(255,255,255,.06);
       color: var(--text);
       font: inherit;
       font-size: 13px;
       cursor: pointer;
+      transition: .2s;
+    }
+
+    .google-btn:hover {
+      background: rgba(255,255,255,.12);
     }
 
     .google-btn:disabled {
-      opacity: 0.6;
+      opacity: .6;
       cursor: not-allowed;
     }
 
@@ -116,6 +162,23 @@
 
     .hidden {
       display: none !important;
+    }
+
+    .auth-card label.hidden {
+      display: none !important;
+    }
+
+    .auth-card .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .auth-card {
+        padding: 24px 19px;
+      }
     }
   </style>
 </head>
@@ -148,7 +211,17 @@
             id="fullName"
             type="text"
             autocomplete="name"
+            placeholder="اكتب اسمك الكامل"
           >
+        </label>
+
+        <label id="genderLabel" class="hidden">
+          النوع
+          <select class="field" id="gender">
+            <option value="">اختر النوع</option>
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+          </select>
         </label>
 
         <label>
@@ -158,6 +231,7 @@
             id="email"
             type="email"
             autocomplete="email"
+            placeholder="example@email.com"
             required
           >
         </label>
@@ -169,6 +243,7 @@
             id="password"
             type="password"
             autocomplete="current-password"
+            placeholder="كلمة المرور"
             minlength="6"
             required
           >
@@ -181,6 +256,7 @@
             id="confirmPassword"
             type="password"
             autocomplete="new-password"
+            placeholder="أعد كتابة كلمة المرور"
             minlength="6"
           >
         </label>
@@ -244,6 +320,7 @@
     const $ = id => document.getElementById(id);
 
     let mode = "login";
+    let isRedirecting = false;
 
     const isRecoveryPage =
       new URLSearchParams(location.search).get("reset") === "1";
@@ -275,6 +352,9 @@
 
       $("nameLabel").classList.toggle("hidden", !signup);
       $("fullName").required = signup;
+
+      $("genderLabel").classList.toggle("hidden", !signup);
+      $("gender").required = signup;
 
       $("passwordLabel").classList.toggle("hidden", forgot);
       $("password").required = !forgot;
@@ -322,6 +402,14 @@
       showMessage("");
     }
 
+    function redirectToHome() {
+      if (isRedirecting) return;
+
+      isRedirecting = true;
+      location.replace("index.html");
+    }
+
+    // التبديل بين الدخول وإنشاء الحساب
     $("switchMode").addEventListener("click", () => {
       setMode(mode === "signup" ? "login" : "signup");
     });
@@ -356,7 +444,7 @@
       }
     });
 
-    // إرسال رابط استعادة كلمة المرور
+    // استعادة كلمة المرور
     $("forgotPassword").addEventListener("click", async () => {
 
       const email = $("email").value.trim();
@@ -413,9 +501,26 @@
       const confirmPassword = $("confirmPassword").value;
       const button = $("submitBtn");
 
+      if (mode === "signup") {
+
+        if (!$("fullName").value.trim()) {
+          showMessage("اكتب اسمك الكامل.", true);
+          $("fullName").focus();
+          return;
+        }
+
+        if (!$("gender").value) {
+          showMessage("اختر النوع.", true);
+          $("gender").focus();
+          return;
+        }
+      }
+
       if (mode === "signup" || mode === "reset") {
+
         if (password !== confirmPassword) {
           showMessage("كلمتا المرور غير متطابقتين.", true);
+          $("confirmPassword").focus();
           return;
         }
       }
@@ -433,7 +538,8 @@
             password,
             options: {
               data: {
-                full_name: $("fullName").value.trim()
+                full_name: $("fullName").value.trim(),
+                gender: $("gender").value
               }
             }
           });
@@ -441,13 +547,20 @@
           if (error) throw error;
 
           if (data.session) {
-            location.replace("index.html");
+
+            showMessage("تم إنشاء الحساب بنجاح.");
+
+            setTimeout(() => {
+              redirectToHome();
+            }, 700);
+
           } else {
+
             showMessage(
               "تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيد الحساب، ثم سجّل الدخول."
             );
-          }
 
+          }
         }
 
         // تسجيل الدخول
@@ -460,7 +573,7 @@
 
           if (error) throw error;
 
-          location.replace("index.html");
+          redirectToHome();
         }
 
         // إرسال رابط استعادة كلمة المرور
@@ -500,7 +613,7 @@
           $("confirmPassword").value = "";
 
           setTimeout(() => {
-            location.replace("index.html");
+            redirectToHome();
           }, 1500);
         }
 
@@ -522,6 +635,7 @@
 
       if (event === "PASSWORD_RECOVERY") {
         setMode("reset");
+        return;
       }
 
       if (
@@ -529,7 +643,7 @@
         !isRecoveryPage &&
         session
       ) {
-        location.replace("index.html");
+        redirectToHome();
       }
     });
 
@@ -541,7 +655,7 @@
       if (isRecoveryPage) {
         setMode("reset");
       } else {
-        location.replace("index.html");
+        redirectToHome();
       }
     });
 
