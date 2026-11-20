@@ -278,6 +278,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- التحقق من الجلسة وعلامة الدخول اليدوي -->
   <script>
     (() => {
       const AUTH_SUPABASE_URL =
@@ -286,23 +287,48 @@
       const AUTH_SUPABASE_KEY =
         "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
 
-      const authClient = window.supabase.createClient(
-        AUTH_SUPABASE_URL,
-        AUTH_SUPABASE_KEY
-      );
+      const ENTRY_KEY = "bodyResetManualEntry";
 
-      authClient.auth.getSession()
-        .then(({ data, error }) => {
-          if (error || !data.session) {
-            window.location.replace("login.html");
-            return;
-          }
+      function goToLogin() {
+        window.location.replace("login.html");
+      }
 
-          document.documentElement.style.visibility = "visible";
-        })
-        .catch(() => {
-          window.location.replace("login.html");
-        });
+      try {
+        const hasManualEntry =
+          sessionStorage.getItem(ENTRY_KEY) === "1";
+
+        if (!hasManualEntry) {
+          goToLogin();
+          return;
+        }
+
+        const authClient = window.supabase.createClient(
+          AUTH_SUPABASE_URL,
+          AUTH_SUPABASE_KEY
+        );
+
+        authClient.auth.getSession()
+          .then(({ data, error }) => {
+            if (
+              error ||
+              !data ||
+              !data.session
+            ) {
+              sessionStorage.removeItem(ENTRY_KEY);
+              goToLogin();
+              return;
+            }
+
+            document.documentElement.style.visibility = "visible";
+          })
+          .catch(() => {
+            sessionStorage.removeItem(ENTRY_KEY);
+            goToLogin();
+          });
+
+      } catch (error) {
+        goToLogin();
+      }
     })();
   </script>
 
@@ -446,7 +472,6 @@
 
     <!-- Daily Tip -->
     <section class="daily-tip-section" aria-label="نصيحة اليوم">
-
       <h2 class="daily-tip-title">نصيحة اليوم</h2>
 
       <div class="daily-tip-card">
@@ -459,12 +484,10 @@
           <strong>END</strong>
         </p>
       </div>
-
     </section>
 
     <!-- Important Information -->
     <section class="important-section" aria-label="معلومات مهمة">
-
       <h2 class="important-title" lang="en" dir="ltr">
         IMPORTANT INFORMATION
       </h2>
@@ -482,12 +505,10 @@
           </span>
         </p>
       </div>
-
     </section>
 
     <!-- Daily Motivation -->
     <section class="motivation-section" aria-label="تحفيز يومي">
-
       <h2 class="motivation-title">تحفيز يومي</h2>
 
       <div class="motivation-card">
@@ -499,7 +520,6 @@
           <span>أقرب للنسخة الأقوى منك.</span>
         </p>
       </div>
-
     </section>
 
   </main>
@@ -513,7 +533,6 @@
   <!-- Bottom Navigation -->
   <nav class="bottom-nav" aria-label="التنقل الرئيسي">
 
-    <!-- PROGRESS: مكان زر Profile القديم المعطّل -->
     <a class="bottom-nav-item" href="progress.html" aria-label="Progress">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 3v18h18"></path>
@@ -522,7 +541,6 @@
       <span>Progress</span>
     </a>
 
-    <!-- PROFILE: الزر الشغال كما هو -->
     <a class="bottom-nav-item" href="profile.html" aria-label="Profile">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="8" r="4"></circle>
@@ -531,7 +549,6 @@
       <span>Profile</span>
     </a>
 
-    <!-- WORKOUTS -->
     <a class="bottom-nav-item" href="workout.html" aria-label="Workouts">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 9v6"></path>
@@ -543,7 +560,6 @@
       <span>Workouts</span>
     </a>
 
-    <!-- HOME -->
     <a class="bottom-nav-item active" href="#top" aria-label="Home">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="m3 10 9-7 9 7"></path>
