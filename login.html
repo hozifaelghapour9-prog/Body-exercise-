@@ -122,7 +122,7 @@
       box-shadow: 0 0 0 3px rgba(85,199,194,.13);
     }
 
-    /* زر العين - الناحية الشمال */
+    /* العين في الناحية الشمال */
 
     .toggle-password {
       position: absolute;
@@ -158,6 +158,16 @@
       stroke-width: 1.8;
       stroke-linecap: round;
       stroke-linejoin: round;
+    }
+
+    /* الخط المائل عند إخفاء المحتوى */
+
+    .eye-slash {
+      display: none;
+    }
+
+    .toggle-password.is-hidden .eye-slash {
+      display: block;
     }
 
     .auth-form select.field {
@@ -346,6 +356,7 @@
               <svg viewBox="0 0 24 24">
                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
                 <circle cx="12" cy="12" r="3"/>
+                <path class="eye-slash" d="M4 4L20 20"/>
               </svg>
             </button>
           </div>
@@ -366,7 +377,7 @@
             >
 
             <button
-              class="toggle-password"
+              class="toggle-password is-hidden"
               type="button"
               data-toggle="password"
               aria-label="إظهار كلمة المرور"
@@ -375,6 +386,7 @@
               <svg viewBox="0 0 24 24">
                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
                 <circle cx="12" cy="12" r="3"/>
+                <path class="eye-slash" d="M4 4L20 20"/>
               </svg>
             </button>
           </div>
@@ -394,7 +406,7 @@
             >
 
             <button
-              class="toggle-password"
+              class="toggle-password is-hidden"
               type="button"
               data-toggle="confirmPassword"
               aria-label="إظهار كلمة المرور"
@@ -403,24 +415,17 @@
               <svg viewBox="0 0 24 24">
                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
                 <circle cx="12" cy="12" r="3"/>
+                <path class="eye-slash" d="M4 4L20 20"/>
               </svg>
             </button>
           </div>
         </label>
 
-        <button
-          class="auth-forgot"
-          id="forgotPassword"
-          type="button"
-        >
+        <button class="auth-forgot" id="forgotPassword" type="button">
           نسيت كلمة المرور؟
         </button>
 
-        <button
-          class="btn btn-primary btn-full"
-          id="submitBtn"
-          type="submit"
-        >
+        <button class="btn btn-primary btn-full" id="submitBtn" type="submit">
           دخول
         </button>
 
@@ -431,12 +436,9 @@
 
         <button class="google-btn" id="googleBtn" type="button">
 
-          <svg
-            class="google-logo"
-            viewBox="0 0 48 48"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-label="Google"
-          >
+          <svg class="google-logo" viewBox="0 0 48 48"
+               xmlns="http://www.w3.org/2000/svg"
+               aria-label="Google">
             <path fill="#4285F4"
               d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z"/>
             <path fill="#34A853"
@@ -456,9 +458,7 @@
 
       <p class="auth-switch" id="switchSection">
         <span id="switchText">ليس لديك حساب؟</span>
-        <button id="switchMode" type="button">
-          إنشاء حساب
-        </button>
+        <button id="switchMode" type="button">إنشاء حساب</button>
       </p>
 
     </section>
@@ -475,7 +475,14 @@
 
     const db = window.supabase.createClient(
       SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
+      SUPABASE_PUBLISHABLE_KEY,
+      {
+        auth: {
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: true
+        }
+      }
     );
 
     const $ = id => document.getElementById(id);
@@ -486,7 +493,7 @@
     const isRecoveryPage =
       new URLSearchParams(location.search).get("reset") === "1";
 
-    /* إظهار وإخفاء الحقول */
+    /* العين: إظهار وإخفاء المحتوى */
 
     document.querySelectorAll("[data-toggle]").forEach(button => {
 
@@ -496,25 +503,24 @@
 
         if (!input) return;
 
-        if (input.type === "password") {
+        const currentlyHidden = input.type === "password";
 
-          input.type =
-            input.id === "email" ? "email" : "text";
+        if (currentlyHidden) {
 
-          button.setAttribute(
-            "aria-label",
-            "إخفاء المحتوى"
-          );
+          input.type = input.id === "email" ? "email" : "text";
 
         } else {
 
           input.type = "password";
 
-          button.setAttribute(
-            "aria-label",
-            "إظهار المحتوى"
-          );
         }
+
+        button.classList.toggle("is-hidden", !currentlyHidden);
+
+        button.setAttribute(
+          "aria-label",
+          currentlyHidden ? "إخفاء المحتوى" : "إظهار المحتوى"
+        );
 
       });
 
@@ -557,11 +563,7 @@
       $("passwordLabel").classList.toggle("hidden", forgot);
       $("password").required = !forgot;
 
-      $("confirmLabel").classList.toggle(
-        "hidden",
-        !(signup || reset)
-      );
-
+      $("confirmLabel").classList.toggle("hidden", !(signup || reset));
       $("confirmPassword").required = signup || reset;
 
       $("passwordTitle").textContent =
@@ -570,20 +572,11 @@
       $("password").autocomplete =
         signup || reset ? "new-password" : "current-password";
 
-      $("forgotPassword").classList.toggle(
-        "hidden",
-        mode !== "login"
-      );
+      $("forgotPassword").classList.toggle("hidden", mode !== "login");
 
-      $("googleSection").classList.toggle(
-        "hidden",
-        mode !== "login"
-      );
+      $("googleSection").classList.toggle("hidden", mode !== "login");
 
-      $("switchSection").classList.toggle(
-        "hidden",
-        reset || forgot
-      );
+      $("switchSection").classList.toggle("hidden", reset || forgot);
 
       $("submitBtn").textContent =
         signup ? "إنشاء الحساب" :
@@ -609,13 +602,15 @@
       location.replace("index.html");
     }
 
+    /* تبديل التسجيل والدخول */
+
     $("switchMode").addEventListener("click", () => {
 
       setMode(mode === "signup" ? "login" : "signup");
 
     });
 
-    /* تسجيل الدخول باستخدام Google */
+    /* Google OAuth */
 
     $("googleBtn").addEventListener("click", async () => {
 
@@ -647,11 +642,12 @@
         );
 
         button.disabled = false;
+
       }
 
     });
 
-    /* استعادة كلمة المرور */
+    /* نسيت كلمة المرور */
 
     $("forgotPassword").addEventListener("click", async () => {
 
@@ -675,16 +671,13 @@
       try {
 
         const { error } = await db.auth.resetPasswordForEmail(
-
           email,
-
           {
             redirectTo:
               location.origin +
               location.pathname +
               "?reset=1"
           }
-
         );
 
         if (error) throw error;
@@ -703,22 +696,20 @@
       } finally {
 
         button.disabled = false;
+
       }
 
     });
 
-    /* تنفيذ تسجيل الدخول وإنشاء الحساب */
+    /* إرسال النموذج */
 
     $("authForm").addEventListener("submit", async event => {
 
       event.preventDefault();
 
       const email = $("email").value.trim();
-
       const password = $("password").value;
-
       const confirmPassword = $("confirmPassword").value;
-
       const button = $("submitBtn");
 
       if (mode === "signup") {
@@ -740,6 +731,7 @@
 
           return;
         }
+
       }
 
       if (mode === "signup" || mode === "reset") {
@@ -752,6 +744,7 @@
 
           return;
         }
+
       }
 
       button.disabled = true;
@@ -768,12 +761,10 @@
             password,
 
             options: {
-
               data: {
                 full_name: $("fullName").value.trim(),
                 gender: $("gender").value
               }
-
             }
 
           });
@@ -801,14 +792,13 @@
         else if (mode === "login") {
 
           const { error } = await db.auth.signInWithPassword({
-
             email,
             password
-
           });
 
           if (error) throw error;
 
+          // التحويل هنا فقط بعد ضغط المستخدم على زر دخول
           redirectToHome();
 
         }
@@ -816,16 +806,13 @@
         else if (mode === "forgot") {
 
           const { error } = await db.auth.resetPasswordForEmail(
-
             email,
-
             {
               redirectTo:
                 location.origin +
                 location.pathname +
                 "?reset=1"
             }
-
           );
 
           if (error) throw error;
@@ -839,9 +826,7 @@
         else if (mode === "reset") {
 
           const { error } = await db.auth.updateUser({
-
             password: password
-
           });
 
           if (error) throw error;
@@ -851,7 +836,6 @@
           );
 
           $("password").value = "";
-
           $("confirmPassword").value = "";
 
           setTimeout(() => {
@@ -870,11 +854,12 @@
       } finally {
 
         button.disabled = false;
+
       }
 
     });
 
-    /* متابعة حالة الحساب دون تحويل تلقائي */
+    /* متابعة الجلسة: لا يوجد تحويل تلقائي عند SIGNED_IN */
 
     db.auth.onAuthStateChange((event, session) => {
 
@@ -882,15 +867,14 @@
 
         setMode("reset");
 
-        return;
       }
 
-      // لا نحول المستخدم تلقائياً عند SIGNED_IN
-      // الدخول للرئيسية يتم بعد ضغط زر دخول فقط
+      // لا يوجد redirect عند SIGNED_IN
+      // المستخدم ينتقل للرئيسية فقط من خلال زر دخول
 
     });
 
-    /* فحص الجلسة دون تحويل تلقائي */
+    /* قراءة الجلسة دون تحويل */
 
     db.auth.getSession().then(({ data, error }) => {
 
@@ -900,7 +884,7 @@
 
       }
 
-      // لا يوجد redirect هنا حتى لو كانت هناك جلسة محفوظة
+      // لا يتم تحويل المستخدم بسبب الجلسة المحفوظة
 
     });
 
