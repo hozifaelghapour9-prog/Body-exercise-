@@ -91,8 +91,6 @@
       color: #f4f6f8;
     }
 
-    /* حقول الإدخال */
-
     .input-wrap {
       position: relative;
       width: 100%;
@@ -121,8 +119,6 @@
       border-color: #55c7c2;
       box-shadow: 0 0 0 3px rgba(85,199,194,.13);
     }
-
-    /* العين في الناحية الشمال */
 
     .toggle-password {
       position: absolute;
@@ -160,7 +156,7 @@
       stroke-linejoin: round;
     }
 
-    /* الخط المائل عند إخفاء المحتوى */
+    /* العين المشطوبة تظهر في البداية */
 
     .eye-slash {
       display: none;
@@ -204,8 +200,6 @@
       text-align: left;
       margin-top: -5px;
     }
-
-    /* Google */
 
     .google-btn {
       width: 100%;
@@ -326,6 +320,7 @@
 
         <label id="genderLabel" class="hidden">
           النوع
+
           <select class="field" id="gender">
             <option value="">اختر النوع</option>
             <option value="male">ذكر</option>
@@ -333,6 +328,7 @@
           </select>
         </label>
 
+        <!-- البريد الإلكتروني -->
         <label>
           الاسم
 
@@ -340,14 +336,16 @@
             <input
               class="field"
               id="email"
+              name="username"
               type="email"
-              autocomplete="email"
+              autocomplete="username"
               placeholder="أدخل البريد الإلكتروني"
               required
             >
 
+            <!-- العين المشطوبة ظاهرة من البداية -->
             <button
-              class="toggle-password"
+              class="toggle-password is-hidden"
               type="button"
               data-toggle="email"
               aria-label="إظهار المحتوى"
@@ -362,6 +360,7 @@
           </div>
         </label>
 
+        <!-- كلمة المرور -->
         <label id="passwordLabel">
           <span id="passwordTitle">كلمة المرور</span>
 
@@ -369,6 +368,7 @@
             <input
               class="field"
               id="password"
+              name="password"
               type="password"
               autocomplete="current-password"
               placeholder="كلمة المرور"
@@ -376,6 +376,7 @@
               required
             >
 
+            <!-- العين المشطوبة ظاهرة من البداية -->
             <button
               class="toggle-password is-hidden"
               type="button"
@@ -392,6 +393,7 @@
           </div>
         </label>
 
+        <!-- تأكيد كلمة المرور -->
         <label id="confirmLabel" class="hidden">
           تأكيد كلمة المرور
 
@@ -435,7 +437,6 @@
         <div class="auth-divider">أو</div>
 
         <button class="google-btn" id="googleBtn" type="button">
-
           <svg class="google-logo" viewBox="0 0 48 48"
                xmlns="http://www.w3.org/2000/svg"
                aria-label="Google">
@@ -450,7 +451,6 @@
           </svg>
 
           <span>المتابعة باستخدام Google</span>
-
         </button>
       </div>
 
@@ -493,7 +493,7 @@
     const isRecoveryPage =
       new URLSearchParams(location.search).get("reset") === "1";
 
-    /* العين: إظهار وإخفاء المحتوى */
+    /* إظهار وإخفاء محتوى الخانات */
 
     document.querySelectorAll("[data-toggle]").forEach(button => {
 
@@ -506,13 +506,9 @@
         const currentlyHidden = input.type === "password";
 
         if (currentlyHidden) {
-
           input.type = input.id === "email" ? "email" : "text";
-
         } else {
-
           input.type = "password";
-
         }
 
         button.classList.toggle("is-hidden", !currentlyHidden);
@@ -531,7 +527,7 @@
       $("authMessage").textContent = text;
 
       $("authMessage").style.color =
-        error ? "var(--danger)" : "var(--lime)";
+        error ? "#ff7777" : "#55c7c2";
     }
 
     function setMode(newMode) {
@@ -602,7 +598,7 @@
       location.replace("index.html");
     }
 
-    /* تبديل التسجيل والدخول */
+    /* التبديل بين الدخول وإنشاء الحساب */
 
     $("switchMode").addEventListener("click", () => {
 
@@ -610,7 +606,7 @@
 
     });
 
-    /* Google OAuth */
+    /* تسجيل الدخول باستخدام Google */
 
     $("googleBtn").addEventListener("click", async () => {
 
@@ -701,7 +697,7 @@
 
     });
 
-    /* إرسال النموذج */
+    /* تنفيذ عمليات الحساب */
 
     $("authForm").addEventListener("submit", async event => {
 
@@ -717,19 +713,17 @@
         if (!$("fullName").value.trim()) {
 
           showMessage("اكتب اسمك الكامل.", true);
-
           $("fullName").focus();
-
           return;
+
         }
 
         if (!$("gender").value) {
 
           showMessage("اختر النوع.", true);
-
           $("gender").focus();
-
           return;
+
         }
 
       }
@@ -739,10 +733,9 @@
         if (password !== confirmPassword) {
 
           showMessage("كلمتا المرور غير متطابقتين.", true);
-
           $("confirmPassword").focus();
-
           return;
+
         }
 
       }
@@ -798,7 +791,7 @@
 
           if (error) throw error;
 
-          // التحويل هنا فقط بعد ضغط المستخدم على زر دخول
+          // الانتقال للرئيسية بعد ضغط المستخدم على زر دخول فقط
           redirectToHome();
 
         }
@@ -832,7 +825,7 @@
           if (error) throw error;
 
           showMessage(
-            "تم تغيير كلمة المرور بنجاح. تقدر تدخل إلى حسابك الآن."
+            "تم تغيير كلمة المرور بنجاح."
           );
 
           $("password").value = "";
@@ -859,32 +852,27 @@
 
     });
 
-    /* متابعة الجلسة: لا يوجد تحويل تلقائي عند SIGNED_IN */
+    /* التعامل مع استعادة كلمة المرور فقط */
 
     db.auth.onAuthStateChange((event, session) => {
 
       if (event === "PASSWORD_RECOVERY") {
-
         setMode("reset");
-
       }
 
-      // لا يوجد redirect عند SIGNED_IN
-      // المستخدم ينتقل للرئيسية فقط من خلال زر دخول
+      // لا يوجد تحويل تلقائي عند SIGNED_IN
 
     });
 
-    /* قراءة الجلسة دون تحويل */
+    /* فحص الجلسة بدون تحويل تلقائي */
 
     db.auth.getSession().then(({ data, error }) => {
 
       if (isRecoveryPage) {
-
         setMode("reset");
-
       }
 
-      // لا يتم تحويل المستخدم بسبب الجلسة المحفوظة
+      // وجود جلسة محفوظة لا يؤدي إلى الانتقال للرئيسية
 
     });
 
