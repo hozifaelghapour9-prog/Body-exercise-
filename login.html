@@ -107,7 +107,7 @@
       color: #fff;
       border-radius: 11px;
       min-height: 45px;
-      padding: 0 42px 0 14px;
+      padding: 0 14px 0 45px;
       font: inherit;
       direction: rtl;
     }
@@ -122,17 +122,18 @@
       box-shadow: 0 0 0 3px rgba(85,199,194,.13);
     }
 
-    /* زر إظهار وإخفاء المحتوى */
+    /* زر العين - الناحية الشمال */
 
     .toggle-password {
       position: absolute;
       top: 50%;
-      right: 12px;
+      left: 12px;
+      right: auto;
       transform: translateY(-50%);
 
-      width: 24px;
-      height: 24px;
-      padding: 0;
+      width: 26px;
+      height: 26px;
+      padding: 3px;
 
       display: flex;
       align-items: center;
@@ -194,7 +195,7 @@
       margin-top: -5px;
     }
 
-    /* زر Google */
+    /* Google */
 
     .google-btn {
       width: 100%;
@@ -339,7 +340,7 @@
               class="toggle-password"
               type="button"
               data-toggle="email"
-              aria-label="إخفاء المحتوى"
+              aria-label="إظهار المحتوى"
               title="إظهار وإخفاء"
             >
               <svg viewBox="0 0 24 24">
@@ -430,30 +431,20 @@
 
         <button class="google-btn" id="googleBtn" type="button">
 
-          <!-- شعار Google الرسمي متعدد الألوان -->
-
           <svg
             class="google-logo"
             viewBox="0 0 48 48"
             xmlns="http://www.w3.org/2000/svg"
             aria-label="Google"
           >
-            <path
-              fill="#4285F4"
-              d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z"
-            />
-            <path
-              fill="#34A853"
-              d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44Z"
-            />
-            <path
-              fill="#FBBC05"
-              d="M12.6 27.6a12 12 0 0 1 0-7.2v-5.3H5.8a20 20 0 0 0 0 17.8l6.8-5.3Z"
-            />
-            <path
-              fill="#EA4335"
-              d="M24 12c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 5.9 29.5 4 24 4A20 20 0 0 0 5.8 15.1l6.8 5.3C14.2 15.6 18.7 12 24 12Z"
-            />
+            <path fill="#4285F4"
+              d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z"/>
+            <path fill="#34A853"
+              d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44Z"/>
+            <path fill="#FBBC05"
+              d="M12.6 27.6a12 12 0 0 1 0-7.2v-5.3H5.8a20 20 0 0 0 0 17.8l6.8-5.3Z"/>
+            <path fill="#EA4335"
+              d="M24 12c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 5.9 29.5 4 24 4A20 20 0 0 0 5.8 15.1l6.8 5.3C14.2 15.6 18.7 12 24 12Z"/>
           </svg>
 
           <span>المتابعة باستخدام Google</span>
@@ -883,7 +874,7 @@
 
     });
 
-    /* متابعة حالة الحساب */
+    /* متابعة حالة الحساب دون تحويل تلقائي */
 
     db.auth.onAuthStateChange((event, session) => {
 
@@ -894,30 +885,22 @@
         return;
       }
 
-      if (
-        event === "SIGNED_IN" &&
-        !isRecoveryPage &&
-        session
-      ) {
-
-        redirectToHome();
-      }
+      // لا نحول المستخدم تلقائياً عند SIGNED_IN
+      // الدخول للرئيسية يتم بعد ضغط زر دخول فقط
 
     });
 
-    db.auth.getSession().then(({ data, error }) => {
+    /* فحص الجلسة دون تحويل تلقائي */
 
-      if (error || !data.session) return;
+    db.auth.getSession().then(({ data, error }) => {
 
       if (isRecoveryPage) {
 
         setMode("reset");
 
-      } else {
-
-        redirectToHome();
-
       }
+
+      // لا يوجد redirect هنا حتى لو كانت هناك جلسة محفوظة
 
     });
 
