@@ -11,9 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html, body {
       width: 100%;
@@ -21,9 +19,7 @@
       margin: 0;
     }
 
-    body {
-      background: #0b0e13;
-    }
+    body { background: #0b0e13; }
 
     .auth-wrap {
       min-height: 100vh;
@@ -33,7 +29,6 @@
       align-items: stretch;
       justify-content: stretch;
       padding: 0;
-
       background-image: url("https://raw.githubusercontent.com/hozifaelghapour9-prog/Body-exercise-/main/body-exersice-gym-exact.jpg");
       background-size: cover;
       background-position: center;
@@ -46,32 +41,20 @@
       min-height: 100vh;
       min-height: 100dvh;
       padding: 40px 20px;
-
       background: rgba(11, 14, 19, .68);
       backdrop-filter: blur(3px);
       -webkit-backdrop-filter: blur(3px);
-
       border: 1px solid rgba(255,255,255,.16);
       border-radius: 0;
-
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
     }
 
-    .auth-card > * {
-      width: min(430px, 100%);
-    }
-
-    .auth-card .brand {
-      margin-bottom: 26px;
-    }
-
-    .auth-card h1 {
-      font-size: 23px;
-      margin-bottom: 6px;
-    }
+    .auth-card > * { width: min(430px, 100%); }
+    .auth-card .brand { margin-bottom: 26px; }
+    .auth-card h1 { font-size: 23px; margin-bottom: 6px; }
 
     .auth-sub {
       color: #c1c9d1;
@@ -80,10 +63,7 @@
       line-height: 1.8;
     }
 
-    .auth-form {
-      display: grid;
-      gap: 14px;
-    }
+    .auth-form { display: grid; gap: 14px; }
 
     .auth-form label {
       display: block;
@@ -110,9 +90,7 @@
       direction: rtl;
     }
 
-    .auth-form .field::placeholder {
-      color: #aab4c0;
-    }
+    .auth-form .field::placeholder { color: #aab4c0; }
 
     .auth-form .field:focus {
       outline: none;
@@ -126,15 +104,12 @@
       left: 12px;
       right: auto;
       transform: translateY(-50%);
-
       width: 26px;
       height: 26px;
       padding: 3px;
-
       display: flex;
       align-items: center;
       justify-content: center;
-
       border: none;
       background: transparent;
       color: #aebbc8;
@@ -142,9 +117,7 @@
       transition: .2s;
     }
 
-    .toggle-password:hover {
-      color: #55c7c2;
-    }
+    .toggle-password:hover { color: #55c7c2; }
 
     .toggle-password svg {
       width: 20px;
@@ -156,28 +129,17 @@
       stroke-linejoin: round;
     }
 
-    /* العين المشطوبة تظهر في البداية */
+    .eye-slash { display: block; }
+    .toggle-password:not(.is-hidden) .eye-slash { display: none; }
 
-    .eye-slash {
-      display: none;
-    }
-
-    .toggle-password.is-hidden .eye-slash {
-      display: block;
-    }
-
-    .auth-form select.field {
-      cursor: pointer;
-    }
+    .auth-form select.field { cursor: pointer; }
 
     .auth-form select.field option {
       background: #121720;
       color: #fff;
     }
 
-    .auth-form .btn {
-      margin-top: 8px;
-    }
+    .auth-form .btn { margin-top: 8px; }
 
     .auth-switch {
       margin-top: 18px;
@@ -206,17 +168,14 @@
       min-height: 46px;
       margin-top: 14px;
       padding: 0 16px;
-
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
-
       border: 1px solid rgba(255,255,255,.2);
       border-radius: 10px;
       background: rgba(255,255,255,.08);
       color: #fff;
-
       font: inherit;
       font-size: 13px;
       cursor: pointer;
@@ -263,28 +222,17 @@
       line-height: 1.7;
     }
 
-    .hidden {
-      display: none !important;
-    }
-
-    .auth-card label.hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
+    .auth-card label.hidden { display: none !important; }
 
     @media (max-width: 600px) {
-      .auth-wrap {
-        background-attachment: scroll;
-      }
-
-      .auth-card {
-        padding: 25px 18px;
-      }
+      .auth-wrap { background-attachment: scroll; }
+      .auth-card { padding: 25px 18px; }
     }
   </style>
 </head>
 
 <body>
-
   <main class="auth-wrap">
     <section class="auth-card">
 
@@ -306,21 +254,14 @@
 
         <label id="nameLabel" class="hidden">
           الاسم الكامل
-
           <div class="input-wrap">
-            <input
-              class="field"
-              id="fullName"
-              type="text"
-              autocomplete="name"
-              placeholder="اكتب اسمك الكامل"
-            >
+            <input class="field" id="fullName" type="text"
+              autocomplete="name" placeholder="اكتب اسمك الكامل">
           </div>
         </label>
 
         <label id="genderLabel" class="hidden">
           النوع
-
           <select class="field" id="gender">
             <option value="">اختر النوع</option>
             <option value="male">ذكر</option>
@@ -328,29 +269,16 @@
           </select>
         </label>
 
-        <!-- البريد الإلكتروني -->
         <label>
           الاسم
-
           <div class="input-wrap">
-            <input
-              class="field"
-              id="email"
-              name="username"
-              type="email"
-              autocomplete="username"
-              placeholder="أدخل البريد الإلكتروني"
-              required
-            >
+            <input class="field" id="email" name="username"
+              type="email" autocomplete="username"
+              placeholder="أدخل البريد الإلكتروني" required>
 
-            <!-- العين المشطوبة ظاهرة من البداية -->
-            <button
-              class="toggle-password is-hidden"
-              type="button"
-              data-toggle="email"
-              aria-label="إظهار المحتوى"
-              title="إظهار وإخفاء"
-            >
+            <button class="toggle-password is-hidden" type="button"
+              data-toggle="email" aria-label="إظهار المحتوى"
+              title="إظهار وإخفاء">
               <svg viewBox="0 0 24 24">
                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
                 <circle cx="12" cy="12" r="3"/>
@@ -360,30 +288,16 @@
           </div>
         </label>
 
-        <!-- كلمة المرور -->
         <label id="passwordLabel">
           <span id="passwordTitle">كلمة المرور</span>
-
           <div class="input-wrap">
-            <input
-              class="field"
-              id="password"
-              name="password"
-              type="password"
-              autocomplete="current-password"
-              placeholder="كلمة المرور"
-              minlength="6"
-              required
-            >
+            <input class="field" id="password" name="password"
+              type="password" autocomplete="current-password"
+              placeholder="كلمة المرور" minlength="6" required>
 
-            <!-- العين المشطوبة ظاهرة من البداية -->
-            <button
-              class="toggle-password is-hidden"
-              type="button"
-              data-toggle="password"
-              aria-label="إظهار كلمة المرور"
-              title="إظهار وإخفاء كلمة المرور"
-            >
+            <button class="toggle-password is-hidden" type="button"
+              data-toggle="password" aria-label="إظهار كلمة المرور"
+              title="إظهار وإخفاء كلمة المرور">
               <svg viewBox="0 0 24 24">
                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
                 <circle cx="12" cy="12" r="3"/>
@@ -393,27 +307,17 @@
           </div>
         </label>
 
-        <!-- تأكيد كلمة المرور -->
         <label id="confirmLabel" class="hidden">
           تأكيد كلمة المرور
-
           <div class="input-wrap">
-            <input
-              class="field"
-              id="confirmPassword"
-              type="password"
-              autocomplete="new-password"
-              placeholder="أعد كتابة كلمة المرور"
-              minlength="6"
-            >
+            <input class="field" id="confirmPassword"
+              type="password" autocomplete="new-password"
+              placeholder="أعد كتابة كلمة المرور" minlength="6">
 
-            <button
-              class="toggle-password is-hidden"
-              type="button"
+            <button class="toggle-password is-hidden" type="button"
               data-toggle="confirmPassword"
               aria-label="إظهار كلمة المرور"
-              title="إظهار وإخفاء كلمة المرور"
-            >
+              title="إظهار وإخفاء كلمة المرور">
               <svg viewBox="0 0 24 24">
                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
                 <circle cx="12" cy="12" r="3"/>
@@ -430,16 +334,13 @@
         <button class="btn btn-primary btn-full" id="submitBtn" type="submit">
           دخول
         </button>
-
       </form>
 
       <div id="googleSection">
         <div class="auth-divider">أو</div>
-
         <button class="google-btn" id="googleBtn" type="button">
           <svg class="google-logo" viewBox="0 0 48 48"
-               xmlns="http://www.w3.org/2000/svg"
-               aria-label="Google">
+            xmlns="http://www.w3.org/2000/svg" aria-label="Google">
             <path fill="#4285F4"
               d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z"/>
             <path fill="#34A853"
@@ -449,7 +350,6 @@
             <path fill="#EA4335"
               d="M24 12c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 5.9 29.5 4 24 4A20 20 0 0 0 5.8 15.1l6.8 5.3C14.2 15.6 18.7 12 24 12Z"/>
           </svg>
-
           <span>المتابعة باستخدام Google</span>
         </button>
       </div>
@@ -466,12 +366,14 @@
 
   <script>
   (() => {
-
     const SUPABASE_URL =
       "https://xgxmtizyzjfxxwsmcspe.supabase.co";
 
     const SUPABASE_PUBLISHABLE_KEY =
       "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
+
+    const ENTRY_KEY = "bodyResetManualEntry";
+    const OAUTH_KEY = "bodyResetGoogleLogin";
 
     const db = window.supabase.createClient(
       SUPABASE_URL,
@@ -490,26 +392,36 @@
     let mode = "login";
     let isRedirecting = false;
 
-    const isRecoveryPage =
-      new URLSearchParams(location.search).get("reset") === "1";
+    const params = new URLSearchParams(location.search);
+    const isRecoveryPage = params.get("reset") === "1";
 
-    /* إظهار وإخفاء محتوى الخانات */
+    function showMessage(text, error = false) {
+      $("authMessage").textContent = text;
+      $("authMessage").style.color =
+        error ? "#ff7777" : "#55c7c2";
+    }
 
+    function redirectToHome() {
+      if (isRedirecting) return;
+
+      isRedirecting = true;
+      sessionStorage.setItem(ENTRY_KEY, "1");
+      sessionStorage.removeItem(OAUTH_KEY);
+
+      location.replace("index.html");
+    }
+
+    /* إظهار وإخفاء الخانات */
     document.querySelectorAll("[data-toggle]").forEach(button => {
-
       button.addEventListener("click", () => {
-
         const input = $(button.dataset.toggle);
-
         if (!input) return;
 
         const currentlyHidden = input.type === "password";
 
-        if (currentlyHidden) {
-          input.type = input.id === "email" ? "email" : "text";
-        } else {
-          input.type = "password";
-        }
+        input.type = currentlyHidden
+          ? (input.id === "email" ? "email" : "text")
+          : "password";
 
         button.classList.toggle("is-hidden", !currentlyHidden);
 
@@ -517,21 +429,10 @@
           "aria-label",
           currentlyHidden ? "إخفاء المحتوى" : "إظهار المحتوى"
         );
-
       });
-
     });
 
-    function showMessage(text, error = false) {
-
-      $("authMessage").textContent = text;
-
-      $("authMessage").style.color =
-        error ? "#ff7777" : "#55c7c2";
-    }
-
     function setMode(newMode) {
-
       mode = newMode;
 
       const signup = mode === "signup";
@@ -569,9 +470,7 @@
         signup || reset ? "new-password" : "current-password";
 
       $("forgotPassword").classList.toggle("hidden", mode !== "login");
-
       $("googleSection").classList.toggle("hidden", mode !== "login");
-
       $("switchSection").classList.toggle("hidden", reset || forgot);
 
       $("submitBtn").textContent =
@@ -589,90 +488,60 @@
       showMessage("");
     }
 
-    function redirectToHome() {
-
-      if (isRedirecting) return;
-
-      isRedirecting = true;
-
-      location.replace("index.html");
-    }
-
-    /* التبديل بين الدخول وإنشاء الحساب */
-
     $("switchMode").addEventListener("click", () => {
-
       setMode(mode === "signup" ? "login" : "signup");
-
     });
 
-    /* تسجيل الدخول باستخدام Google */
-
+    /* Google OAuth */
     $("googleBtn").addEventListener("click", async () => {
-
       const button = $("googleBtn");
-
       button.disabled = true;
 
       showMessage("جارٍ الاتصال بحساب Google...");
 
       try {
+        // العلامة توضع فقط بعد ضغط المستخدم على Google
+        sessionStorage.setItem(OAUTH_KEY, "1");
 
         const { error } = await db.auth.signInWithOAuth({
-
           provider: "google",
-
           options: {
             redirectTo: location.origin + location.pathname
           }
-
         });
 
         if (error) throw error;
 
       } catch (error) {
-
+        sessionStorage.removeItem(OAUTH_KEY);
         showMessage(
           error.message || "تعذر تسجيل الدخول باستخدام Google.",
           true
         );
-
         button.disabled = false;
-
       }
-
     });
 
     /* نسيت كلمة المرور */
-
     $("forgotPassword").addEventListener("click", async () => {
-
       const email = $("email").value.trim();
 
       if (!email) {
-
         showMessage("اكتب بريدك الإلكتروني أولاً.", true);
-
         $("email").focus();
-
         return;
       }
 
       const button = $("forgotPassword");
-
       button.disabled = true;
-
       showMessage("جارٍ إرسال رابط الاستعادة...");
 
       try {
-
         const { error } = await db.auth.resetPasswordForEmail(
           email,
           {
             redirectTo:
-              location.origin +
-              location.pathname +
-              "?reset=1"
+              location.origin + location.pathname + "?reset=1"
           }
         );
 
@@ -683,24 +552,17 @@
         );
 
       } catch (error) {
-
         showMessage(
           error.message || "تعذر إرسال رابط الاستعادة.",
           true
         );
-
       } finally {
-
         button.disabled = false;
-
       }
-
     });
 
     /* تنفيذ عمليات الحساب */
-
     $("authForm").addEventListener("submit", async event => {
-
       event.preventDefault();
 
       const email = $("email").value.trim();
@@ -709,81 +571,56 @@
       const button = $("submitBtn");
 
       if (mode === "signup") {
-
         if (!$("fullName").value.trim()) {
-
           showMessage("اكتب اسمك الكامل.", true);
           $("fullName").focus();
           return;
-
         }
 
         if (!$("gender").value) {
-
           showMessage("اختر النوع.", true);
           $("gender").focus();
           return;
-
         }
-
       }
 
       if (mode === "signup" || mode === "reset") {
-
         if (password !== confirmPassword) {
-
           showMessage("كلمتا المرور غير متطابقتين.", true);
           $("confirmPassword").focus();
           return;
-
         }
-
       }
 
       button.disabled = true;
-
       showMessage("جارٍ تنفيذ الطلب...");
 
       try {
-
         if (mode === "signup") {
-
           const { data, error } = await db.auth.signUp({
-
             email,
             password,
-
             options: {
               data: {
                 full_name: $("fullName").value.trim(),
                 gender: $("gender").value
               }
             }
-
           });
 
           if (error) throw error;
 
           if (data.session) {
-
             showMessage("تم إنشاء الحساب بنجاح.");
-
-            setTimeout(() => {
-              redirectToHome();
-            }, 700);
-
+            redirectToHome();
           } else {
-
             showMessage(
               "تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيد الحساب، ثم سجّل الدخول."
             );
-
           }
-
         }
 
         else if (mode === "login") {
-
           const { error } = await db.auth.signInWithPassword({
             email,
             password
@@ -791,20 +628,15 @@
 
           if (error) throw error;
 
-          // الانتقال للرئيسية بعد ضغط المستخدم على زر دخول فقط
           redirectToHome();
-
         }
 
         else if (mode === "forgot") {
-
           const { error } = await db.auth.resetPasswordForEmail(
             email,
             {
               redirectTo:
-                location.origin +
-                location.pathname +
-                "?reset=1"
+                location.origin + location.pathname + "?reset=1"
             }
           );
 
@@ -813,73 +645,76 @@
           showMessage(
             "لو البريد مسجل عندنا، هتوصلك رسالة فيها رابط استعادة كلمة المرور."
           );
-
         }
 
         else if (mode === "reset") {
-
           const { error } = await db.auth.updateUser({
-            password: password
+            password
           });
 
           if (error) throw error;
 
-          showMessage(
-            "تم تغيير كلمة المرور بنجاح."
-          );
+          showMessage("تم تغيير كلمة المرور بنجاح.");
 
           $("password").value = "";
           $("confirmPassword").value = "";
 
-          setTimeout(() => {
-            redirectToHome();
-          }, 1500);
+          // بعد تغيير كلمة المرور نرجع لتسجيل الدخول يدويًا
+          sessionStorage.removeItem(ENTRY_KEY);
+          sessionStorage.removeItem(OAUTH_KEY);
 
+          setTimeout(() => {
+            setMode("login");
+          }, 1200);
         }
 
       } catch (error) {
-
         showMessage(
           error.message || "تعذر إكمال الطلب.",
           true
         );
-
       } finally {
-
         button.disabled = false;
-
       }
-
     });
 
-    /* التعامل مع استعادة كلمة المرور فقط */
-
+    /* متابعة OAuth بعد الرجوع من Google */
     db.auth.onAuthStateChange((event, session) => {
-
       if (event === "PASSWORD_RECOVERY") {
         setMode("reset");
+        return;
       }
 
-      // لا يوجد تحويل تلقائي عند SIGNED_IN
-
+      if (
+        event === "SIGNED_IN" &&
+        session &&
+        sessionStorage.getItem(OAUTH_KEY) === "1"
+      ) {
+        redirectToHome();
+      }
     });
 
     /* فحص الجلسة بدون تحويل تلقائي */
-
     db.auth.getSession().then(({ data, error }) => {
-
       if (isRecoveryPage) {
         setMode("reset");
+        return;
       }
 
-      // وجود جلسة محفوظة لا يؤدي إلى الانتقال للرئيسية
-
+      // لا نحول المستخدم بسبب وجود جلسة قديمة.
+      // Google فقط يسمح بالتحويل إذا ضغط المستخدم على زر Google.
+      if (
+        !error &&
+        data.session &&
+        sessionStorage.getItem(OAUTH_KEY) === "1"
+      ) {
+        redirectToHome();
+      }
     });
 
     setMode(isRecoveryPage ? "reset" : "login");
 
   })();
   </script>
-
 </body>
 </html>
