@@ -333,7 +333,7 @@
               aria-label="إظهار كلمة المرور"
               title="إظهار وإخفاء كلمة المرور">
               <svg viewBox="0 0 24 24">
-                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
+                <path d="M2 12s3.5-7 10-7 10 7 10 7S2 12 2 12Z"/>
                 <circle cx="12" cy="12" r="3"/>
                 <path class="eye-slash" d="M4 4L20 20"/>
               </svg>
@@ -401,6 +401,7 @@
       hasSuccessfulOAuthCallback &&
       sessionStorage.getItem(OAUTH_KEY) === "1";
 
+    // لا تسمح لأي علامة دخول قديمة بفتح الصفحة الرئيسية.
     sessionStorage.removeItem(ENTRY_KEY);
 
     if (!isOAuthCallback) {
@@ -423,11 +424,11 @@
     let isRedirecting = false;
     let isSubmitting = false;
 
-    // لا يوجد إذن دخول افتراضيًا.
+    /*
+      لا يوجد إذن دخول تلقائي.
+      هذا المتغير لا يصبح true إلا بسبب تفاعل يدوي موثوق.
+    */
     let manualLoginApproved = false;
-
-    // يسجل بداية ضغطة فعلية على زر الدخول.
-    let pointerDownAt = 0;
 
     const isRecoveryPage = params.get("reset") === "1";
 
@@ -435,8 +436,8 @@
     const submitBtn = $("submitBtn");
 
     /*
-      لا نعتبر click وحده إذنًا للدخول.
-      يجب أن تسبقه ضغطة Pointer فعلية على زر الدخول.
+      عند الضغط على زر الدخول بالماوس أو اللمس.
+      نتحقق من أن الحدث صادر فعلًا من المستخدم.
     */
     submitBtn.addEventListener("pointerdown", event => {
       if (
@@ -444,29 +445,27 @@
         event.isTrusted &&
         event.button === 0
       ) {
-        pointerDownAt = Date.now();
+        manualLoginApproved = true;
       }
     });
 
+    /*
+      دعم الضغط على زر الدخول بالماوس أو اللمس.
+      هذا الحدث لا يمنح الإذن إذا كان ناتجًا عن JavaScript.
+    */
     submitBtn.addEventListener("click", event => {
-      const hasRecentPhysicalPress =
-        pointerDownAt > 0 &&
-        Date.now() - pointerDownAt < 1500;
-
-      pointerDownAt = 0;
-
       if (
         mode === "login" &&
         event.isTrusted &&
-        hasRecentPhysicalPress
+        event.detail > 0
       ) {
         manualLoginApproved = true;
       }
     });
 
     /*
-      Enter من البريد أو كلمة المرور:
-      لا نسمح بالإرسال إلا بعد ضغطة لوحة مفاتيح حقيقية.
+      Enter من حقل البريد أو كلمة المرور.
+      نمنع الإرسال الافتراضي ونرسل النموذج بعد منح الإذن يدويًا.
     */
     authForm.addEventListener("keydown", event => {
       if (
@@ -479,27 +478,37 @@
 
       const target = event.target;
 
-      const isLoginField =
-        target.id === "email" ||
-        target.id === "password";
-
-      const isSubmitButton =
-        target.id === "submitBtn";
-
-      if (!isLoginField && !isSubmitButton) {
+      if (
+        target.id !== "email" &&
+        target.id !== "password" &&
+        target.id !== "submitBtn"
+      ) {
         return;
       }
 
       event.preventDefault();
 
       manualLoginApproved = true;
+
       authForm.requestSubmit(submitBtn);
     });
 
-    // منع الإذن من الاستمرار عند تغيير وضع الصفحة.
+    /*
+      أي محاولة إرسال تلقائية أو برمجية بدون إذن يدوي
+      يتم رفضها داخل submit.
+    */
     authForm.addEventListener("invalid", () => {
       manualLoginApproved = false;
     }, true);
+
+    // تغيير البيانات يلغي الإذن السابق.
+    $("email").addEventListener("input", () => {
+      manualLoginApproved = false;
+    });
+
+    $("password").addEventListener("input", () => {
+      manualLoginApproved = false;
+    });
 
     function showMessage(text, error = false) {
       $("authMessage").textContent = text;
@@ -610,7 +619,6 @@
       mode = newMode;
 
       manualLoginApproved = false;
-      pointerDownAt = 0;
 
       const signup = mode === "signup";
       const reset = mode === "reset";
@@ -742,16 +750,15 @@
       event.preventDefault();
 
       /*
-        تسجيل الدخول العادي لا يعمل إلا بإذن يدوي:
-        - ضغطة فعلية على زر الدخول، أو
-        - ضغط Enter من حقل البريد أو كلمة المرور.
-        الإذن يُستهلك مرة واحدة فقط.
+        تسجيل الدخول العادي يتطلب إذنًا يدويًا.
+        تعبئة المتصفح أو الإرسال التلقائي لا يمنحان هذا الإذن.
       */
       if (mode === "login") {
         const approved =
           manualLoginApproved &&
           event.submitter === submitBtn;
 
+        // نستهلك الإذن فورًا حتى لا يعاد استخدامه.
         manualLoginApproved = false;
 
         if (!approved) {
@@ -830,7 +837,7 @@
 
           if (error) throw error;
 
-          // الانتظار يبدأ فقط بعد ضغطة دخول يدوية ونجاح التحقق.
+          // يبدأ الانتظار فقط بعد نجاح الدخول اليدوي.
           await new Promise(resolve => setTimeout(resolve, 2000));
 
           redirectToHome();
