@@ -129,8 +129,13 @@
       stroke-linejoin: round;
     }
 
+    /* الخط يظهر عندما تكون البيانات مخفية */
     .eye-slash { display: block; }
-    .toggle-password:not(.is-hidden) .eye-slash { display: none; }
+
+    /* يختفي الخط عندما تكون البيانات ظاهرة */
+    .toggle-password:not(.is-hidden) .eye-slash {
+      display: none;
+    }
 
     .auth-form select.field { cursor: pointer; }
 
@@ -276,8 +281,9 @@
               type="email" autocomplete="username"
               placeholder="أدخل البريد الإلكتروني" required>
 
-            <button class="toggle-password is-hidden" type="button"
-              data-toggle="email" aria-label="إظهار المحتوى"
+            <button class="toggle-password hidden is-hidden"
+              type="button" data-toggle="email"
+              aria-label="إظهار المحتوى"
               title="إظهار وإخفاء">
               <svg viewBox="0 0 24 24">
                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
@@ -295,8 +301,9 @@
               type="password" autocomplete="current-password"
               placeholder="كلمة المرور" minlength="6" required>
 
-            <button class="toggle-password is-hidden" type="button"
-              data-toggle="password" aria-label="إظهار كلمة المرور"
+            <button class="toggle-password hidden is-hidden"
+              type="button" data-toggle="password"
+              aria-label="إظهار كلمة المرور"
               title="إظهار وإخفاء كلمة المرور">
               <svg viewBox="0 0 24 24">
                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
@@ -314,8 +321,8 @@
               type="password" autocomplete="new-password"
               placeholder="أعد كتابة كلمة المرور" minlength="6">
 
-            <button class="toggle-password is-hidden" type="button"
-              data-toggle="confirmPassword"
+            <button class="toggle-password hidden is-hidden"
+              type="button" data-toggle="confirmPassword"
               aria-label="إظهار كلمة المرور"
               title="إظهار وإخفاء كلمة المرور">
               <svg viewBox="0 0 24 24">
@@ -411,11 +418,53 @@
       location.replace("index.html");
     }
 
-    /* إظهار وإخفاء الخانات */
+    /* إظهار العين فقط عندما تحتوي الخانة على نص */
+    const eyeFields = ["email", "password", "confirmPassword"];
+
+    function updateEye(fieldId) {
+      const input = $(fieldId);
+      const button = document.querySelector(
+        '[data-toggle="' + fieldId + '"]'
+      );
+
+      if (!input || !button) return;
+
+      if (input.value.length > 0) {
+        button.classList.remove("hidden");
+      } else {
+        // عند مسح الخانة: إخفاء العين وإخفاء المحتوى
+        input.type = fieldId === "email" ? "email" : "password";
+        button.classList.add("hidden");
+        button.classList.add("is-hidden");
+        button.setAttribute("aria-label", "إظهار المحتوى");
+      }
+    }
+
+    eyeFields.forEach(fieldId => {
+      const input = $(fieldId);
+      if (!input) return;
+
+      input.addEventListener("input", () => {
+        updateEye(fieldId);
+      });
+
+      input.addEventListener("change", () => {
+        updateEye(fieldId);
+      });
+
+      // التعامل مع الملء التلقائي للمتصفح
+      input.addEventListener("focus", () => {
+        updateEye(fieldId);
+      });
+
+      updateEye(fieldId);
+    });
+
+    /* إظهار وإخفاء محتوى الخانات */
     document.querySelectorAll("[data-toggle]").forEach(button => {
       button.addEventListener("click", () => {
         const input = $(button.dataset.toggle);
-        if (!input) return;
+        if (!input || !input.value.length) return;
 
         const currentlyHidden = input.type === "password";
 
@@ -486,6 +535,8 @@
         signup ? "تسجيل الدخول" : "إنشاء حساب";
 
       showMessage("");
+
+      eyeFields.forEach(updateEye);
     }
 
     $("switchMode").addEventListener("click", () => {
@@ -500,7 +551,6 @@
       showMessage("جارٍ الاتصال بحساب Google...");
 
       try {
-        // العلامة توضع فقط بعد ضغط المستخدم على Google
         sessionStorage.setItem(OAUTH_KEY, "1");
 
         const { error } = await db.auth.signInWithOAuth({
@@ -659,7 +709,8 @@
           $("password").value = "";
           $("confirmPassword").value = "";
 
-          // بعد تغيير كلمة المرور نرجع لتسجيل الدخول يدويًا
+          eyeFields.forEach(updateEye);
+
           sessionStorage.removeItem(ENTRY_KEY);
           sessionStorage.removeItem(OAUTH_KEY);
 
@@ -701,8 +752,6 @@
         return;
       }
 
-      // لا نحول المستخدم بسبب وجود جلسة قديمة.
-      // Google فقط يسمح بالتحويل إذا ضغط المستخدم على زر Google.
       if (
         !error &&
         data.session &&
@@ -713,6 +762,15 @@
     });
 
     setMode(isRecoveryPage ? "reset" : "login");
+
+    // إعادة فحص الحقول بعد تحميل الصفحة لاحتمال الملء التلقائي
+    window.addEventListener("pageshow", () => {
+      eyeFields.forEach(updateEye);
+    });
+
+    setTimeout(() => {
+      eyeFields.forEach(updateEye);
+    }, 500);
 
   })();
   </script>
