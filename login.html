@@ -425,30 +425,53 @@
     const isRecoveryPage = params.get("reset") === "1";
 
     /*
-      هذا المتغير يسمح بإرسال نموذج الدخول عند ضغط Enter.
-      لو المتصفح ملأ الحقول تلقائيًا وأرسل النموذج دون تفاعل
-      من المستخدم، فلن يتم تسجيل الدخول.
+      الحماية الجديدة:
+      لا يُسمح بتسجيل الدخول إلا بعد تفاعل يدوي موثوق.
+      ملء الحقول تلقائيًا لا يمنح إذن إرسال النموذج.
     */
-    let enterSubmitApproved = false;
+    let manualLoginApproved = false;
 
-    $("authForm").addEventListener("keydown", event => {
+    const authForm = $("authForm");
+    const submitBtn = $("submitBtn");
+
+    /*
+      الضغط اليدوي على زر دخول.
+      لا نعتمد على الضغط البرمجي أو الأحداث الاصطناعية.
+    */
+    submitBtn.addEventListener("click", event => {
+      if (mode === "login" && event.isTrusted) {
+        manualLoginApproved = true;
+      }
+    });
+
+    /*
+      السماح باستخدام Enter من داخل البريد أو كلمة المرور فقط.
+      نمنع الإرسال الافتراضي ثم نرسل النموذج بإذن يدوي واضح.
+    */
+    authForm.addEventListener("keydown", event => {
       if (
         mode === "login" &&
+        event.isTrusted &&
         event.key === "Enter" &&
         (
           event.target.id === "email" ||
           event.target.id === "password"
         )
       ) {
-        enterSubmitApproved = true;
+        event.preventDefault();
+
+        manualLoginApproved = true;
+        authForm.requestSubmit(submitBtn);
       }
     });
 
-    $("authForm").addEventListener("keyup", event => {
-      if (event.key === "Enter") {
-        enterSubmitApproved = false;
-      }
-    });
+    /*
+      لو التحقق التلقائي من المتصفح منع الإرسال بسبب حقل غير صالح،
+      نمسح الإذن حتى لا يُستخدم في إرسال لاحق غير مقصود.
+    */
+    authForm.addEventListener("invalid", () => {
+      manualLoginApproved = false;
+    }, true);
 
     function showMessage(text, error = false) {
       $("authMessage").textContent = text;
@@ -561,6 +584,11 @@
 
     function setMode(newMode) {
       mode = newMode;
+
+      /*
+        إلغاء أي إذن سابق عند الانتقال بين أوضاع الصفحة.
+      */
+      manualLoginApproved = false;
 
       const signup = mode === "signup";
       const reset = mode === "reset";
@@ -688,26 +716,21 @@
     });
 
     /* تنفيذ عمليات الحساب */
-    $("authForm").addEventListener("submit", async event => {
+    authForm.addEventListener("submit", async event => {
       event.preventDefault();
 
       /*
-        الحماية الأساسية:
-        في وضع تسجيل الدخول فقط، لا نقبل الإرسال إلا إذا:
-        1- المستخدم ضغط زر دخول.
-        2- المستخدم ضغط Enter داخل حقل الإيميل أو كلمة المرور.
-
-        أي إرسال تلقائي دون تفاعل المستخدم يتم تجاهله.
+        الحماية من الدخول التلقائي:
+        في وضع تسجيل الدخول، نستهلك الإذن اليدوي مرة واحدة فقط.
+        أي إرسال بدون ضغط فعلي على الزر أو Enter معتمد يتم تجاهله.
       */
       if (mode === "login") {
-        const submittedByButton =
-          event.submitter === $("submitBtn");
+        const approved = manualLoginApproved;
 
-        const submittedByEnter = enterSubmitApproved;
+        manualLoginApproved = false;
 
-        enterSubmitApproved = false;
-
-        if (!submittedByButton && !submittedByEnter) {
+        if (!approved) {
+          showMessage("اضغط دخول بعد ملء البيانات.");
           return;
         }
       }
