@@ -390,6 +390,23 @@
     const ENTRY_KEY = "bodyResetManualEntry";
     const OAUTH_KEY = "bodyResetGoogleLogin";
 
+    const $ = id => document.getElementById(id);
+
+    /*
+      التأكد من أن علامة Google تخص رجوعًا فعليًا من OAuth.
+      لو الصفحة اتفتحت بشكل عادي، نمسح أي علامة OAuth قديمة.
+    */
+    const params = new URLSearchParams(location.search);
+
+    const hasOAuthCallback =
+      params.has("code") ||
+      params.has("error") ||
+      /(?:^|[&#])(access_token|refresh_token|error)=/.test(location.hash);
+
+    if (!hasOAuthCallback) {
+      sessionStorage.removeItem(OAUTH_KEY);
+    }
+
     const db = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_PUBLISHABLE_KEY,
@@ -402,13 +419,36 @@
       }
     );
 
-    const $ = id => document.getElementById(id);
-
     let mode = "login";
     let isRedirecting = false;
 
-    const params = new URLSearchParams(location.search);
     const isRecoveryPage = params.get("reset") === "1";
+
+    /*
+      هذا المتغير يسمح بإرسال نموذج الدخول عند ضغط Enter.
+      لو المتصفح ملأ الحقول تلقائيًا وأرسل النموذج دون تفاعل
+      من المستخدم، فلن يتم تسجيل الدخول.
+    */
+    let enterSubmitApproved = false;
+
+    $("authForm").addEventListener("keydown", event => {
+      if (
+        mode === "login" &&
+        event.key === "Enter" &&
+        (
+          event.target.id === "email" ||
+          event.target.id === "password"
+        )
+      ) {
+        enterSubmitApproved = true;
+      }
+    });
+
+    $("authForm").addEventListener("keyup", event => {
+      if (event.key === "Enter") {
+        enterSubmitApproved = false;
+      }
+    });
 
     function showMessage(text, error = false) {
       $("authMessage").textContent = text;
@@ -442,6 +482,7 @@
       if (isRedirecting) return;
 
       isRedirecting = true;
+
       sessionStorage.setItem(ENTRY_KEY, "1");
       sessionStorage.removeItem(OAUTH_KEY);
 
@@ -504,7 +545,6 @@
           button.classList.contains("is-hidden");
 
         if (fieldId === "email") {
-          // لا نغيّر type=email حتى لا يتعطل مدير كلمات المرور
           input.classList.toggle("email-masked", !currentlyHidden);
         } else {
           input.type = currentlyHidden ? "text" : "password";
@@ -602,10 +642,12 @@
 
       } catch (error) {
         sessionStorage.removeItem(OAUTH_KEY);
+
         showMessage(
           error.message || "تعذر تسجيل الدخول باستخدام Google.",
           true
         );
+
         button.disabled = false;
       }
     });
@@ -648,6 +690,27 @@
     /* تنفيذ عمليات الحساب */
     $("authForm").addEventListener("submit", async event => {
       event.preventDefault();
+
+      /*
+        الحماية الأساسية:
+        في وضع تسجيل الدخول فقط، لا نقبل الإرسال إلا إذا:
+        1- المستخدم ضغط زر دخول.
+        2- المستخدم ضغط Enter داخل حقل الإيميل أو كلمة المرور.
+
+        أي إرسال تلقائي دون تفاعل المستخدم يتم تجاهله.
+      */
+      if (mode === "login") {
+        const submittedByButton =
+          event.submitter === $("submitBtn");
+
+        const submittedByEnter = enterSubmitApproved;
+
+        enterSubmitApproved = false;
+
+        if (!submittedByButton && !submittedByEnter) {
+          return;
+        }
+      }
 
       const email = $("email").value.trim();
       const password = $("password").value;
@@ -783,7 +846,7 @@
       }
     });
 
-    /* فحص الجلسة بدون تحويل تلقائي */
+    /* فحص الجلسة دون تحويل تلقائي عادي */
     db.auth.getSession().then(({ data, error }) => {
       if (isRecoveryPage) {
         setMode("reset");
