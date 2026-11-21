@@ -345,7 +345,7 @@
           نسيت كلمة المرور؟
         </button>
 
-        <button class="btn btn-primary btn-full" id="submitBtn" type="submit">
+        <button class="btn btn-primary btn-full" id="submitBtn" type="button">
           دخول
         </button>
       </form>
@@ -424,91 +424,10 @@
     let isRedirecting = false;
     let isSubmitting = false;
 
-    /*
-      لا يوجد إذن دخول تلقائي.
-      هذا المتغير لا يصبح true إلا بسبب تفاعل يدوي موثوق.
-    */
-    let manualLoginApproved = false;
-
     const isRecoveryPage = params.get("reset") === "1";
 
     const authForm = $("authForm");
     const submitBtn = $("submitBtn");
-
-    /*
-      عند الضغط على زر الدخول بالماوس أو اللمس.
-      نتحقق من أن الحدث صادر فعلًا من المستخدم.
-    */
-    submitBtn.addEventListener("pointerdown", event => {
-      if (
-        mode === "login" &&
-        event.isTrusted &&
-        event.button === 0
-      ) {
-        manualLoginApproved = true;
-      }
-    });
-
-    /*
-      دعم الضغط على زر الدخول بالماوس أو اللمس.
-      هذا الحدث لا يمنح الإذن إذا كان ناتجًا عن JavaScript.
-    */
-    submitBtn.addEventListener("click", event => {
-      if (
-        mode === "login" &&
-        event.isTrusted &&
-        event.detail > 0
-      ) {
-        manualLoginApproved = true;
-      }
-    });
-
-    /*
-      Enter من حقل البريد أو كلمة المرور.
-      نمنع الإرسال الافتراضي ونرسل النموذج بعد منح الإذن يدويًا.
-    */
-    authForm.addEventListener("keydown", event => {
-      if (
-        mode !== "login" ||
-        !event.isTrusted ||
-        event.key !== "Enter"
-      ) {
-        return;
-      }
-
-      const target = event.target;
-
-      if (
-        target.id !== "email" &&
-        target.id !== "password" &&
-        target.id !== "submitBtn"
-      ) {
-        return;
-      }
-
-      event.preventDefault();
-
-      manualLoginApproved = true;
-
-      authForm.requestSubmit(submitBtn);
-    });
-
-    /*
-      أي محاولة إرسال تلقائية أو برمجية بدون إذن يدوي
-      يتم رفضها داخل submit.
-    */
-    authForm.addEventListener("invalid", () => {
-      manualLoginApproved = false;
-    }, true);
-
-    // تغيير البيانات يلغي الإذن السابق.
-    $("email").addEventListener("input", () => {
-      manualLoginApproved = false;
-    });
-
-    $("password").addEventListener("input", () => {
-      manualLoginApproved = false;
-    });
 
     function showMessage(text, error = false) {
       $("authMessage").textContent = text;
@@ -548,6 +467,111 @@
 
       location.replace("index.html");
     }
+
+    /*
+      تسجيل الدخول العادي:
+      لا يتم استدعاء هذه الدالة إلا من ضغطة زر موثوقة
+      أو ضغط Enter يدوي من المستخدم.
+    */
+    async function performLogin() {
+      if (mode !== "login") return;
+      if (isSubmitting || isRedirecting) return;
+
+      const email = $("email").value.trim();
+      const password = $("password").value;
+      const button = $("submitBtn");
+
+      if (!validateEmail()) return;
+
+      if (!password) {
+        showMessage("اكتب كلمة المرور أولاً.", true);
+        $("password").focus();
+        return;
+      }
+
+      if (password.length < 6) {
+        showMessage("كلمة المرور يجب ألا تقل عن 6 أحرف.", true);
+        $("password").focus();
+        return;
+      }
+
+      isSubmitting = true;
+      button.disabled = true;
+
+      showMessage("جارٍ تسجيل الدخول...");
+
+      try {
+        const { error } = await db.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        // الانتظار لمدة ثانيتين بعد نجاح الدخول اليدوي فقط.
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        redirectToHome();
+
+      } catch (error) {
+        showMessage(
+          error.message || "تعذر تسجيل الدخول.",
+          true
+        );
+      } finally {
+        isSubmitting = false;
+        button.disabled = false;
+      }
+    }
+
+    /*
+      حاجز يمنع الإرسال التلقائي للنموذج في وضع تسجيل الدخول.
+      حتى لو حاول المتصفح أو مدير كلمات المرور إرسال النموذج،
+      لن يتم تنفيذ تسجيل الدخول من هذا الحدث.
+    */
+    authForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      if (mode === "login") {
+        event.stopImmediatePropagation();
+        return;
+      }
+    });
+
+    /*
+      زر الدخول في وضع login هو type=button.
+      لذلك لا يعتمد تسجيل الدخول على submit نهائيًا.
+    */
+    submitBtn.addEventListener("click", event => {
+      if (mode !== "login") return;
+      if (!event.isTrusted) return;
+
+      event.preventDefault();
+      performLogin();
+    });
+
+    /*
+      Enter من خانة البريد أو كلمة المرور.
+      نمنع الإرسال الافتراضي ونستدعي دالة الدخول مباشرة.
+    */
+    authForm.addEventListener("keydown", event => {
+      if (mode !== "login") return;
+      if (!event.isTrusted || event.key !== "Enter") return;
+
+      const target = event.target;
+
+      if (
+        target.id !== "email" &&
+        target.id !== "password"
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      performLogin();
+    });
 
     /*
       إدارة العين وإظهار محتوى الحقول.
@@ -618,8 +642,6 @@
     function setMode(newMode) {
       mode = newMode;
 
-      manualLoginApproved = false;
-
       const signup = mode === "signup";
       const reset = mode === "reset";
       const forgot = mode === "forgot";
@@ -663,6 +685,13 @@
         reset ? "حفظ كلمة المرور الجديدة" :
         forgot ? "إرسال رابط الاستعادة" :
         "دخول";
+
+      /*
+        أهم تغيير:
+        زر الدخول العادي لا يرسل النموذج.
+        بقية أوضاع الحساب تستخدم submit كالمعتاد.
+      */
+      $("submitBtn").type = mode === "login" ? "button" : "submit";
 
       $("switchText").textContent =
         signup ? "لديك حساب بالفعل؟" : "ليس لديك حساب؟";
@@ -745,26 +774,12 @@
       }
     });
 
-    /* تنفيذ عمليات الحساب */
+    /* تنفيذ عمليات إنشاء الحساب واستعادة كلمة المرور */
     authForm.addEventListener("submit", async event => {
       event.preventDefault();
 
-      /*
-        تسجيل الدخول العادي يتطلب إذنًا يدويًا.
-        تعبئة المتصفح أو الإرسال التلقائي لا يمنحان هذا الإذن.
-      */
-      if (mode === "login") {
-        const approved =
-          manualLoginApproved &&
-          event.submitter === submitBtn;
-
-        // نستهلك الإذن فورًا حتى لا يعاد استخدامه.
-        manualLoginApproved = false;
-
-        if (!approved) {
-          return;
-        }
-      }
+      // تسجيل الدخول له مسار مستقل تمامًا.
+      if (mode === "login") return;
 
       if (isSubmitting) return;
 
@@ -792,6 +807,12 @@
       }
 
       if (mode === "signup" || mode === "reset") {
+        if (password.length < 6) {
+          showMessage("كلمة المرور يجب ألا تقل عن 6 أحرف.", true);
+          $("password").focus();
+          return;
+        }
+
         if (password !== confirmPassword) {
           showMessage("كلمتا المرور غير متطابقتين.", true);
           $("confirmPassword").focus();
@@ -827,20 +848,6 @@
               "تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيد الحساب، ثم سجّل الدخول."
             );
           }
-        }
-
-        else if (mode === "login") {
-          const { error } = await db.auth.signInWithPassword({
-            email,
-            password
-          });
-
-          if (error) throw error;
-
-          // يبدأ الانتظار فقط بعد نجاح الدخول اليدوي.
-          await new Promise(resolve => setTimeout(resolve, 2000));
-
-          redirectToHome();
         }
 
         else if (mode === "forgot") {
