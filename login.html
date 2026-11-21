@@ -98,7 +98,6 @@
       box-shadow: 0 0 0 3px rgba(85,199,194,.13);
     }
 
-    /* إخفاء الإيميل بصريًا بدون تغيير نوع الحقل */
     #email.email-masked {
       -webkit-text-security: disc;
       text-security: disc;
@@ -394,11 +393,6 @@
 
     const params = new URLSearchParams(location.search);
 
-    /*
-      لا نعتبر فتح صفحة الدخول العادي رجوعًا من Google.
-      لازم يكون فيه callback ناجح، ومعاه علامة OAuth التي
-      تم تسجيلها قبل مغادرة الصفحة إلى Google.
-    */
     const hasSuccessfulOAuthCallback =
       params.has("code") ||
       /(?:^|[&#])(access_token|refresh_token)=/.test(location.hash);
@@ -407,11 +401,6 @@
       hasSuccessfulOAuthCallback &&
       sessionStorage.getItem(OAUTH_KEY) === "1";
 
-    /*
-      كل زيارة عادية لصفحة الدخول تبدأ من جديد.
-      نمسح علامة السماح القديمة فقط، ولا نمسح جلسة Supabase.
-      في حالة رجوع Google نحتفظ بعلامة OAuth حتى تكتمل العملية.
-    */
     sessionStorage.removeItem(ENTRY_KEY);
 
     if (!isOAuthCallback) {
@@ -433,21 +422,15 @@
     let mode = "login";
     let isRedirecting = false;
     let isSubmitting = false;
+    let manualLoginApproved = false;
 
     const isRecoveryPage = params.get("reset") === "1";
-
-    /*
-      لا يتم منح إذن تسجيل الدخول بسبب الكتابة أو الملء التلقائي.
-      الإذن لا يُمنح إلا من تفاعل مباشر مع زر الدخول أو Enter.
-    */
-    let manualLoginApproved = false;
 
     const authForm = $("authForm");
     const submitBtn = $("submitBtn");
 
     /*
-      الضغط المباشر على زر الدخول.
-      event.isTrusted يمنع اعتبار الضغط البرمجي تفاعلًا يدويًا.
+      الضغط اليدوي على زر الدخول فقط يمنح الإذن.
     */
     submitBtn.addEventListener("click", event => {
       if (mode === "login" && event.isTrusted) {
@@ -456,8 +439,9 @@
     });
 
     /*
-      دعم Enter من حقلي البريد وكلمة المرور.
-      نمنع الإرسال الافتراضي ثم نرسل النموذج بعد منح الإذن اليدوي.
+      Enter من حقل البريد أو كلمة المرور.
+      نستخدم requestSubmit مع زر الدخول حتى يكون submitter
+      هو نفس زر الدخول، ويُطبق التحقق من الحقول بشكل طبيعي.
     */
     authForm.addEventListener("keydown", event => {
       if (
@@ -487,10 +471,6 @@
       authForm.requestSubmit(submitBtn);
     });
 
-    /*
-      لو التحقق من الحقول منع إرسال النموذج،
-      نلغي الإذن حتى لا ينتقل لمحاولة أخرى.
-    */
     authForm.addEventListener("invalid", () => {
       manualLoginApproved = false;
     }, true);
@@ -535,9 +515,7 @@
     }
 
     /*
-      إدارة العين:
-      الإيميل يظل type=email دائمًا.
-      نخفيه بصريًا فقط عن طريق CSS.
+      إدارة العين وإظهار محتوى الحقول.
     */
     const eyeFields = ["email", "password", "confirmPassword"];
 
@@ -578,7 +556,6 @@
       updateEye(fieldId);
     });
 
-    /* إظهار وإخفاء محتوى الخانات */
     document.querySelectorAll("[data-toggle]").forEach(button => {
       button.addEventListener("click", () => {
         const input = $(button.dataset.toggle);
@@ -738,17 +715,19 @@
       event.preventDefault();
 
       /*
-        في تسجيل الدخول العادي:
-        لازم يكون فيه تفاعل يدوي سابق.
-        الإذن يُستهلك مرة واحدة فقط.
+        الشرط الأساسي:
+        لازم يكون فيه إذن ناتج عن تفاعل يدوي،
+        ولازم يكون زر الإرسال نفسه هو submitter.
+        هذا يمنع الإرسال التلقائي أو البرمجي غير المعتمد.
       */
       if (mode === "login") {
-        const approved = manualLoginApproved;
+        const approved =
+          manualLoginApproved &&
+          event.submitter === submitBtn;
 
         manualLoginApproved = false;
 
         if (!approved) {
-          showMessage("اضغط دخول بعد ملء البيانات.");
           return;
         }
       }
@@ -824,10 +803,6 @@
 
           if (error) throw error;
 
-          /*
-            انتظار ثانيتين بعد نجاح تسجيل الدخول العادي
-            قبل الانتقال إلى الصفحة الرئيسية.
-          */
           await new Promise(resolve => setTimeout(resolve, 2000));
 
           redirectToHome();
@@ -900,7 +875,6 @@
     });
 
     /*
-      فحص الجلسة:
       الجلسة القديمة وحدها لا تسبب أي تحويل.
       التحويل هنا مسموح فقط عند الرجوع من Google OAuth.
     */
@@ -922,7 +896,6 @@
 
     setMode(isRecoveryPage ? "reset" : "login");
 
-    /* إعادة فحص الحقول بعد الملء التلقائي */
     window.addEventListener("pageshow", () => {
       eyeFields.forEach(updateEye);
     });
