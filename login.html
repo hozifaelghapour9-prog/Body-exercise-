@@ -422,7 +422,12 @@
     let mode = "login";
     let isRedirecting = false;
     let isSubmitting = false;
+
+    // لا يوجد إذن دخول افتراضيًا.
     let manualLoginApproved = false;
+
+    // يسجل بداية ضغطة فعلية على زر الدخول.
+    let pointerDownAt = 0;
 
     const isRecoveryPage = params.get("reset") === "1";
 
@@ -430,18 +435,38 @@
     const submitBtn = $("submitBtn");
 
     /*
-      الضغط اليدوي على زر الدخول فقط يمنح الإذن.
+      لا نعتبر click وحده إذنًا للدخول.
+      يجب أن تسبقه ضغطة Pointer فعلية على زر الدخول.
     */
+    submitBtn.addEventListener("pointerdown", event => {
+      if (
+        mode === "login" &&
+        event.isTrusted &&
+        event.button === 0
+      ) {
+        pointerDownAt = Date.now();
+      }
+    });
+
     submitBtn.addEventListener("click", event => {
-      if (mode === "login" && event.isTrusted) {
+      const hasRecentPhysicalPress =
+        pointerDownAt > 0 &&
+        Date.now() - pointerDownAt < 1500;
+
+      pointerDownAt = 0;
+
+      if (
+        mode === "login" &&
+        event.isTrusted &&
+        hasRecentPhysicalPress
+      ) {
         manualLoginApproved = true;
       }
     });
 
     /*
-      Enter من حقل البريد أو كلمة المرور.
-      نستخدم requestSubmit مع زر الدخول حتى يكون submitter
-      هو نفس زر الدخول، ويُطبق التحقق من الحقول بشكل طبيعي.
+      Enter من البريد أو كلمة المرور:
+      لا نسمح بالإرسال إلا بعد ضغطة لوحة مفاتيح حقيقية.
     */
     authForm.addEventListener("keydown", event => {
       if (
@@ -471,6 +496,7 @@
       authForm.requestSubmit(submitBtn);
     });
 
+    // منع الإذن من الاستمرار عند تغيير وضع الصفحة.
     authForm.addEventListener("invalid", () => {
       manualLoginApproved = false;
     }, true);
@@ -584,6 +610,7 @@
       mode = newMode;
 
       manualLoginApproved = false;
+      pointerDownAt = 0;
 
       const signup = mode === "signup";
       const reset = mode === "reset";
@@ -715,10 +742,10 @@
       event.preventDefault();
 
       /*
-        الشرط الأساسي:
-        لازم يكون فيه إذن ناتج عن تفاعل يدوي،
-        ولازم يكون زر الإرسال نفسه هو submitter.
-        هذا يمنع الإرسال التلقائي أو البرمجي غير المعتمد.
+        تسجيل الدخول العادي لا يعمل إلا بإذن يدوي:
+        - ضغطة فعلية على زر الدخول، أو
+        - ضغط Enter من حقل البريد أو كلمة المرور.
+        الإذن يُستهلك مرة واحدة فقط.
       */
       if (mode === "login") {
         const approved =
@@ -803,6 +830,7 @@
 
           if (error) throw error;
 
+          // الانتظار يبدأ فقط بعد ضغطة دخول يدوية ونجاح التحقق.
           await new Promise(resolve => setTimeout(resolve, 2000));
 
           redirectToHome();
