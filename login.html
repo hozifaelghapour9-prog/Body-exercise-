@@ -278,12 +278,14 @@
           الاسم
           <div class="input-wrap">
             <input class="field" id="email" name="username"
-              type="email" autocomplete="username"
+              type="password" inputmode="email"
+              autocomplete="username"
+              autocapitalize="none" spellcheck="false"
               placeholder="أدخل البريد الإلكتروني" required>
 
             <button class="toggle-password hidden is-hidden"
               type="button" data-toggle="email"
-              aria-label="إظهار المحتوى"
+              aria-label="إظهار البريد الإلكتروني"
               title="إظهار وإخفاء">
               <svg viewBox="0 0 24 24">
                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
@@ -408,6 +410,29 @@
         error ? "#ff7777" : "#55c7c2";
     }
 
+    /* التحقق من صيغة البريد الإلكتروني */
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function validateEmail() {
+      const email = $("email").value.trim();
+
+      if (!email) {
+        showMessage("اكتب بريدك الإلكتروني أولاً.", true);
+        $("email").focus();
+        return false;
+      }
+
+      if (!isValidEmail(email)) {
+        showMessage("اكتب بريدًا إلكترونيًا صحيحًا.", true);
+        $("email").focus();
+        return false;
+      }
+
+      return true;
+    }
+
     function redirectToHome() {
       if (isRedirecting) return;
 
@@ -432,8 +457,9 @@
       if (input.value.length > 0) {
         button.classList.remove("hidden");
       } else {
-        // عند مسح الخانة: إخفاء العين وإخفاء المحتوى
-        input.type = fieldId === "email" ? "email" : "password";
+        // كل الخانات ترجع مخفية عند مسح محتواها
+        input.type = "password";
+
         button.classList.add("hidden");
         button.classList.add("is-hidden");
         button.setAttribute("aria-label", "إظهار المحتوى");
@@ -452,7 +478,6 @@
         updateEye(fieldId);
       });
 
-      // التعامل مع الملء التلقائي للمتصفح
       input.addEventListener("focus", () => {
         updateEye(fieldId);
       });
@@ -468,9 +493,8 @@
 
         const currentlyHidden = input.type === "password";
 
-        input.type = currentlyHidden
-          ? (input.id === "email" ? "email" : "text")
-          : "password";
+        // الإيميل وكلمات المرور تظهر كنص عادي عند الضغط على العين
+        input.type = currentlyHidden ? "text" : "password";
 
         button.classList.toggle("is-hidden", !currentlyHidden);
 
@@ -574,15 +598,11 @@
 
     /* نسيت كلمة المرور */
     $("forgotPassword").addEventListener("click", async () => {
+      if (!validateEmail()) return;
+
       const email = $("email").value.trim();
-
-      if (!email) {
-        showMessage("اكتب بريدك الإلكتروني أولاً.", true);
-        $("email").focus();
-        return;
-      }
-
       const button = $("forgotPassword");
+
       button.disabled = true;
       showMessage("جارٍ إرسال رابط الاستعادة...");
 
@@ -619,6 +639,11 @@
       const password = $("password").value;
       const confirmPassword = $("confirmPassword").value;
       const button = $("submitBtn");
+
+      // التحقق من البريد قبل تسجيل الدخول أو إنشاء الحساب أو الاستعادة
+      if (mode !== "reset" && !validateEmail()) {
+        return;
+      }
 
       if (mode === "signup") {
         if (!$("fullName").value.trim()) {
