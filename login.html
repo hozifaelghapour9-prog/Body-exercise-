@@ -98,6 +98,12 @@
       box-shadow: 0 0 0 3px rgba(85,199,194,.13);
     }
 
+    /* إخفاء الإيميل بصريًا بدون تغيير نوع الحقل */
+    #email.email-masked {
+      -webkit-text-security: disc;
+      text-security: disc;
+    }
+
     .toggle-password {
       position: absolute;
       top: 50%;
@@ -129,10 +135,8 @@
       stroke-linejoin: round;
     }
 
-    /* الخط يظهر عندما تكون البيانات مخفية */
     .eye-slash { display: block; }
 
-    /* يختفي الخط عندما تكون البيانات ظاهرة */
     .toggle-password:not(.is-hidden) .eye-slash {
       display: none;
     }
@@ -277,10 +281,12 @@
         <label>
           الاسم
           <div class="input-wrap">
-            <input class="field" id="email" name="username"
-              type="password" inputmode="email"
+            <input class="field email-masked" id="email"
+              name="email" type="email"
+              inputmode="email"
               autocomplete="username"
-              autocapitalize="none" spellcheck="false"
+              autocapitalize="none"
+              spellcheck="false"
               placeholder="أدخل البريد الإلكتروني" required>
 
             <button class="toggle-password hidden is-hidden"
@@ -410,7 +416,6 @@
         error ? "#ff7777" : "#55c7c2";
     }
 
-    /* التحقق من صيغة البريد الإلكتروني */
     function isValidEmail(email) {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
@@ -443,7 +448,12 @@
       location.replace("index.html");
     }
 
-    /* إظهار العين فقط عندما تحتوي الخانة على نص */
+    /*
+      إدارة العين:
+      الإيميل يظل type=email دائمًا.
+      نخفيه بصريًا فقط عن طريق CSS.
+      كلمة المرور تظل type=password عند الإخفاء.
+    */
     const eyeFields = ["email", "password", "confirmPassword"];
 
     function updateEye(fieldId) {
@@ -457,12 +467,15 @@
       if (input.value.length > 0) {
         button.classList.remove("hidden");
       } else {
-        // كل الخانات ترجع مخفية عند مسح محتواها
-        input.type = "password";
-
         button.classList.add("hidden");
         button.classList.add("is-hidden");
         button.setAttribute("aria-label", "إظهار المحتوى");
+
+        if (fieldId === "email") {
+          input.classList.add("email-masked");
+        } else {
+          input.type = "password";
+        }
       }
     }
 
@@ -470,13 +483,8 @@
       const input = $(fieldId);
       if (!input) return;
 
-      input.addEventListener("input", () => {
-        updateEye(fieldId);
-      });
-
-      input.addEventListener("change", () => {
-        updateEye(fieldId);
-      });
+      input.addEventListener("input", () => updateEye(fieldId));
+      input.addEventListener("change", () => updateEye(fieldId));
 
       input.addEventListener("focus", () => {
         updateEye(fieldId);
@@ -491,10 +499,16 @@
         const input = $(button.dataset.toggle);
         if (!input || !input.value.length) return;
 
-        const currentlyHidden = input.type === "password";
+        const fieldId = input.id;
+        const currentlyHidden =
+          button.classList.contains("is-hidden");
 
-        // الإيميل وكلمات المرور تظهر كنص عادي عند الضغط على العين
-        input.type = currentlyHidden ? "text" : "password";
+        if (fieldId === "email") {
+          // لا نغيّر type=email حتى لا يتعطل مدير كلمات المرور
+          input.classList.toggle("email-masked", !currentlyHidden);
+        } else {
+          input.type = currentlyHidden ? "text" : "password";
+        }
 
         button.classList.toggle("is-hidden", !currentlyHidden);
 
@@ -640,7 +654,6 @@
       const confirmPassword = $("confirmPassword").value;
       const button = $("submitBtn");
 
-      // التحقق من البريد قبل تسجيل الدخول أو إنشاء الحساب أو الاستعادة
       if (mode !== "reset" && !validateEmail()) {
         return;
       }
@@ -788,8 +801,12 @@
 
     setMode(isRecoveryPage ? "reset" : "login");
 
-    // إعادة فحص الحقول بعد تحميل الصفحة لاحتمال الملء التلقائي
+    /* إعادة فحص الحقول بعد الملء التلقائي */
     window.addEventListener("pageshow", () => {
+      eyeFields.forEach(updateEye);
+    });
+
+    window.addEventListener("load", () => {
       eyeFields.forEach(updateEye);
     });
 
