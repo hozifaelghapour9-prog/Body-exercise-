@@ -6,951 +6,430 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b0e13">
   <title>BODY RESET | تسجيل الدخول</title>
-
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * { box-sizing: border-box; }
-
-    html, body {
-      width: 100%;
-      min-height: 100%;
-      margin: 0;
-    }
-
-    body { background: #0b0e13; }
+    html, body { width:100%; min-height:100%; margin:0; }
+    body { background:#0b0e13; }
 
     .auth-wrap {
-      min-height: 100vh;
-      min-height: 100dvh;
-      width: 100%;
-      display: flex;
-      align-items: stretch;
-      justify-content: stretch;
-      padding: 0;
-      background-image: url("https://raw.githubusercontent.com/hozifaelghapour9-prog/Body-exercise-/main/body-exersice-gym-exact.jpg");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+      min-height:100vh;
+      min-height:100dvh;
+      display:flex;
+      background-image:url("https://raw.githubusercontent.com/hozifaelghapour9-prog/Body-exercise-/main/body-exersice-gym-exact.jpg");
+      background-size:cover;
+      background-position:center;
+      background-attachment:fixed;
     }
 
     .auth-card {
-      width: 100%;
-      min-height: 100vh;
-      min-height: 100dvh;
-      padding: 40px 20px;
-      background: rgba(11, 14, 19, .68);
-      backdrop-filter: blur(3px);
-      -webkit-backdrop-filter: blur(3px);
-      border: 1px solid rgba(255,255,255,.16);
-      border-radius: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      width:100%;
+      min-height:100vh;
+      min-height:100dvh;
+      padding:35px 20px;
+      background:rgba(11,14,19,.78);
+      backdrop-filter:blur(3px);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
     }
 
-    .auth-card > * { width: min(430px, 100%); }
-    .auth-card .brand { margin-bottom: 26px; }
-    .auth-card h1 { font-size: 23px; margin-bottom: 6px; }
+    .auth-card > * { width:min(430px,100%); }
+    .auth-card .brand { margin-bottom:26px; }
+    .auth-card h1 { font-size:23px; margin-bottom:6px; }
 
     .auth-sub {
-      color: #c1c9d1;
-      font-size: 12px;
-      margin-bottom: 22px;
-      line-height: 1.8;
+      color:#c1c9d1;
+      font-size:12px;
+      margin-bottom:22px;
+      line-height:1.8;
     }
 
-    .auth-form { display: grid; gap: 14px; }
+    .auth-form { display:grid; gap:14px; }
+    .auth-form label { display:block; font-size:13px; color:#f4f6f8; }
 
-    .auth-form label {
-      display: block;
-      font-size: 13px;
-      color: #f4f6f8;
+    .input-wrap { position:relative; width:100%; margin-top:7px; }
+
+    .field {
+      width:100%;
+      min-height:45px;
+      padding:0 14px;
+      background:rgba(255,255,255,.09);
+      border:1px solid rgba(255,255,255,.22);
+      color:#fff;
+      border-radius:11px;
+      font:inherit;
+      direction:rtl;
     }
 
-    .input-wrap {
-      position: relative;
-      width: 100%;
-      margin-top: 7px;
+    .field::placeholder { color:#aab4c0; }
+    .field:focus {
+      outline:none;
+      border-color:#55c7c2;
+      box-shadow:0 0 0 3px rgba(85,199,194,.13);
     }
 
-    .auth-form .field {
-      width: 100%;
-      margin-top: 0;
-      background: rgba(255,255,255,.09);
-      border: 1px solid rgba(255,255,255,.22);
-      color: #fff;
-      border-radius: 11px;
-      min-height: 45px;
-      padding: 0 14px 0 45px;
-      font: inherit;
-      direction: rtl;
-    }
-
-    .auth-form .field::placeholder { color: #aab4c0; }
-
-    .auth-form .field:focus {
-      outline: none;
-      border-color: #55c7c2;
-      box-shadow: 0 0 0 3px rgba(85,199,194,.13);
-    }
-
-    #email.email-masked {
-      -webkit-text-security: disc;
-      text-security: disc;
-    }
+    .auth-form .btn { margin-top:8px; }
 
     .toggle-password {
-      position: absolute;
-      top: 50%;
-      left: 12px;
-      right: auto;
-      transform: translateY(-50%);
-      width: 26px;
-      height: 26px;
-      padding: 3px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: none;
-      background: transparent;
-      color: #aebbc8;
-      cursor: pointer;
-      transition: .2s;
+      position:absolute;
+      top:50%;
+      left:12px;
+      transform:translateY(-50%);
+      border:0;
+      background:none;
+      color:#aebbc8;
+      cursor:pointer;
+      font-size:12px;
     }
-
-    .toggle-password:hover { color: #55c7c2; }
-
-    .toggle-password svg {
-      width: 20px;
-      height: 20px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .eye-slash { display: block; }
-
-    .toggle-password:not(.is-hidden) .eye-slash {
-      display: none;
-    }
-
-    .auth-form select.field { cursor: pointer; }
-
-    .auth-form select.field option {
-      background: #121720;
-      color: #fff;
-    }
-
-    .auth-form .btn { margin-top: 8px; }
 
     .auth-switch {
-      margin-top: 18px;
-      color: #c1c9d1;
-      font-size: 12px;
-      text-align: center;
+      margin-top:18px;
+      color:#c1c9d1;
+      font-size:12px;
+      text-align:center;
     }
 
-    .auth-switch button,
-    .auth-forgot {
-      border: 0;
-      background: none;
-      color: #55c7c2;
-      font: inherit;
-      cursor: pointer;
+    .auth-switch button, .auth-forgot {
+      border:0;
+      background:none;
+      color:#55c7c2;
+      font:inherit;
+      cursor:pointer;
     }
 
     .auth-forgot {
-      font-size: 12px;
-      text-align: left;
-      margin-top: -5px;
+      font-size:12px;
+      text-align:left;
     }
 
     .google-btn {
-      width: 100%;
-      min-height: 46px;
-      margin-top: 14px;
-      padding: 0 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      border: 1px solid rgba(255,255,255,.2);
-      border-radius: 10px;
-      background: rgba(255,255,255,.08);
-      color: #fff;
-      font: inherit;
-      font-size: 13px;
-      cursor: pointer;
-      transition: .2s;
+      width:100%;
+      min-height:46px;
+      margin-top:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      border:1px solid rgba(255,255,255,.2);
+      border-radius:10px;
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      font:inherit;
+      cursor:pointer;
     }
 
-    .google-btn:hover {
-      background: rgba(255,255,255,.15);
-      border-color: rgba(255,255,255,.4);
-    }
-
-    .google-btn:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    .google-logo {
-      width: 21px;
-      height: 21px;
-      flex-shrink: 0;
-    }
+    .google-logo { width:21px; height:21px; }
 
     .auth-divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #c1c9d1;
-      font-size: 11px;
-      margin-top: 16px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      color:#c1c9d1;
+      font-size:11px;
+      margin-top:16px;
     }
 
-    .auth-divider::before,
-    .auth-divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: rgba(255,255,255,.2);
+    .auth-divider::before, .auth-divider::after {
+      content:"";
+      flex:1;
+      height:1px;
+      background:rgba(255,255,255,.2);
     }
 
     #authMessage {
-      min-height: 22px;
-      margin-top: 14px;
-      font-size: 12px;
-      line-height: 1.7;
+      min-height:22px;
+      margin-top:14px;
+      font-size:12px;
+      line-height:1.7;
     }
 
-    .hidden { display: none !important; }
-    .auth-card label.hidden { display: none !important; }
+    .hidden { display:none !important; }
 
-    @media (max-width: 600px) {
-      .auth-wrap { background-attachment: scroll; }
-      .auth-card { padding: 25px 18px; }
+    @media(max-width:600px) {
+      .auth-wrap { background-attachment:scroll; }
+      .auth-card { padding:25px 18px; }
     }
   </style>
 </head>
 
 <body>
-  <main class="auth-wrap">
-    <section class="auth-card">
+<main class="auth-wrap">
+<section class="auth-card">
 
-      <a class="brand" href="login.html">
-        <span class="brand-mark">B</span>
-        <span>
-          <strong>BODY RESET</strong>
-          <small>EXERCISE PLATFORM</small>
-        </span>
-      </a>
+  <a class="brand" href="login.html">
+    <span class="brand-mark">B</span>
+    <span>
+      <strong>BODY RESET</strong>
+      <small>EXERCISE PLATFORM</small>
+    </span>
+  </a>
 
-      <h1 id="authTitle">تسجيل الدخول</h1>
+  <h1 id="authTitle">تسجيل الدخول</h1>
+  <p class="auth-sub" id="authSubtitle">
+    سجّل دخولك للوصول إلى التمارين والبرامج.
+  </p>
 
-      <p class="auth-sub" id="authSubtitle">
-        سجّل دخولك للوصول إلى التمارين والبرامج.
-      </p>
+  <form class="auth-form" id="authForm">
 
-      <form class="auth-form" id="authForm">
+    <label id="fullNameLabel" class="hidden">
+      الاسم الكامل
+      <input class="field" id="fullName" type="text"
+        autocomplete="name" placeholder="اكتب اسمك الكامل">
+    </label>
 
-        <label id="nameLabel" class="hidden">
-          الاسم الكامل
-          <div class="input-wrap">
-            <input class="field" id="fullName" type="text"
-              autocomplete="name" placeholder="اكتب اسمك الكامل">
-          </div>
-        </label>
+    <label id="genderLabel" class="hidden">
+      النوع
+      <select class="field" id="gender">
+        <option value="">اختر النوع</option>
+        <option value="male">ذكر</option>
+        <option value="female">أنثى</option>
+      </select>
+    </label>
 
-        <label id="genderLabel" class="hidden">
-          النوع
-          <select class="field" id="gender">
-            <option value="">اختر النوع</option>
-            <option value="male">ذكر</option>
-            <option value="female">أنثى</option>
-          </select>
-        </label>
+    <label>
+      اسم المستخدم
+      <input class="field" id="username" type="text"
+        autocomplete="username" autocapitalize="none"
+        spellcheck="false" placeholder="اكتب اسم المستخدم"
+        required minlength="3" maxlength="20">
+    </label>
 
-        <label>
-          الاسم
-          <div class="input-wrap">
-            <input class="field email-masked" id="email"
-              name="email" type="email"
-              inputmode="email"
-              autocomplete="username"
-              autocapitalize="none"
-              spellcheck="false"
-              placeholder="أدخل البريد الإلكتروني" required>
-
-            <button class="toggle-password hidden is-hidden"
-              type="button" data-toggle="email"
-              aria-label="إظهار البريد الإلكتروني"
-              title="إظهار وإخفاء">
-              <svg viewBox="0 0 24 24">
-                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
-                <circle cx="12" cy="12" r="3"/>
-                <path class="eye-slash" d="M4 4L20 20"/>
-              </svg>
-            </button>
-          </div>
-        </label>
-
-        <label id="passwordLabel">
-          <span id="passwordTitle">كلمة المرور</span>
-          <div class="input-wrap">
-            <input class="field" id="password" name="password"
-              type="password" autocomplete="current-password"
-              placeholder="كلمة المرور" minlength="6" required>
-
-            <button class="toggle-password hidden is-hidden"
-              type="button" data-toggle="password"
-              aria-label="إظهار كلمة المرور"
-              title="إظهار وإخفاء كلمة المرور">
-              <svg viewBox="0 0 24 24">
-                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
-                <circle cx="12" cy="12" r="3"/>
-                <path class="eye-slash" d="M4 4L20 20"/>
-              </svg>
-            </button>
-          </div>
-        </label>
-
-        <label id="confirmLabel" class="hidden">
-          تأكيد كلمة المرور
-          <div class="input-wrap">
-            <input class="field" id="confirmPassword"
-              type="password" autocomplete="new-password"
-              placeholder="أعد كتابة كلمة المرور" minlength="6">
-
-            <button class="toggle-password hidden is-hidden"
-              type="button" data-toggle="confirmPassword"
-              aria-label="إظهار كلمة المرور"
-              title="إظهار وإخفاء كلمة المرور">
-              <svg viewBox="0 0 24 24">
-                <path d="M2 12s3.5-7 10-7 10 7 10 7S2 12 2 12Z"/>
-                <circle cx="12" cy="12" r="3"/>
-                <path class="eye-slash" d="M4 4L20 20"/>
-              </svg>
-            </button>
-          </div>
-        </label>
-
-        <button class="auth-forgot" id="forgotPassword" type="button">
-          نسيت كلمة المرور؟
-        </button>
-
-        <button class="btn btn-primary btn-full" id="submitBtn" type="button">
-          دخول
-        </button>
-      </form>
-
-      <div id="googleSection">
-        <div class="auth-divider">أو</div>
-        <button class="google-btn" id="googleBtn" type="button">
-          <svg class="google-logo" viewBox="0 0 48 48"
-            xmlns="http://www.w3.org/2000/svg" aria-label="Google">
-            <path fill="#4285F4"
-              d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z"/>
-            <path fill="#34A853"
-              d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44Z"/>
-            <path fill="#FBBC05"
-              d="M12.6 27.6a12 12 0 0 1 0-7.2v-5.3H5.8a20 20 0 0 0 0 17.8l6.8-5.3Z"/>
-            <path fill="#EA4335"
-              d="M24 12c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 5.9 29.5 4 24 4A20 20 0 0 0 5.8 15.1l6.8 5.3C14.2 15.6 18.7 12 24 12Z"/>
-          </svg>
-          <span>المتابعة باستخدام Google</span>
-        </button>
+    <label id="passwordLabel">
+      <span id="passwordTitle">كلمة المرور</span>
+      <div class="input-wrap">
+        <input class="field" id="password" type="password"
+          autocomplete="current-password" placeholder="كلمة المرور"
+          minlength="6" required>
+        <button class="toggle-password" type="button"
+          data-toggle="password">إظهار</button>
       </div>
+    </label>
 
-      <p id="authMessage" role="status" aria-live="polite"></p>
+    <label id="confirmLabel" class="hidden">
+      تأكيد كلمة المرور
+      <div class="input-wrap">
+        <input class="field" id="confirmPassword" type="password"
+          autocomplete="new-password" placeholder="أعد كتابة كلمة المرور"
+          minlength="6">
+        <button class="toggle-password" type="button"
+          data-toggle="confirmPassword">إظهار</button>
+      </div>
+    </label>
 
-      <p class="auth-switch" id="switchSection">
-        <span id="switchText">ليس لديك حساب؟</span>
-        <button id="switchMode" type="button">إنشاء حساب</button>
-      </p>
+    <button class="auth-forgot" id="forgotPassword" type="button">
+      نسيت كلمة المرور؟
+    </button>
 
-    </section>
-  </main>
+    <button class="btn btn-primary btn-full" id="submitBtn" type="submit">
+      دخول
+    </button>
+  </form>
 
-  <script>
-  (() => {
-    const SUPABASE_URL =
-      "https://xgxmtizyzjfxxwsmcspe.supabase.co";
+  <div id="googleSection">
+    <div class="auth-divider">أو</div>
+    <button class="google-btn" id="googleBtn" type="button">
+      <svg class="google-logo" viewBox="0 0 48 48"
+        xmlns="http://www.w3.org/2000/svg">
+        <path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z"/>
+        <path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44Z"/>
+        <path fill="#FBBC05" d="M12.6 27.6a12 12 0 0 1 0-7.2v-5.3H5.8a20 20 0 0 0 0 17.8l6.8-5.3Z"/>
+        <path fill="#EA4335" d="M24 12c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 5.9 29.5 4 24 4A20 20 0 0 0 5.8 15.1l6.8 5.3C14.2 15.6 18.7 12 24 12Z"/>
+      </svg>
+      <span>المتابعة باستخدام Google</span>
+    </button>
+  </div>
 
-    const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
+  <p id="authMessage" role="status" aria-live="polite"></p>
 
-    const ENTRY_KEY = "bodyResetManualEntry";
-    const OAUTH_KEY = "bodyResetGoogleLogin";
+  <p class="auth-switch" id="switchSection">
+    <span id="switchText">ليس لديك حساب؟</span>
+    <button id="switchMode" type="button">إنشاء حساب</button>
+  </p>
 
-    const $ = id => document.getElementById(id);
+</section>
+</main>
 
-    const params = new URLSearchParams(location.search);
+<script>
+(() => {
+  const SUPABASE_URL = "https://xgxmtizyzjfxxwsmcspe.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
+  const FUNCTION_URL = SUPABASE_URL + "/functions/v1/login-with-username";
 
-    const hasSuccessfulOAuthCallback =
-      params.has("code") ||
-      /(?:^|[&#])(access_token|refresh_token)=/.test(location.hash);
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const $ = id => document.getElementById(id);
 
-    const isOAuthCallback =
-      hasSuccessfulOAuthCallback &&
-      sessionStorage.getItem(OAUTH_KEY) === "1";
+  let mode = "login";
+  let busy = false;
 
-    // لا تسمح لأي علامة دخول قديمة بفتح الصفحة الرئيسية.
-    sessionStorage.removeItem(ENTRY_KEY);
+  function message(text, error = false) {
+    $("authMessage").textContent = text;
+    $("authMessage").style.color = error ? "#ff7777" : "#55c7c2";
+  }
 
-    if (!isOAuthCallback) {
-      sessionStorage.removeItem(OAUTH_KEY);
-    }
+  function redirectHome() {
+    sessionStorage.setItem("bodyResetManualEntry", "1");
+    location.replace("index.html");
+  }
 
-    const db = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY,
-      {
-        auth: {
-          autoRefreshToken: true,
-          persistSession: true,
-          detectSessionInUrl: true
-        }
-      }
-    );
+  function setMode(next) {
+    mode = next;
+    const signup = mode === "signup";
 
-    let mode = "login";
-    let isRedirecting = false;
-    let isSubmitting = false;
+    $("authTitle").textContent =
+      signup ? "إنشاء حساب جديد" : "تسجيل الدخول";
 
-    const isRecoveryPage = params.get("reset") === "1";
+    $("authSubtitle").textContent =
+      signup ? "أنشئ حسابك باستخدام اسم المستخدم وكلمة المرور." :
+      "سجّل دخولك للوصول إلى التمارين والبرامج.";
 
-    const authForm = $("authForm");
-    const submitBtn = $("submitBtn");
+    $("fullNameLabel").classList.toggle("hidden", !signup);
+    $("genderLabel").classList.toggle("hidden", !signup);
+    $("confirmLabel").classList.toggle("hidden", !signup);
 
-    function showMessage(text, error = false) {
-      $("authMessage").textContent = text;
-      $("authMessage").style.color =
-        error ? "#ff7777" : "#55c7c2";
-    }
+    $("fullName").required = signup;
+    $("gender").required = signup;
+    $("confirmPassword").required = signup;
 
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
+    $("password").autocomplete = signup ? "new-password" : "current-password";
+    $("forgotPassword").classList.toggle("hidden", signup);
+    $("googleSection").classList.toggle("hidden", signup);
 
-    function validateEmail() {
-      const email = $("email").value.trim();
+    $("submitBtn").textContent = signup ? "إنشاء الحساب" : "دخول";
+    $("switchText").textContent =
+      signup ? "لديك حساب بالفعل؟" : "ليس لديك حساب؟";
+    $("switchMode").textContent =
+      signup ? "تسجيل الدخول" : "إنشاء حساب";
 
-      if (!email) {
-        showMessage("اكتب بريدك الإلكتروني أولاً.", true);
-        $("email").focus();
-        return false;
-      }
+    message("");
+  }
 
-      if (!isValidEmail(email)) {
-        showMessage("اكتب بريدًا إلكترونيًا صحيحًا.", true);
-        $("email").focus();
-        return false;
-      }
+  $("switchMode").addEventListener("click", () => {
+    setMode(mode === "login" ? "signup" : "login");
+  });
 
-      return true;
-    }
+  document.querySelectorAll("[data-toggle]").forEach(button => {
+    button.addEventListener("click", () => {
+      const input = $(button.dataset.toggle);
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      button.textContent = show ? "إخفاء" : "إظهار";
+    });
+  });
 
-    function redirectToHome() {
-      if (isRedirecting) return;
-
-      isRedirecting = true;
-
-      sessionStorage.setItem(ENTRY_KEY, "1");
-      sessionStorage.removeItem(OAUTH_KEY);
-
-      location.replace("index.html");
-    }
-
-    /*
-      تسجيل الدخول العادي:
-      لا يتم استدعاء هذه الدالة إلا من ضغطة زر موثوقة
-      أو ضغط Enter يدوي من المستخدم.
-    */
-    async function performLogin() {
-      if (mode !== "login") return;
-      if (isSubmitting || isRedirecting) return;
-
-      const email = $("email").value.trim();
-      const password = $("password").value;
-      const button = $("submitBtn");
-
-      if (!validateEmail()) return;
-
-      if (!password) {
-        showMessage("اكتب كلمة المرور أولاً.", true);
-        $("password").focus();
-        return;
-      }
-
-      if (password.length < 6) {
-        showMessage("كلمة المرور يجب ألا تقل عن 6 أحرف.", true);
-        $("password").focus();
-        return;
-      }
-
-      isSubmitting = true;
-      button.disabled = true;
-
-      showMessage("جارٍ تسجيل الدخول...");
-
-      try {
-        const { error } = await db.auth.signInWithPassword({
-          email,
-          password
-        });
-
-        if (error) throw error;
-
-        // الانتظار لمدة ثانيتين بعد نجاح الدخول اليدوي فقط.
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        redirectToHome();
-
-      } catch (error) {
-        showMessage(
-          error.message || "تعذر تسجيل الدخول.",
-          true
-        );
-      } finally {
-        isSubmitting = false;
-        button.disabled = false;
-      }
-    }
-
-    /*
-      حاجز يمنع الإرسال التلقائي للنموذج في وضع تسجيل الدخول.
-      حتى لو حاول المتصفح أو مدير كلمات المرور إرسال النموذج،
-      لن يتم تنفيذ تسجيل الدخول من هذا الحدث.
-    */
-    authForm.addEventListener("submit", event => {
-      event.preventDefault();
-
-      if (mode === "login") {
-        event.stopImmediatePropagation();
-        return;
-      }
+  async function callFunction(payload) {
+    const response = await fetch(FUNCTION_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY
+      },
+      body: JSON.stringify(payload)
     });
 
-    /*
-      زر الدخول في وضع login هو type=button.
-      لذلك لا يعتمد تسجيل الدخول على submit نهائيًا.
-    */
-    submitBtn.addEventListener("click", event => {
-      if (mode !== "login") return;
-      if (!event.isTrusted) return;
+    const result = await response.json();
 
-      event.preventDefault();
-      performLogin();
-    });
+    if (!response.ok) {
+      throw new Error(result.error || "تعذر تنفيذ الطلب");
+    }
 
-    /*
-      Enter من خانة البريد أو كلمة المرور.
-      نمنع الإرسال الافتراضي ونستدعي دالة الدخول مباشرة.
-    */
-    authForm.addEventListener("keydown", event => {
-      if (mode !== "login") return;
-      if (!event.isTrusted || event.key !== "Enter") return;
+    return result;
+  }
 
-      const target = event.target;
+  $("authForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    if (busy) return;
 
-      if (
-        target.id !== "email" &&
-        target.id !== "password"
-      ) {
+    const username = $("username").value.trim();
+    const password = $("password").value;
+
+    if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+      message("اسم المستخدم من 3 إلى 20 حرفًا أو رقمًا أو _.", true);
+      return;
+    }
+
+    if (password.length < 6) {
+      message("كلمة المرور يجب ألا تقل عن 6 أحرف.", true);
+      return;
+    }
+
+    const payload = { username, password };
+
+    if (mode === "signup") {
+      if (!$("fullName").value.trim() || !$("gender").value) {
+        message("أدخل الاسم الكامل واختر النوع.", true);
         return;
       }
 
-      event.preventDefault();
-      event.stopPropagation();
-
-      performLogin();
-    });
-
-    /*
-      إدارة العين وإظهار محتوى الحقول.
-    */
-    const eyeFields = ["email", "password", "confirmPassword"];
-
-    function updateEye(fieldId) {
-      const input = $(fieldId);
-      const button = document.querySelector(
-        '[data-toggle="' + fieldId + '"]'
-      );
-
-      if (!input || !button) return;
-
-      if (input.value.length > 0) {
-        button.classList.remove("hidden");
-      } else {
-        button.classList.add("hidden");
-        button.classList.add("is-hidden");
-        button.setAttribute("aria-label", "إظهار المحتوى");
-
-        if (fieldId === "email") {
-          input.classList.add("email-masked");
-        } else {
-          input.type = "password";
-        }
+      if (password !== $("confirmPassword").value) {
+        message("كلمتا المرور غير متطابقتين.", true);
+        return;
       }
+
+      payload.action = "signup";
+      payload.fullName = $("fullName").value.trim();
+      payload.gender = $("gender").value;
+    } else {
+      payload.action = "login";
     }
 
-    eyeFields.forEach(fieldId => {
-      const input = $(fieldId);
-      if (!input) return;
+    busy = true;
+    $("submitBtn").disabled = true;
+    message(mode === "signup" ? "جارٍ إنشاء الحساب..." : "جارٍ تسجيل الدخول...");
 
-      input.addEventListener("input", () => updateEye(fieldId));
-      input.addEventListener("change", () => updateEye(fieldId));
+    try {
+      const result = await callFunction(payload);
 
-      input.addEventListener("focus", () => {
-        updateEye(fieldId);
+      if (!result.session) {
+        throw new Error("لم يتم إنشاء جلسة دخول. حاول تسجيل الدخول.");
+      }
+
+      const { error } = await db.auth.setSession({
+        access_token: result.session.access_token,
+        refresh_token: result.session.refresh_token
       });
 
-      updateEye(fieldId);
-    });
+      if (error) throw error;
 
-    document.querySelectorAll("[data-toggle]").forEach(button => {
-      button.addEventListener("click", () => {
-        const input = $(button.dataset.toggle);
-        if (!input || !input.value.length) return;
+      message(mode === "signup" ? "تم إنشاء الحساب بنجاح." : "تم تسجيل الدخول بنجاح.");
+      setTimeout(redirectHome, 700);
 
-        const fieldId = input.id;
-        const currentlyHidden =
-          button.classList.contains("is-hidden");
-
-        if (fieldId === "email") {
-          input.classList.toggle("email-masked", !currentlyHidden);
-        } else {
-          input.type = currentlyHidden ? "text" : "password";
-        }
-
-        button.classList.toggle("is-hidden", !currentlyHidden);
-
-        button.setAttribute(
-          "aria-label",
-          currentlyHidden ? "إخفاء المحتوى" : "إظهار المحتوى"
-        );
-      });
-    });
-
-    function setMode(newMode) {
-      mode = newMode;
-
-      const signup = mode === "signup";
-      const reset = mode === "reset";
-      const forgot = mode === "forgot";
-
-      $("authTitle").textContent =
-        signup ? "إنشاء حساب جديد" :
-        reset ? "تعيين كلمة مرور جديدة" :
-        forgot ? "استعادة الحساب" :
-        "تسجيل الدخول";
-
-      $("authSubtitle").textContent =
-        signup ? "أنشئ حسابك للوصول إلى BODY RESET." :
-        reset ? "اكتب كلمة المرور الجديدة لحسابك." :
-        forgot ? "اكتب بريدك الإلكتروني وسنرسل لك رابط استعادة الحساب." :
-        "سجّل دخولك للوصول إلى التمارين والبرامج.";
-
-      $("nameLabel").classList.toggle("hidden", !signup);
-      $("fullName").required = signup;
-
-      $("genderLabel").classList.toggle("hidden", !signup);
-      $("gender").required = signup;
-
-      $("passwordLabel").classList.toggle("hidden", forgot);
-      $("password").required = !forgot;
-
-      $("confirmLabel").classList.toggle("hidden", !(signup || reset));
-      $("confirmPassword").required = signup || reset;
-
-      $("passwordTitle").textContent =
-        reset ? "كلمة المرور الجديدة" : "كلمة المرور";
-
-      $("password").autocomplete =
-        signup || reset ? "new-password" : "current-password";
-
-      $("forgotPassword").classList.toggle("hidden", mode !== "login");
-      $("googleSection").classList.toggle("hidden", mode !== "login");
-      $("switchSection").classList.toggle("hidden", reset || forgot);
-
-      $("submitBtn").textContent =
-        signup ? "إنشاء الحساب" :
-        reset ? "حفظ كلمة المرور الجديدة" :
-        forgot ? "إرسال رابط الاستعادة" :
-        "دخول";
-
-      /*
-        أهم تغيير:
-        زر الدخول العادي لا يرسل النموذج.
-        بقية أوضاع الحساب تستخدم submit كالمعتاد.
-      */
-      $("submitBtn").type = mode === "login" ? "button" : "submit";
-
-      $("switchText").textContent =
-        signup ? "لديك حساب بالفعل؟" : "ليس لديك حساب؟";
-
-      $("switchMode").textContent =
-        signup ? "تسجيل الدخول" : "إنشاء حساب";
-
-      showMessage("");
-
-      eyeFields.forEach(updateEye);
+    } catch (error) {
+      message(error.message || "حدث خطأ.", true);
+    } finally {
+      busy = false;
+      $("submitBtn").disabled = false;
     }
+  });
 
-    $("switchMode").addEventListener("click", () => {
-      setMode(mode === "signup" ? "login" : "signup");
-    });
-
-    /* Google OAuth */
-    $("googleBtn").addEventListener("click", async () => {
-      const button = $("googleBtn");
-      button.disabled = true;
-
-      showMessage("جارٍ الاتصال بحساب Google...");
-
-      try {
-        sessionStorage.setItem(OAUTH_KEY, "1");
-
-        const { error } = await db.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: location.origin + location.pathname
-          }
-        });
-
-        if (error) throw error;
-
-      } catch (error) {
-        sessionStorage.removeItem(OAUTH_KEY);
-
-        showMessage(
-          error.message || "تعذر تسجيل الدخول باستخدام Google.",
-          true
-        );
-
-        button.disabled = false;
+  $("googleBtn").addEventListener("click", async () => {
+    message("جارٍ الاتصال بحساب Google...");
+    const { error } = await db.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: location.origin + location.pathname
       }
     });
 
-    /* نسيت كلمة المرور */
-    $("forgotPassword").addEventListener("click", async () => {
-      if (!validateEmail()) return;
+    if (error) message(error.message, true);
+  });
 
-      const email = $("email").value.trim();
-      const button = $("forgotPassword");
+  $("forgotPassword").addEventListener("click", () => {
+    message("استعادة كلمة المرور غير متاحة حاليًا لحسابات اسم المستخدم. سنضيف طريقة آمنة لاستعادتها لاحقًا.", true);
+  });
 
-      button.disabled = true;
-      showMessage("جارٍ إرسال رابط الاستعادة...");
+  db.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_IN" && session) {
+      // لا تحول تلقائيًا عند وجود جلسة قديمة.
+    }
+  });
 
-      try {
-        const { error } = await db.auth.resetPasswordForEmail(
-          email,
-          {
-            redirectTo:
-              location.origin + location.pathname + "?reset=1"
-          }
-        );
-
-        if (error) throw error;
-
-        showMessage(
-          "لو البريد مسجل عندنا، هتوصلك رسالة فيها رابط استعادة كلمة المرور. راجع صندوق الوارد والرسائل غير المرغوب فيها."
-        );
-
-      } catch (error) {
-        showMessage(
-          error.message || "تعذر إرسال رابط الاستعادة.",
-          true
-        );
-      } finally {
-        button.disabled = false;
-      }
-    });
-
-    /* تنفيذ عمليات إنشاء الحساب واستعادة كلمة المرور */
-    authForm.addEventListener("submit", async event => {
-      event.preventDefault();
-
-      // تسجيل الدخول له مسار مستقل تمامًا.
-      if (mode === "login") return;
-
-      if (isSubmitting) return;
-
-      const email = $("email").value.trim();
-      const password = $("password").value;
-      const confirmPassword = $("confirmPassword").value;
-      const button = $("submitBtn");
-
-      if (mode !== "reset" && !validateEmail()) {
-        return;
-      }
-
-      if (mode === "signup") {
-        if (!$("fullName").value.trim()) {
-          showMessage("اكتب اسمك الكامل.", true);
-          $("fullName").focus();
-          return;
-        }
-
-        if (!$("gender").value) {
-          showMessage("اختر النوع.", true);
-          $("gender").focus();
-          return;
-        }
-      }
-
-      if (mode === "signup" || mode === "reset") {
-        if (password.length < 6) {
-          showMessage("كلمة المرور يجب ألا تقل عن 6 أحرف.", true);
-          $("password").focus();
-          return;
-        }
-
-        if (password !== confirmPassword) {
-          showMessage("كلمتا المرور غير متطابقتين.", true);
-          $("confirmPassword").focus();
-          return;
-        }
-      }
-
-      isSubmitting = true;
-      button.disabled = true;
-
-      showMessage("جارٍ تنفيذ الطلب...");
-
-      try {
-        if (mode === "signup") {
-          const { data, error } = await db.auth.signUp({
-            email,
-            password,
-            options: {
-              data: {
-                full_name: $("fullName").value.trim(),
-                gender: $("gender").value
-              }
-            }
-          });
-
-          if (error) throw error;
-
-          if (data.session) {
-            showMessage("تم إنشاء الحساب بنجاح.");
-            redirectToHome();
-          } else {
-            showMessage(
-              "تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيد الحساب، ثم سجّل الدخول."
-            );
-          }
-        }
-
-        else if (mode === "forgot") {
-          const { error } = await db.auth.resetPasswordForEmail(
-            email,
-            {
-              redirectTo:
-                location.origin + location.pathname + "?reset=1"
-            }
-          );
-
-          if (error) throw error;
-
-          showMessage(
-            "لو البريد مسجل عندنا، هتوصلك رسالة فيها رابط استعادة كلمة المرور."
-          );
-        }
-
-        else if (mode === "reset") {
-          const { error } = await db.auth.updateUser({
-            password
-          });
-
-          if (error) throw error;
-
-          showMessage("تم تغيير كلمة المرور بنجاح.");
-
-          $("password").value = "";
-          $("confirmPassword").value = "";
-
-          eyeFields.forEach(updateEye);
-
-          sessionStorage.removeItem(ENTRY_KEY);
-          sessionStorage.removeItem(OAUTH_KEY);
-
-          setTimeout(() => {
-            setMode("login");
-          }, 1200);
-        }
-
-      } catch (error) {
-        showMessage(
-          error.message || "تعذر إكمال الطلب.",
-          true
-        );
-      } finally {
-        isSubmitting = false;
-        button.disabled = false;
-      }
-    });
-
-    /* متابعة OAuth بعد الرجوع من Google */
-    db.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY") {
-        setMode("reset");
-        return;
-      }
-
-      if (
-        event === "SIGNED_IN" &&
-        session &&
-        isOAuthCallback &&
-        sessionStorage.getItem(OAUTH_KEY) === "1"
-      ) {
-        redirectToHome();
-      }
-    });
-
-    /*
-      الجلسة القديمة وحدها لا تسبب أي تحويل.
-      التحويل هنا مسموح فقط عند الرجوع من Google OAuth.
-    */
-    db.auth.getSession().then(({ data, error }) => {
-      if (isRecoveryPage) {
-        setMode("reset");
-        return;
-      }
-
-      if (
-        !error &&
-        data.session &&
-        isOAuthCallback &&
-        sessionStorage.getItem(OAUTH_KEY) === "1"
-      ) {
-        redirectToHome();
-      }
-    });
-
-    setMode(isRecoveryPage ? "reset" : "login");
-
-    window.addEventListener("pageshow", () => {
-      eyeFields.forEach(updateEye);
-    });
-
-    window.addEventListener("load", () => {
-      eyeFields.forEach(updateEye);
-    });
-
-    setTimeout(() => {
-      eyeFields.forEach(updateEye);
-    }, 500);
-
-  })();
-  </script>
+  setMode("login");
+})();
+</script>
 </body>
 </html>
