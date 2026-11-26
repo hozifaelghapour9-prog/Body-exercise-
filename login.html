@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -257,17 +256,27 @@
 (() => {
   const SUPABASE_URL = "https://xgxmtizyzjfxxwsmcspe.supabase.co";
   const SUPABASE_KEY = "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
-  const FUNCTION_URL = SUPABASE_URL + "/functions/v1/login-with-username";
 
-  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // الدالة الجديدة التي أنشأناها في Supabase
+  const FUNCTION_URL =
+    SUPABASE_URL + "/functions/v1/login-with-username-v2";
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
   const $ = id => document.getElementById(id);
 
   let mode = "login";
   let busy = false;
 
+  const GOOGLE_PENDING_KEY = "bodyResetGoogleOAuthPending";
+
   function message(text, error = false) {
     $("authMessage").textContent = text;
-    $("authMessage").style.color = error ? "#ff7777" : "#55c7c2";
+    $("authMessage").style.color =
+      error ? "#ff7777" : "#55c7c2";
   }
 
   function redirectHome() {
@@ -283,8 +292,9 @@
       signup ? "إنشاء حساب جديد" : "تسجيل الدخول";
 
     $("authSubtitle").textContent =
-      signup ? "أنشئ حسابك باستخدام اسم المستخدم وكلمة المرور." :
-      "سجّل دخولك للوصول إلى التمارين والبرامج.";
+      signup
+        ? "أنشئ حسابك باستخدام اسم المستخدم وكلمة المرور."
+        : "سجّل دخولك للوصول إلى التمارين والبرامج.";
 
     $("fullNameLabel").classList.toggle("hidden", !signup);
     $("genderLabel").classList.toggle("hidden", !signup);
@@ -294,13 +304,18 @@
     $("gender").required = signup;
     $("confirmPassword").required = signup;
 
-    $("password").autocomplete = signup ? "new-password" : "current-password";
+    $("password").autocomplete =
+      signup ? "new-password" : "current-password";
+
     $("forgotPassword").classList.toggle("hidden", signup);
     $("googleSection").classList.toggle("hidden", signup);
 
-    $("submitBtn").textContent = signup ? "إنشاء الحساب" : "دخول";
+    $("submitBtn").textContent =
+      signup ? "إنشاء الحساب" : "دخول";
+
     $("switchText").textContent =
       signup ? "لديك حساب بالفعل؟" : "ليس لديك حساب؟";
+
     $("switchMode").textContent =
       signup ? "تسجيل الدخول" : "إنشاء حساب";
 
@@ -315,6 +330,7 @@
     button.addEventListener("click", () => {
       const input = $(button.dataset.toggle);
       const show = input.type === "password";
+
       input.type = show ? "text" : "password";
       button.textContent = show ? "إخفاء" : "إظهار";
     });
@@ -331,10 +347,21 @@
       body: JSON.stringify(payload)
     });
 
-    const result = await response.json();
+    const responseText = await response.text();
+
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch {
+      throw new Error(
+        "الخادم أرسل استجابة غير مفهومة. راجع إعدادات الدالة."
+      );
+    }
 
     if (!response.ok) {
-      throw new Error(result.error || "تعذر تنفيذ الطلب");
+      throw new Error(
+        result.error || "تعذر تنفيذ الطلب. رقم الخطأ: " + response.status
+      );
     }
 
     return result;
@@ -348,7 +375,10 @@
     const password = $("password").value;
 
     if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
-      message("اسم المستخدم من 3 إلى 20 حرفًا أو رقمًا أو _.", true);
+      message(
+        "اسم المستخدم من 3 إلى 20 حرفًا أو رقمًا أو _.",
+        true
+      );
       return;
     }
 
@@ -379,13 +409,20 @@
 
     busy = true;
     $("submitBtn").disabled = true;
-    message(mode === "signup" ? "جارٍ إنشاء الحساب..." : "جارٍ تسجيل الدخول...");
+
+    message(
+      mode === "signup"
+        ? "جارٍ إنشاء الحساب..."
+        : "جارٍ تسجيل الدخول..."
+    );
 
     try {
       const result = await callFunction(payload);
 
       if (!result.session) {
-        throw new Error("لم يتم إنشاء جلسة دخول. حاول تسجيل الدخول.");
+        throw new Error(
+          "لم يتم إنشاء جلسة دخول. حاول تسجيل الدخول."
+        );
       }
 
       const { error } = await db.auth.setSession({
@@ -395,11 +432,16 @@
 
       if (error) throw error;
 
-      message(mode === "signup" ? "تم إنشاء الحساب بنجاح." : "تم تسجيل الدخول بنجاح.");
-      setTimeout(redirectHome, 700);
+      message(
+        mode === "signup"
+          ? "تم إنشاء الحساب بنجاح."
+          : "تم تسجيل الدخول بنجاح."
+      );
+
+      setTimeout(redirectHome, 500);
 
     } catch (error) {
-      message(error.message || "حدث خطأ.", true);
+      message(error.message || "حدث خطأ أثناء الطلب.", true);
     } finally {
       busy = false;
       $("submitBtn").disabled = false;
@@ -408,6 +450,11 @@
 
   $("googleBtn").addEventListener("click", async () => {
     message("جارٍ الاتصال بحساب Google...");
+
+    // نستخدم العلامة دي للتمييز بين الرجوع من Google
+    // وبين وجود جلسة قديمة عند فتح الصفحة.
+    sessionStorage.setItem(GOOGLE_PENDING_KEY, "1");
+
     const { error } = await db.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -415,16 +462,27 @@
       }
     });
 
-    if (error) message(error.message, true);
+    if (error) {
+      sessionStorage.removeItem(GOOGLE_PENDING_KEY);
+      message(error.message, true);
+    }
   });
 
   $("forgotPassword").addEventListener("click", () => {
-    message("استعادة كلمة المرور غير متاحة حاليًا لحسابات اسم المستخدم. سنضيف طريقة آمنة لاستعادتها لاحقًا.", true);
+    message(
+      "استعادة كلمة المرور غير متاحة حاليًا لحسابات اسم المستخدم. سنضيف طريقة آمنة لاستعادتها لاحقًا.",
+      true
+    );
   });
 
   db.auth.onAuthStateChange((event, session) => {
-    if (event === "SIGNED_IN" && session) {
-      // لا تحول تلقائيًا عند وجود جلسة قديمة.
+    if (
+      event === "SIGNED_IN" &&
+      session &&
+      sessionStorage.getItem(GOOGLE_PENDING_KEY) === "1"
+    ) {
+      sessionStorage.removeItem(GOOGLE_PENDING_KEY);
+      redirectHome();
     }
   });
 
