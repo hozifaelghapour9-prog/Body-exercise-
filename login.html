@@ -121,6 +121,35 @@
       box-shadow:0 0 0 3px rgba(85,199,194,.13);
     }
 
+    /* زر العين */
+    .password-toggle {
+      display:none;
+      position:absolute;
+      left:13px;
+      top:50%;
+      transform:translateY(-50%);
+      align-items:center;
+      justify-content:center;
+      padding:4px;
+      border:0;
+      background:none;
+      color:#aab4c0;
+      cursor:pointer;
+    }
+
+    .password-toggle.visible {
+      display:flex;
+    }
+
+    .password-toggle:hover {
+      color:#55c7c2;
+    }
+
+    .password-toggle svg {
+      width:21px;
+      height:21px;
+    }
+
     /* قائمة النوع */
     .gender-control {
       position:relative;
@@ -345,13 +374,9 @@
       النوع
 
       <div class="gender-control" id="genderControl">
-        <button
-          class="gender-trigger"
-          id="genderTrigger"
-          type="button"
-          aria-haspopup="listbox"
-          aria-expanded="false"
-          aria-controls="genderMenu">
+        <button class="gender-trigger" id="genderTrigger"
+          type="button" aria-haspopup="listbox"
+          aria-expanded="false" aria-controls="genderMenu">
 
           <span id="genderText">اختر النوع</span>
           <span class="gender-arrow"></span>
@@ -379,6 +404,18 @@
         <input class="field" id="password" type="password"
           autocomplete="current-password"
           placeholder="كلمة المرور" minlength="6" required>
+
+        <button class="password-toggle" id="togglePassword"
+          type="button" aria-label="إظهار كلمة المرور">
+          <svg id="eyeIcon" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3l18 18"/>
+            <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
+            <path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c5 0 8.5 4.5 9 7-.2 1.1-.9 2.3-2 3.4"/>
+            <path d="M6.2 6.2C3.9 7.7 2.3 10 2 12c.5 2.5 4 7 10 7 1.2 0 2.3-.2 3.3-.6"/>
+          </svg>
+        </button>
       </div>
     </label>
 
@@ -454,6 +491,52 @@
     location.replace("index.html");
   }
 
+  /* إظهار العين فقط عند وجود نص */
+  function updateEyeVisibility() {
+    const password = $("password");
+    const eyeButton = $("togglePassword");
+
+    if (password.value.length > 0) {
+      eyeButton.classList.add("visible");
+    } else {
+      eyeButton.classList.remove("visible");
+      password.type = "password";
+      setEyeIcon(false);
+    }
+  }
+
+  /* شكل العين مفتوحة أو مقفولة */
+  function setEyeIcon(isVisible) {
+    $("eyeIcon").innerHTML = isVisible
+      ? `
+        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+        <circle cx="12" cy="12" r="3"/>
+      `
+      : `
+        <path d="M3 3l18 18"/>
+        <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
+        <path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c5 0 8.5 4.5 9 7-.2 1.1-.9 2.3-2 3.4"/>
+        <path d="M6.2 6.2C3.9 7.7 2.3 10 2 12c.5 2.5 4 7 10 7 1.2 0 2.3-.2 3.3-.6"/>
+      `;
+
+    $("togglePassword").setAttribute(
+      "aria-label",
+      isVisible ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"
+    );
+  }
+
+  $("password").addEventListener("input", updateEyeVisibility);
+
+  $("togglePassword").addEventListener("click", () => {
+    if (!$("password").value) return;
+
+    const show = $("password").type === "password";
+
+    $("password").type = show ? "text" : "password";
+    setEyeIcon(show);
+  });
+
+  /* قائمة النوع */
   function toggleGenderMenu(force) {
     const control = $("genderControl");
     const trigger = $("genderTrigger");
@@ -545,6 +628,7 @@
       signup ? "تسجيل الدخول" : "إنشاء حساب";
 
     toggleGenderMenu(false);
+    updateEyeVisibility();
     message("");
   }
 
@@ -634,6 +718,7 @@
           setMode("login");
           $("username").value = username;
           $("password").value = "";
+          updateEyeVisibility();
         }
 
       } else {
@@ -721,4 +806,4 @@
 })();
 </script>
 </body>
-</html>
+        </html>
