@@ -27,9 +27,7 @@
       text-align:right !important;
     }
 
-    .auth-card .brand .brand-mark {
-      display:none !important;
-    }
+    .auth-card .brand .brand-mark { display:none !important; }
 
     .auth-card .brand strong {
       display:block !important;
@@ -79,7 +77,6 @@
     .auth-card > * { width:min(430px,100%); }
     .auth-card h1 { font-size:23px; margin-bottom:6px; }
 
-    /* وصف الصفحة */
     .auth-sub {
       color:#c1c9d1;
       font-size:13px;
@@ -109,6 +106,36 @@
     .field::placeholder { color:#aab4c0; }
 
     .field:focus {
+      outline:none;
+      border-color:#55c7c2;
+      box-shadow:0 0 0 3px rgba(85,199,194,.13);
+    }
+
+    /* خانة النوع بنفس شكل باقي الخانات */
+    #gender {
+      display:block;
+      width:100%;
+      height:45px;
+      min-height:45px;
+      margin-top:7px;
+      padding:0 14px 0 38px;
+      appearance:none;
+      -webkit-appearance:none;
+      cursor:pointer;
+      color:#fff;
+      background-color:rgba(255,255,255,.09);
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2355c7c2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position:left 13px center;
+    }
+
+    #gender option {
+      background:#151b24;
+      color:#fff;
+      padding:12px;
+    }
+
+    #gender:focus {
       outline:none;
       border-color:#55c7c2;
       box-shadow:0 0 0 3px rgba(85,199,194,.13);
@@ -235,14 +262,13 @@
     <label id="emailLabel" class="hidden">
       البريد الإلكتروني
       <input class="field" id="email" type="email"
-        autocomplete="email" dir="ltr"
-        placeholder="name@example.com">
+        autocomplete="email" dir="ltr">
     </label>
 
     <label id="genderLabel" class="hidden">
       النوع
       <select class="field" id="gender">
-        <option value="">اختر النوع</option>
+        <option value="" selected disabled>اختر النوع</option>
         <option value="male">ذكر</option>
         <option value="female">أنثى</option>
       </select>
