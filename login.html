@@ -13,6 +13,14 @@
     html, body { width:100%; min-height:100%; margin:0; }
     body { background:#0b0e13; }
 
+    /* السماح بتحديد النص والنسخ بالضغط المطول */
+    input,
+    input.field {
+      -webkit-user-select:text !important;
+      user-select:text !important;
+      -webkit-touch-callout:default !important;
+    }
+
     .auth-card a.brand,
     .auth-card a.brand:hover,
     .auth-card a.brand:focus {
@@ -105,18 +113,37 @@
       width:100%;
       min-height:45px;
       padding:0 14px;
-      background:rgba(255,255,255,.09);
+      background:rgba(255,255,255,.09) !important;
       border:1px solid rgba(255,255,255,.22);
-      color:#fff;
+      color:#fff !important;
       border-radius:11px;
       font:inherit;
       direction:rtl;
+      -webkit-user-select:text !important;
+      user-select:text !important;
+      -webkit-touch-callout:default !important;
     }
 
     .field::placeholder { color:#aab4c0; }
 
     .field:focus {
       outline:none;
+      border-color:#55c7c2;
+      box-shadow:0 0 0 3px rgba(85,199,194,.13);
+      background:rgba(255,255,255,.09) !important;
+      color:#fff !important;
+    }
+
+    /* توحيد شكل خانة تأكيد كلمة المرور */
+    #confirmPassword {
+      background:rgba(255,255,255,.09) !important;
+      color:#fff !important;
+      border:1px solid rgba(255,255,255,.22);
+    }
+
+    #confirmPassword:focus {
+      background:rgba(255,255,255,.09) !important;
+      color:#fff !important;
       border-color:#55c7c2;
       box-shadow:0 0 0 3px rgba(85,199,194,.13);
     }
@@ -873,4 +900,4 @@
 })();
 </script>
 </body>
-  </html>
+        </html>
