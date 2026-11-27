@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b0e13">
-  <title>BODY RESET | تسجيل الدخول</title>
+  <title>BODY EXERCISE | تسجيل الدخول</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -12,6 +12,40 @@
     * { box-sizing: border-box; }
     html, body { width:100%; min-height:100%; margin:0; }
     body { background:#0b0e13; }
+
+    /* تنسيق مستقل للوجو وإلغاء التصميم القديم */
+    .auth-card a.brand,
+    .auth-card a.brand:hover,
+    .auth-card a.brand:focus {
+      display:block !important;
+      width:auto !important;
+      margin:0 0 26px !important;
+      padding:0 !important;
+      background:none !important;
+      border:0 !important;
+      box-shadow:none !important;
+      text-decoration:none !important;
+      text-align:center;
+    }
+
+    .auth-card .brand .brand-mark {
+      display:none !important;
+    }
+
+    .auth-card .brand strong {
+      display:block !important;
+      font-size:32px !important;
+      font-weight:800 !important;
+      line-height:1.4;
+      letter-spacing:1px;
+      background:none !important;
+      border:0 !important;
+      box-shadow:none !important;
+    }
+
+    .auth-card .brand small {
+      display:none !important;
+    }
 
     .auth-wrap {
       min-height:100vh;
@@ -37,7 +71,6 @@
     }
 
     .auth-card > * { width:min(430px,100%); }
-    .auth-card .brand { margin-bottom:26px; }
     .auth-card h1 { font-size:23px; margin-bottom:6px; }
 
     .auth-sub {
@@ -162,11 +195,10 @@
 <section class="auth-card">
 
   <a class="brand" href="login.html">
-    <span class="brand-mark">B</span>
-    <span>
-      <strong>BODY RESET</strong>
-      <small>EXERCISE PLATFORM</small>
-    </span>
+    <strong>
+      <span style="color:#ffffff;">Body</span>
+      <span style="color:#55c7c2;">exercise</span>
+    </strong>
   </a>
 
   <h1 id="authTitle">تسجيل الدخول</h1>
@@ -298,7 +330,7 @@
 
     $("authSubtitle").textContent =
       signup
-        ? "أدخل بياناتك لإنشاء حساب BODY RESET."
+        ? "أدخل بياناتك لإنشاء حساب BODY EXERCISE."
         : "سجّل دخولك باستخدام اسم المستخدم وكلمة المرور.";
 
     $("fullNameLabel").classList.toggle("hidden", !signup);
@@ -513,4 +545,4 @@
 })();
 </script>
 </body>
-</html> 
+</html>
