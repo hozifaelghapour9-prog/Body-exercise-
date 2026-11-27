@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تأكيد كود التحقق | BODY EXERCISE</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        linear-gradient(rgba(0,0,0,.78), rgba(0,0,0,.88)),
+        url("https://raw.githubusercontent.com/hozifaelghapour9-prog/Body-exercise-/main/body-exersice-gym-exact.jpg")
+        center/cover fixed;
+      color: white;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      padding: 35px 25px;
+      background: rgba(15,15,15,.88);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .brand {
+      direction: ltr;
+      font-size: 27px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .brand span {
+      color: #00d5c4;
+    }
+
+    .subtitle {
+      color: #aaa;
+      font-size: 13px;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      font-size: 21px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      color: #bbb;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .email {
+      color: #00d5c4;
+      direction: ltr;
+      word-break: break-word;
+    }
+
+    input {
+      width: 100%;
+      height: 55px;
+      margin-top: 22px;
+      padding: 0 14px;
+      border: 1px solid #444;
+      border-radius: 7px;
+      outline: none;
+      background: rgba(255,255,255,.07);
+      color: white;
+      font-size: 25px;
+      letter-spacing: 10px;
+      direction: ltr;
+      text-align: center;
+    }
+
+    input:focus {
+      border-color: #00d5c4;
+    }
+
+    button {
+      width: 100%;
+      height: 47px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 7px;
+      background: #00cdbb;
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 22px;
+      color: #00d5c4;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .error {
+      color: #ff7777;
+    }
+
+    .success {
+      color: #00d5c4;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="brand">BODY <span>EXERCISE</span></div>
+    <div class="subtitle">Exercise Platform</div>
+
+    <h2>تأكيد كود التحقق</h2>
+
+    <p>
+      أدخل الكود المكوّن من 6 أرقام الذي أرسلناه إلى بريدك الإلكتروني:
+    </p>
+
+    <p class="email" id="emailText"></p>
+
+    <input
+      id="otp"
+      type="text"
+      inputmode="numeric"
+      maxlength="6"
+      placeholder="000000"
+      autocomplete="one-time-code"
+    >
+
+    <button id="verifyBtn">تأكيد الكود</button>
+
+    <div id="message"></div>
+
+    <a class="back" href="forgot-password.html">العودة</a>
+
+  </div>
+
+  <script>
+    const SUPABASE_URL =
+      "https://xgxmtizyzjfxxwsmcspe.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
+
+    const db = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const email = sessionStorage.getItem("reset_email");
+
+    const otpInput = document.getElementById("otp");
+    const verifyBtn = document.getElementById("verifyBtn");
+    const messageBox = document.getElementById("message");
+
+    document.getElementById("emailText").textContent =
+      email || "لم يتم تحديد البريد الإلكتروني";
+
+    if (!email) {
+      verifyBtn.disabled = true;
+      messageBox.textContent =
+        "لا يوجد بريد إلكتروني. ارجع واكتب بيانات حسابك أولاً.";
+      messageBox.className = "error";
+    }
+
+    function showMessage(message, isError = false) {
+      messageBox.textContent = message;
+      messageBox.className = isError ? "error" : "success";
+    }
+
+    otpInput.addEventListener("input", () => {
+      otpInput.value = otpInput.value.replace(/\D/g, "").slice(0, 6);
+    });
+
+    verifyBtn.addEventListener("click", async () => {
+      const token = otpInput.value.trim();
+
+      if (!email) {
+        showMessage("ارجع إلى الصفحة السابقة وأدخل بريدك الإلكتروني.", true);
+        return;
+      }
+
+      if (!/^\d{6}$/.test(token)) {
+        showMessage("اكتب كود التحقق المكوّن من 6 أرقام.", true);
+        return;
+      }
+
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = "جاري التحقق...";
+
+      try {
+        const { data, error } = await db.auth.verifyOtp({
+          email: email,
+          token: token,
+          type: "email"
+        });
+
+        if (error) throw error;
+
+        if (!data.session) {
+          throw new Error("لم يتم تسجيل الدخول بعد التحقق من الكود.");
+        }
+
+        sessionStorage.setItem("reset_verified", "true");
+
+        location.href = "new-password.html";
+
+      } catch (error) {
+        showMessage(
+          error.message || "الكود غير صحيح أو انتهت صلاحيته.",
+          true
+        );
+
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = "تأكيد الكود";
+      }
+    });
+
+    otpInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        verifyBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
