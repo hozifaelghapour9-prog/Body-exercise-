@@ -88,6 +88,7 @@
     }
 
     .auth-form { display:grid; gap:14px; }
+
     .auth-form label {
       display:block;
       font-size:13px;
@@ -208,7 +209,7 @@
       padding:0 13px;
       display:flex;
       align-items:center;
-      justify-content:space-between;
+      justify-content:flex-start;
       background:transparent;
       border:0;
       border-radius:8px;
@@ -233,16 +234,6 @@
     .gender-option.active {
       color:#55c7c2;
       background:rgba(85,199,194,.08);
-    }
-
-    .gender-check {
-      color:#55c7c2;
-      font-size:15px;
-      opacity:0;
-    }
-
-    .gender-option.active .gender-check {
-      opacity:1;
     }
 
     .auth-form .btn { margin-top:8px; }
@@ -399,9 +390,7 @@
             role="option"
             data-value="male"
             aria-selected="false">
-
-            <span>ذكر</span>
-            <span class="gender-check">✓</span>
+            ذكر
           </button>
 
           <button
@@ -410,9 +399,7 @@
             role="option"
             data-value="female"
             aria-selected="false">
-
-            <span>أنثى</span>
-            <span class="gender-check">✓</span>
+            أنثى
           </button>
 
         </div>
@@ -527,7 +514,7 @@
     trigger.setAttribute("aria-expanded", String(shouldOpen));
   }
 
-  /* اختيار النوع */
+  /* اختيار النوع بدون علامة صح */
   function selectGender(value) {
     const options = document.querySelectorAll(".gender-option");
     const selected = value === "male" ? "ذكر" : "أنثى";
