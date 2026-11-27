@@ -13,7 +13,6 @@
     html, body { width:100%; min-height:100%; margin:0; }
     body { background:#0b0e13; }
 
-    /* تنسيق اللوجو */
     .auth-card a.brand,
     .auth-card a.brand:hover,
     .auth-card a.brand:focus {
@@ -211,7 +210,7 @@
 
   <h1 id="authTitle">تسجيل الدخول</h1>
   <p class="auth-sub" id="authSubtitle">
-    سجّل دخولك للوصول إلى التمارين والبرامج.
+    سجّل دخولك باستخدام اسم المستخدم وكلمة المرور.
   </p>
 
   <form class="auth-form" id="authForm">
@@ -338,7 +337,7 @@
 
     $("authSubtitle").textContent =
       signup
-        ? "أدخل بياناتك لإنشاء حساب BODY EXERCISE."
+        ? "أدخل بياناتك لإنشاء حسابك في BODY EXERCISE."
         : "سجّل دخولك باستخدام اسم المستخدم وكلمة المرور.";
 
     $("fullNameLabel").classList.toggle("hidden", !signup);
