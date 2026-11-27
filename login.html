@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -64,7 +65,9 @@
       direction:rtl;
     }
 
+    .field option { background:#151b24; color:#fff; }
     .field::placeholder { color:#aab4c0; }
+
     .field:focus {
       outline:none;
       border-color:#55c7c2;
@@ -180,6 +183,21 @@
         autocomplete="name" placeholder="اكتب اسمك الكامل">
     </label>
 
+    <label id="usernameLabel" class="hidden">
+      اسم المستخدم
+      <input class="field" id="username" type="text"
+        autocomplete="username" autocapitalize="none"
+        spellcheck="false" placeholder="3 إلى 20 حرفًا أو رقمًا أو _"
+        minlength="3" maxlength="20">
+    </label>
+
+    <label id="emailLabel">
+      البريد الإلكتروني
+      <input class="field" id="email" type="email"
+        autocomplete="email" dir="ltr"
+        placeholder="name@example.com" required>
+    </label>
+
     <label id="genderLabel" class="hidden">
       النوع
       <select class="field" id="gender">
@@ -190,19 +208,11 @@
     </label>
 
     <label>
-      اسم المستخدم
-      <input class="field" id="username" type="text"
-        autocomplete="username" autocapitalize="none"
-        spellcheck="false" placeholder="اكتب اسم المستخدم"
-        required minlength="3" maxlength="20">
-    </label>
-
-    <label id="passwordLabel">
-      <span id="passwordTitle">كلمة المرور</span>
+      <span>كلمة المرور</span>
       <div class="input-wrap">
         <input class="field" id="password" type="password"
-          autocomplete="current-password" placeholder="كلمة المرور"
-          minlength="6" required>
+          autocomplete="current-password"
+          placeholder="كلمة المرور" minlength="6" required>
         <button class="toggle-password" type="button"
           data-toggle="password">إظهار</button>
       </div>
@@ -212,8 +222,8 @@
       تأكيد كلمة المرور
       <div class="input-wrap">
         <input class="field" id="confirmPassword" type="password"
-          autocomplete="new-password" placeholder="أعد كتابة كلمة المرور"
-          minlength="6">
+          autocomplete="new-password"
+          placeholder="أعد كتابة كلمة المرور" minlength="6">
         <button class="toggle-password" type="button"
           data-toggle="confirmPassword">إظهار</button>
       </div>
@@ -257,10 +267,6 @@
   const SUPABASE_URL = "https://xgxmtizyzjfxxwsmcspe.supabase.co";
   const SUPABASE_KEY = "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
 
-  // الدالة الجديدة التي أنشأناها في Supabase
-  const FUNCTION_URL =
-    SUPABASE_URL + "/functions/v1/login-with-username-v2";
-
   const db = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
@@ -293,16 +299,21 @@
 
     $("authSubtitle").textContent =
       signup
-        ? "أنشئ حسابك باستخدام اسم المستخدم وكلمة المرور."
+        ? "أدخل بياناتك لإنشاء حساب BODY RESET."
         : "سجّل دخولك للوصول إلى التمارين والبرامج.";
 
     $("fullNameLabel").classList.toggle("hidden", !signup);
+    $("usernameLabel").classList.toggle("hidden", !signup);
     $("genderLabel").classList.toggle("hidden", !signup);
     $("confirmLabel").classList.toggle("hidden", !signup);
 
     $("fullName").required = signup;
+    $("username").required = signup;
     $("gender").required = signup;
     $("confirmPassword").required = signup;
+
+    $("emailLabel").classList.remove("hidden");
+    $("email").required = true;
 
     $("password").autocomplete =
       signup ? "new-password" : "current-password";
@@ -330,66 +341,37 @@
     button.addEventListener("click", () => {
       const input = $(button.dataset.toggle);
       const show = input.type === "password";
-
       input.type = show ? "text" : "password";
       button.textContent = show ? "إخفاء" : "إظهار";
     });
   });
 
-  async function callFunction(payload) {
-    const response = await fetch(FUNCTION_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_KEY,
-        "Authorization": "Bearer " + SUPABASE_KEY
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const responseText = await response.text();
-
-    let result;
-    try {
-      result = JSON.parse(responseText);
-    } catch {
-      throw new Error(
-        "الخادم أرسل استجابة غير مفهومة. راجع إعدادات الدالة."
-      );
-    }
-
-    if (!response.ok) {
-      throw new Error(
-        result.error || "تعذر تنفيذ الطلب. رقم الخطأ: " + response.status
-      );
-    }
-
-    return result;
-  }
-
   $("authForm").addEventListener("submit", async event => {
     event.preventDefault();
     if (busy) return;
 
-    const username = $("username").value.trim();
+    const email = $("email").value.trim().toLowerCase();
     const password = $("password").value;
-
-    if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
-      message(
-        "اسم المستخدم من 3 إلى 20 حرفًا أو رقمًا أو _.",
-        true
-      );
-      return;
-    }
 
     if (password.length < 6) {
       message("كلمة المرور يجب ألا تقل عن 6 أحرف.", true);
       return;
     }
 
-    const payload = { username, password };
+    if (!email) {
+      message("اكتب البريد الإلكتروني.", true);
+      return;
+    }
 
-    if (mode === "signup") {
+    const signup = mode === "signup";
+    const username = $("username").value.trim().toLowerCase();
+
+    if (signup) {
+      if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+        message("اسم المستخدم من 3 إلى 20 حرفًا أو رقمًا أو _.", true);
+        return;
+      }
+
       if (!$("fullName").value.trim() || !$("gender").value) {
         message("أدخل الاسم الكامل واختر النوع.", true);
         return;
@@ -399,49 +381,69 @@
         message("كلمتا المرور غير متطابقتين.", true);
         return;
       }
-
-      payload.action = "signup";
-      payload.fullName = $("fullName").value.trim();
-      payload.gender = $("gender").value;
-    } else {
-      payload.action = "login";
     }
 
     busy = true;
     $("submitBtn").disabled = true;
 
-    message(
-      mode === "signup"
-        ? "جارٍ إنشاء الحساب..."
-        : "جارٍ تسجيل الدخول..."
-    );
+    message(signup ? "جارٍ إنشاء الحساب..." : "جارٍ تسجيل الدخول...");
 
     try {
-      const result = await callFunction(payload);
+      if (signup) {
+        const { data, error } = await db.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: $("fullName").value.trim(),
+              username,
+              gender: $("gender").value
+            }
+          }
+        });
 
-      if (!result.session) {
-        throw new Error(
-          "لم يتم إنشاء جلسة دخول. حاول تسجيل الدخول."
-        );
+        if (error) throw error;
+        if (!data.user) throw new Error("تعذر إنشاء الحساب.");
+
+        const { error: profileError } = await db
+          .from("user_profiles")
+          .insert({
+            id: data.user.id,
+            username,
+            gender: $("gender").value
+          });
+
+        if (profileError) {
+          throw new Error(
+            profileError.code === "23505"
+              ? "اسم المستخدم مستخدم بالفعل. اختر اسمًا آخر."
+              : "تم إنشاء الحساب لكن تعذر حفظ بيانات الملف الشخصي: " + profileError.message
+          );
+        }
+
+        if (data.session) {
+          message("تم إنشاء الحساب بنجاح.");
+          setTimeout(redirectHome, 700);
+        } else {
+          message("تم إنشاء الحساب. يمكنك تسجيل الدخول الآن.");
+          setMode("login");
+          $("email").value = email;
+          $("password").value = "";
+        }
+      } else {
+        const { data, error } = await db.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) throw error;
+        if (!data.session) throw new Error("تعذر تسجيل الدخول.");
+
+        message("تم تسجيل الدخول بنجاح.");
+        setTimeout(redirectHome, 500);
       }
-
-      const { error } = await db.auth.setSession({
-        access_token: result.session.access_token,
-        refresh_token: result.session.refresh_token
-      });
-
-      if (error) throw error;
-
-      message(
-        mode === "signup"
-          ? "تم إنشاء الحساب بنجاح."
-          : "تم تسجيل الدخول بنجاح."
-      );
-
-      setTimeout(redirectHome, 500);
-
     } catch (error) {
-      message(error.message || "حدث خطأ أثناء الطلب.", true);
+      message(error.message || "حدث خطأ أثناء تنفيذ الطلب.", true);
     } finally {
       busy = false;
       $("submitBtn").disabled = false;
@@ -450,9 +452,6 @@
 
   $("googleBtn").addEventListener("click", async () => {
     message("جارٍ الاتصال بحساب Google...");
-
-    // نستخدم العلامة دي للتمييز بين الرجوع من Google
-    // وبين وجود جلسة قديمة عند فتح الصفحة.
     sessionStorage.setItem(GOOGLE_PENDING_KEY, "1");
 
     const { error } = await db.auth.signInWithOAuth({
@@ -468,11 +467,23 @@
     }
   });
 
-  $("forgotPassword").addEventListener("click", () => {
-    message(
-      "استعادة كلمة المرور غير متاحة حاليًا لحسابات اسم المستخدم. سنضيف طريقة آمنة لاستعادتها لاحقًا.",
-      true
-    );
+  $("forgotPassword").addEventListener("click", async () => {
+    const email = $("email").value.trim();
+
+    if (!email) {
+      message("اكتب بريدك الإلكتروني أولًا.", true);
+      return;
+    }
+
+    const { error } = await db.auth.resetPasswordForEmail(email, {
+      redirectTo: location.origin + location.pathname
+    });
+
+    if (error) {
+      message(error.message, true);
+    } else {
+      message("تم إرسال رابط استعادة كلمة المرور إلى بريدك.");
+    }
   });
 
   db.auth.onAuthStateChange((event, session) => {
