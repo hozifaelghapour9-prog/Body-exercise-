@@ -13,38 +13,35 @@
     html, body { width:100%; min-height:100%; margin:0; }
     body { background:#0b0e13; }
 
-    /* تنسيق مستقل للوجو وإلغاء التصميم القديم */
+    /* اللوجو */
     .auth-card a.brand,
     .auth-card a.brand:hover,
     .auth-card a.brand:focus {
       display:block !important;
-      width:auto !important;
+      width:100% !important;
       margin:0 0 26px !important;
       padding:0 !important;
       background:none !important;
       border:0 !important;
       box-shadow:none !important;
       text-decoration:none !important;
-      text-align:center;
+      text-align:right !important;
     }
 
-    .auth-card .brand .brand-mark {
+    .auth-card .brand .brand-mark,
+    .auth-card .brand small {
       display:none !important;
     }
 
     .auth-card .brand strong {
       display:block !important;
-      font-size:32px !important;
+      font-size:23px !important;
       font-weight:800 !important;
       line-height:1.4;
-      letter-spacing:1px;
+      letter-spacing:0;
       background:none !important;
       border:0 !important;
       box-shadow:none !important;
-    }
-
-    .auth-card .brand small {
-      display:none !important;
     }
 
     .auth-wrap {
