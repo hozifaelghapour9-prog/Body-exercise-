@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0e13">
+  <title>إرسال كود التحقق | BODY EXERCISE</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        linear-gradient(rgba(0,0,0,.78), rgba(0,0,0,.88)),
+        url("https://raw.githubusercontent.com/hozifaelghapour9-prog/Body-exercise-/main/body-exersice-gym-exact.jpg")
+        center/cover fixed;
+      color: white;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      padding: 35px 25px;
+      background: rgba(15,15,15,.90);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .brand {
+      direction: ltr;
+      font-size: 27px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .brand span {
+      color: #00d5c4;
+    }
+
+    .subtitle {
+      color: #aaa;
+      font-size: 13px;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      font-size: 21px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      color: #bbb;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .email {
+      color: #00d5c4;
+      direction: ltr;
+      word-break: break-word;
+    }
+
+    button {
+      width: 100%;
+      min-height: 47px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 7px;
+      background: #00cdbb;
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 22px;
+      color: #00d5c4;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .error {
+      color: #ff7777;
+    }
+
+    .success {
+      color: #00d5c4;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+
+    <div class="brand">BODY <span>EXERCISE</span></div>
+    <div class="subtitle">Exercise Platform</div>
+
+    <h2>إرسال كود استعادة كلمة المرور</h2>
+
+    <p>
+      سيتم إرسال كود تحقق مكوّن من 6 أرقام إلى بريدك الإلكتروني:
+    </p>
+
+    <p class="email" id="emailText"></p>
+
+    <button id="sendBtn">إرسال كود التحقق</button>
+
+    <div id="message" role="status" aria-live="polite"></div>
+
+    <a class="back" href="forgot-password.html">
+      تغيير البريد الإلكتروني
+    </a>
+
+  </main>
+
+  <script>
+    (() => {
+      const SUPABASE_URL =
+        "https://xgxmtizyzjfxxwsmcspe.supabase.co";
+
+      const SUPABASE_KEY =
+        "sb_publishable_Jl3bsVErQ87xlzyNkJrRNw_aD_TKsEg";
+
+      const db = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+      const email =
+        (sessionStorage.getItem("reset_phone_email") || "")
+          .trim()
+          .toLowerCase();
+
+      const emailText = document.getElementById("emailText");
+      const sendBtn = document.getElementById("sendBtn");
+      const messageBox = document.getElementById("message");
+
+      function showMessage(text, isError = false) {
+        messageBox.textContent = text;
+        messageBox.className = isError ? "error" : "success";
+      }
+
+      if (!email) {
+        sendBtn.disabled = true;
+        showMessage(
+          "لم يتم العثور على البريد الإلكتروني. ارجع واكتبه مرة أخرى.",
+          true
+        );
+      } else {
+        emailText.textContent = email;
+      }
+
+      sendBtn.addEventListener("click", async () => {
+        if (!email || sendBtn.disabled) return;
+
+        sendBtn.disabled = true;
+        sendBtn.textContent = "جارٍ إرسال الكود...";
+
+        showMessage("جارٍ إرسال رسالة التحقق إلى بريدك الإلكتروني.");
+
+        try {
+          const { error } = await db.auth.resetPasswordForEmail(
+            email
+          );
+
+          if (error) throw error;
+
+          // حفظ البريد بالمفتاح الذي تقرأه صفحة reset-otp.html
+          sessionStorage.setItem("reset_email", email);
+
+          sessionStorage.removeItem("reset_verified");
+          sessionStorage.setItem("reset_method", "email");
+
+          showMessage(
+            "تم إرسال طلب الاستعادة. افتح بريدك الإلكتروني وابحث عن رسالة كود التحقق."
+          );
+
+          sendBtn.textContent = "الانتقال لإدخال الكود";
+
+          sendBtn.disabled = false;
+
+          sendBtn.onclick = () => {
+            location.href = "reset-otp.html";
+          };
+
+        } catch (error) {
+          showMessage(
+            error.message || "تعذر إرسال كود التحقق. حاول مرة أخرى.",
+            true
+          );
+
+          sendBtn.disabled = false;
+          sendBtn.textContent = "إعادة إرسال كود التحقق";
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>
